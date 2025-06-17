@@ -1,0 +1,117 @@
+@page
+@model Alexis.Dashboard.Pages.Report.MachineMaintenance.AlertModel
+@{
+	ViewData["Title"] = "Report > Machine Maintenance > Alert";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<form method="post">
+	<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+		<div class="container-fluid row align-items-center flex-wrap">
+			<div class="col-12 col-lg-auto mb-2">
+				<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+					<label id="LabelTitle">@ViewData["Title"]</label>
+				</div>
+			</div>
+			<!-- NavBar2: Right -->
+			<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+				<!-- Refresh -->
+				<button class="btn reportBtn theme_outline_only_btn" asp-page-handler="Clear" type="submit"><i class="fa fa-refresh fa-sm"></i> Refresh </button>
+			</div>
+		</div>
+	</nav>
+
+	<div class="contentRoot navbar navbar-default">
+
+		@(Html.Kendo().Grid(Model.Alerts)
+				.Name("AlertGrid")
+				.Columns(columns =>
+				{
+					columns.Bound(c => c.aDesc).Title("Alert Name");
+					columns.Bound(c => c.AlertStatus).Title("Status");
+
+					// Card Alert Fields
+					columns.Bound(c => c.aCardEmail).Title("Card Email");
+					columns.Bound(c => c.aCardSms).Title("Card SMS");
+					columns.Bound(c => c.aCardTInterval).Title("Card Time Interval");
+					// Cheque Alert Fields
+					columns.Bound(c => c.aChequeEmail).Title("Cheque Email");
+					columns.Bound(c => c.aChequeSms).Title("Cheque SMS");
+					columns.Bound(c => c.aChequeTInterval).Title("Cheque Time Interval");
+					// Balance Fields
+					columns.Bound(c => c.aMinCardBal).Title("Min Card Balance");
+					columns.Bound(c => c.aMinChequeBal).Title("Min Cheque Balance");
+					columns.Bound(c => c.aMinPaperBal).Title("Min Paper Balance");
+					columns.Bound(c => c.aMinRejCardBal).Title("Min Reject Card Balance");
+					columns.Bound(c => c.AMINRIBFRONTBAL).Title("Min RIB Front Balance");
+					columns.Bound(c => c.AMINRIBREARBAL).Title("Min RIB Rear Balance");
+					columns.Bound(c => c.AMINRIBTIPBAL).Title("Min RIB Tip Balance");
+					columns.Bound(c => c.AMINCHEQUEPRINTCATRIDGE).Title("Min Cheque Print Cartridge");
+					columns.Bound(c => c.AMINCATRIDGEBAL).Title("Min Cartridge Balance");
+					// Maintenance Alert Fields
+					columns.Bound(c => c.aMaintenanceEmail).Title("Maintenance Email");
+					columns.Bound(c => c.aMaintenanceSms).Title("Maintenance SMS");
+					columns.Bound(c => c.aMaintenanceTInterval).Title("Maintenance Time Interval");
+					// Security Alert Fields
+					columns.Bound(c => c.aSecurityEmail).Title("Security Email");
+					columns.Bound(c => c.aSecuritySms).Title("Security SMS");
+					columns.Bound(c => c.aSecurityTInterval).Title("Security Time Interval");
+					// Troubleshoot Alert Fields
+					columns.Bound(c => c.aTroubleshootEmail).Title("Troubleshoot Email");
+					columns.Bound(c => c.aTroubleshootSms).Title("Troubleshoot SMS");
+					columns.Bound(c => c.aTroubleshootTInterval).Title("Troubleshoot Time Interval");
+
+					columns.Bound(c => c.aCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+					columns.Bound(c => c.CreatedName).Title("Created By");
+					columns.Bound(c => c.aUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+					columns.Bound(c => c.updatedby).Title("Updated By");
+				})
+				.ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); })
+				.Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+				.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+				.Sortable()
+				.Scrollable(s => s.Height("calc(80vh - 200px)"))
+				.HtmlAttributes(new { style = "margin: 0 15px;" })
+				.Search(s =>
+				{
+					s.Field(o => o.aDesc, "contains");
+					s.Field(o => o.AlertStatus, "contains");
+
+					s.Field(o => o.aCardEmail, "contains");
+					s.Field(o => o.aCardSms, "contains");
+					s.Field(o => o.aCardTInterval, "contains");
+
+					s.Field(o => o.aChequeEmail, "contains");
+					s.Field(o => o.aChequeSms, "contains");
+					s.Field(o => o.aChequeTInterval, "contains");
+
+					s.Field(o => o.aMinCardBal, "contains");
+					s.Field(o => o.aMinChequeBal, "contains");
+					s.Field(o => o.aMinPaperBal, "contains");
+					s.Field(o => o.aMinRejCardBal, "contains");
+					s.Field(o => o.AMINRIBFRONTBAL, "contains");
+					s.Field(o => o.AMINRIBREARBAL, "contains");
+					s.Field(o => o.AMINRIBTIPBAL, "contains");
+					s.Field(o => o.AMINCHEQUEPRINTCATRIDGE, "contains");
+					s.Field(o => o.AMINCATRIDGEBAL, "contains");
+
+					s.Field(o => o.aMaintenanceEmail, "contains");
+					s.Field(o => o.aMaintenanceSms, "contains");
+					s.Field(o => o.aMaintenanceTInterval, "contains");
+
+					s.Field(o => o.aSecurityEmail, "contains");
+					s.Field(o => o.aSecuritySms, "contains");
+					s.Field(o => o.aSecurityTInterval, "contains");
+
+					s.Field(o => o.aTroubleshootEmail, "contains");
+					s.Field(o => o.aTroubleshootSms, "contains");
+					s.Field(o => o.aTroubleshootTInterval, "contains");
+
+					s.Field(o => o.CreatedName, "contains");
+					s.Field(o => o.CreatedDateString, "contains");
+					s.Field(o => o.updatedby, "contains");
+				})
+				.Events(e => e.DataBound("onGridDataBound"))
+				)
+	</div>
+</form>

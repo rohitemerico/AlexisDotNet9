@@ -1,0 +1,94 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MasterSettingsModel
+@{
+	ViewData["Title"] = "Master Settings";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+	var isDisabled = Model.LabelInfoVisible ? "disabled" : "";
+}
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/MasterSettings" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content text-gray-600 small" style="padding: 50px; text-align: left; color: #5D5D5D;">
+		<form method="post" action="" enctype="multipart/form-data">
+			<div class="row justify-content-md-center">
+				<div class="panel" style="width:80%; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Settings </h3>
+						<div class="right">
+						</div>
+					</div>
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Password</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								@if (Model.LabelInfoVisible)
+								{
+									<input type="password" asp-for="Password" disabled style="width:80%; border-color:#E3E3E3;border-width:1px;border-style:solid;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								}
+								else
+								{
+									<input type="password" asp-for="Password" style="width:80%; border-color:#E3E3E3;border-width:1px;border-style:solid;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								}
+								<br />
+								<span asp-validation-for="Password" style="color: red;"></span>
+								@if (Model.LabelInfoVisible)
+								{
+									<br />
+									<label id="Label_Info" style="color:red;">@Model.LabelInfo</label>
+								}
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="text-align: center; border: 0px;">
+								<input type="submit" value="Update" class="mx-2 btn theme_gradient_btn" @(Model.LabelInfoVisible ? "disabled" : "") />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+
+		function modalClose(){
+			$('#myModal').modal('hide');
+		}
+	</script>
+}

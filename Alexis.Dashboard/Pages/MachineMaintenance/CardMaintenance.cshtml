@@ -1,0 +1,107 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.CardMaintenanceModel
+@{
+	ViewData["Title"] = "Machine Card";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+			<!-- Add New -->
+			<button class="btn reportBtn theme_gradient_btn" type="button" onclick="onAddClick()"><i class="fa fa-plus"> </i> Add New</button>
+		</div>
+	</div>
+</nav>
+<div class="contentRoot navbar navbar-default">
+	<!-- Grid -->
+	@(Html.Kendo().Grid(Model.Cards)
+		.Name("CardGrid")
+		.Columns(columns =>
+		{
+			columns.Template(@<text>
+		<div class="text-center">
+			# if (Visible) { #
+			<span class="button" data-toggle="tooltip" title="Edit" onclick="onEditClick('#= cID #')">
+				<img src="~/img/3_User%20Maintenance/icon_edit_grey.png" alt="Edit" />
+			</span>
+			# } #
+		</div>
+	</text>).Title("Options").Width(100);
+			columns.Bound(p => p.cDesc).Title("Card Description").Sortable(true);
+			columns.Bound(p => p.txtContactless).Title("Contact Type").Sortable(true);
+			columns.Bound(p => p.cType).Title("Card Type").Sortable(true);
+			columns.Bound(p => p.cBin).Title("Bin").Sortable(true);
+			columns.Bound(p => p.cMask).Title("Mask Settings").Sortable(true);
+			columns.Bound(p => p.txtStatus)
+			.Title("Status")
+			.ClientTemplate(
+			"<div style='font-size: 0.85em;'>" +
+			"<span class='#= txtStatus == \"Active\" ? \"status_active\" : (txtStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+			"#= txtStatus #" +
+			"</span>" +
+			"</div>"
+			).Sortable(true);
+			columns.Bound(p => p.cCreatedDate).Title("Created Date").Sortable(true).Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.CreatedName).Title("Created By").Sortable(true);
+			columns.Bound(p => p.cUpdatedDate).Title("Updated Date").Sortable(true).Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.UpdatedName).Title("Updated By").Sortable(true);
+		})
+		.ToolBar(t => t.Search())
+		.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
+		.Sortable()
+		.Search(s =>
+		{
+			s.Field(o => o.cDesc, "contains");
+		})
+		.Events(e => e.DataBound("onGridDataBound"))
+		)
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		
+		function onEditClick(cardId) {
+			$.ajax({
+					url: "@Url.Page("/CardMaintenance")?handler=Edit",
+					method: "POST",
+					data: { id: cardId },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/CardMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+		function onAddClick(){
+			$.ajax({
+					url: "@Url.Page("/CardMaintenance")?handler=Add",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/CardMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+	</script>
+}

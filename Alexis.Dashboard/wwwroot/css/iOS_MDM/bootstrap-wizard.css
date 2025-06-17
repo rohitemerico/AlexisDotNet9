@@ -1,0 +1,179 @@
+a {
+    color: inherit;
+}
+
+* {
+    margin: 0;
+    padding: 0
+}
+
+html {
+    height: 100%
+}
+
+h2 {
+    color: lightgray;
+}
+
+#wizard_container {
+    text-align: center;
+    position: relative;
+    margin-bottom: 50px;
+}
+
+    #wizard_container fieldset {
+        background: white;
+        border: 0 none;
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+        width: 100%;
+        margin: 0;
+        padding-bottom: 20px;
+        position: relative
+    }
+
+.finish {
+    text-align: center
+}
+
+
+#wizard_container fieldset:not(:first-of-type) {
+    display: none
+}
+
+#wizard_container .previous-step,
+.next-step {
+    min-width: 100px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 6px 12px;
+    height: 38px;
+}
+
+.form,
+.previous-step {
+    border: 0.5px solid #E83B68;
+    background: none;
+    color: #E83B68;
+    opacity: 0.8;
+}
+
+.form,
+.next-step {
+    border: 0.5px solid #E83B68;
+    background: transparent linear-gradient(90deg, var(--unnamed-color-e83b68) 0%, var(--unnamed-color-e83c4f) 53%, var(--unnamed-color-ea503e) 100%) 0% 0% no-repeat padding-box;
+    background: transparent linear-gradient(90deg, #E83B68 0%, #E83C4F 53%, #EA503E 100%) 0% 0% no-repeat padding-box;
+    color: #FFFFFF;
+    opacity: 0.8;
+}
+
+.form,
+.previous-step:hover {
+    color: #E83B68;
+}
+
+.form,
+.next-step:hover {
+    color: #FFFFFF;
+}
+
+
+#wizard_container .previous-step:hover,
+#wizard_container .previous-step:focus {
+    opacity: 1;
+}
+
+#wizard_container .next-step:hover,
+#wizard_container .next-step:focus {
+    opacity: 1;
+}
+
+#progressbar {
+    overflow: hidden;
+    color: lightgrey
+}
+
+    #progressbar .active {
+        color: #E83B68
+    }
+
+    #progressbar li {
+        list-style-type: none;
+        font-size: 15px;
+        width: 12.5%; /*depends on total steps*/
+        float: left;
+        position: relative;
+        font-weight: 400
+    }
+
+    #progressbar #step1::before {
+        content: "1"
+    }
+
+    #progressbar #step2::before {
+        content: "2"
+    }
+
+    #progressbar #step3::before {
+        content: "3"
+    }
+
+    #progressbar #step4::before {
+        content: "4"
+    }
+
+    #progressbar #step5::before {
+        content: "5"
+    }
+
+    #progressbar #step6::before {
+        content: "6"
+    }
+
+    #progressbar #step7::before {
+        content: "7"
+    }
+
+    #progressbar #step8::before {
+        content: "8"
+    }
+
+    #progressbar li::before {
+        width: 35px; /*alter to resize*/
+        height: 35px; /*alter to resize*/
+        line-height: 33px; /*alter to resize*/
+        display: block;
+        font-size: 20px;
+        color: #ffffff;
+        background: lightgray;
+        border-radius: 50%;
+        margin: 7px auto 10px auto; /*alter to resize*/
+        padding: 2px
+    }
+
+    #progressbar li::after {
+        content: '';
+        width: 100%;
+        height: 2px;
+        background: lightgray;
+        position: absolute;
+        left: 0;
+        top: 25px;
+        z-index: -1
+    }
+
+    #progressbar li.active::before,
+    #progressbar li.active::after {
+        background: #E83B68
+    }
+
+.progress {
+    height: 20px;
+    display: none;
+}
+
+.progress-bar {
+    background-color: lightcoral;
+}
+

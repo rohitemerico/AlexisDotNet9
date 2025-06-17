@@ -1,0 +1,10 @@
+{
+  "ModuleCollection": {
+    "Desc": "Basically dashboard pages.",
+    "Ids": {
+      "iOSmdmCheckerMaker": "cabd22ed-7612-42cd-9a4d-937db21a59d5",
+      "iOSmdmEnrollmentManagement": "cabd33ed-7612-42cd-9a4d-937db21a59d5",
+      "iOSmdmDeviceManagement": "cabd44ed-7612-42cd-9a4d-937db21a59d5"
+    }
+  }
+}

@@ -1,0 +1,115 @@
+﻿@model List<VPNViewModel>
+@if (Model != null)
+{
+	@if (Model.Count > 0)
+	{
+		@if (Model.Where(m => m.ConnectionType == "L2TP").ToList().Count > 0)
+		{
+			<div style="overflow-x: auto;">
+				<div ID="pnlL2TP_Gridview">
+					L2TP
+					<div>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Connection Name</th>
+									<th>Server</th>
+									<th>Account</th>
+									<th>User Authentication</th>
+									<th>Send All Traffic</th>
+									<th>Machine Authenication</th>
+									<th>Group Name</th>
+									<th>Shared Secret</th>
+									<th>Use Hybrid Authentication</th>
+									<th>Prompt For Password</th>
+									<th>Proxy Setup</th>
+									<th>Server</th>
+									<th>Port</th>
+									<th>Authentication</th>
+									<th>Proxy Server URL</th>
+									<th>Control</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var vpn in Model.Where(m => m.ConnectionType == "L2TP"))
+								{
+									<tr>
+										<td>@vpn.ConnectionName</td>
+										<td>@vpn.L2TP_Server</td>
+										<td>@vpn.L2TP_Account</td>
+										<td>@vpn.L2TP_UserAuthentication_RSASecurID</td>
+										<td>@vpn.L2TP_SendAllTrafficeThroughVPN</td>
+										<td>@vpn.L2TP_MachineAuthentication</td>
+										<td>@vpn.L2TP_GroupName</td>
+										<td>@vpn.L2TP_SharedSecret</td>
+										<td>@vpn.L2TP_UseHybridAuthentication</td>
+										<td>@vpn.L2TP_PromptForPassword</td>
+										<td>@vpn.L2TP_ProxySetup</td>
+										<td>@vpn.L2TP_ProxySetup_Server</td>
+										<td>@vpn.L2TP_ProxySetup_Port</td>
+										<td>@vpn.L2TP_ProxySetup_Authentication</td>
+										<td>@vpn.L2TP_ProxySetupURL</td>
+										<td><a onclick="fn_EditVPN('@vpn.Profile_VPN_ID')">Edit</a></td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<br />
+		}
+		@if (Model.Where(m => m.ConnectionType.ToUpper() == "IPSEC").ToList().Count > 0)
+		{
+			<div style="overflow-x: auto;">
+				<div ID="pnlIPsec_Gridview">
+					IPsec
+					<div>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Connection Name</th>
+									<th>Server</th>
+									<th>Account</th>
+									<th>Machine Authentication</th>
+									<th>Group Name</th>
+									<th>Shared Secret</th>
+									<th>Use Hybrid Authentication</th>
+									<th>Prompt for Password </th>
+									<th>Proxy Setup</th>
+									<th>Server</th>
+									<th>Port</th>
+									<th>Authentication</th>
+									<th>Proxy Server URL</th>
+									<th>Control</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var vpn in Model.Where(m => m.ConnectionType.ToUpper() == "IPSEC"))
+								{
+									<tr>
+										<td>@vpn.ConnectionName</td>
+										<td>@vpn.IPSEC_SERVER</td>
+										<td>@vpn.IPSEC_Account</td>
+										<td>@vpn.IPSEC_MachineAuthentication</td>
+										<td>@vpn.IPSEC_GroupName</td>
+										<td>@vpn.IPSEC_SharedSecret</td>
+										<td>@vpn.IPSEC_UseHybridAuthentication</td>
+										<td>@vpn.IPSEC_PromptForPassword</td>
+										<td>@vpn.IPSEC_ProxySetup</td>
+										<td>@vpn.IPSEC_Proxy_Server</td>
+										<td>@vpn.IPSEC_Proxy_Port</td>
+										<td>@vpn.IPSEC_Authentication</td>
+										<td>@vpn.IPSEC_ProxyServerURL</td>
+										<td><a onclick="fn_EditVPN('@vpn.Profile_VPN_ID')">Edit</a></td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		}
+
+	}
+}

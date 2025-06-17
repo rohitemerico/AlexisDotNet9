@@ -1,0 +1,35 @@
+<Restriction>
+  <DisallowOutgoingCalls>0</DisallowOutgoingCalls>
+  <DisallowRemoveUser>0</DisallowRemoveUser>
+  <DisallowDataRoaming>0</DisallowDataRoaming>
+  <DisallowOutgoingBeam>0</DisallowOutgoingBeam>
+  <DisallowInstallUnknownSources>0</DisallowInstallUnknownSources>
+  <DisallowConfigVpn>0</DisallowConfigVpn>
+  <EnsureVerifyApps>0</EnsureVerifyApps>
+  <DisallowSafeBoot>0</DisallowSafeBoot>
+  <DisallowUninstallApps>1</DisallowUninstallApps>
+  <DisallowMountPhysicalMedia>0</DisallowMountPhysicalMedia>
+  <DisallowSetWallpaper>0</DisallowSetWallpaper>
+  <DisallowUnmuteMicrophone>0</DisallowUnmuteMicrophone>
+  <DisallowDebuggingFeatures>0</DisallowDebuggingFeatures>
+  <DisallowCreateWindows>0</DisallowCreateWindows>
+  <DisallowSms>0</DisallowSms>
+  <DisallowFun>0</DisallowFun>
+  <DisallowConfigBluetooth>0</DisallowConfigBluetooth>
+  <DisallowUsbFileTransfer>0</DisallowUsbFileTransfer>
+  <DisallowShareLocation>0</DisallowShareLocation>
+  <DisallowModifyAccounts>0</DisallowModifyAccounts>
+  <DisallowConfigCredentials>0</DisallowConfigCredentials>
+  <DisallowAdjustVolume>0</DisallowAdjustVolume>
+  <DisallowFactoryReset>0</DisallowFactoryReset>
+  <DisallowAddUser>0</DisallowAddUser>
+  <DisallowAppsControl>0</DisallowAppsControl>
+  <DisallowConfigCellBroadcasts>0</DisallowConfigCellBroadcasts>
+  <DisallowConfigTethering>0</DisallowConfigTethering>
+  <DisallowConfigMobileNetworks>0</DisallowConfigMobileNetworks>
+  <DisallowInstallApps>0</DisallowInstallApps>
+  <DisallowNetworkReset>0</DisallowNetworkReset>
+  <HideApps>0</HideApps>
+  <DisallowConfigWiFi>0</DisallowConfigWiFi>
+  <DisallowSetUserIcon>0</DisallowSetUserIcon>
+</Restriction>

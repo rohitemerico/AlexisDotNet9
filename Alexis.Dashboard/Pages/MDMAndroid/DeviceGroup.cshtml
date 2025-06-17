@@ -1,0 +1,154 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MDMAndroid.DeviceGroupModel
+@{
+	ViewData["Title"] = "Device Group Management";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+			<!-- Add New -->
+			<button class="btn reportBtn theme_gradient_btn" type="button" onclick="onAddClick()"><i class="fa fa-plus"> </i> Add New</button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div id="PopUpDialogueBox">
+		<div id="myNav" class="modal1">
+			<div class="overlay-content">
+				<a ID="modalClose" onclick="window.location.reload();"><img class="closebtn" src="~/img/3_user maintenance/btn_close.png" /></a>
+				<div class="rounded_corners" style="width: 600px; height: 500px; background-color: white; min-width: 300px; min-height: 300px;"></div>
+				<div class="caption section"><label ID="lblCaption">QR</label></div>
+				<div class="middle section" style="text-align: center; vertical-align: top;">
+					<div style="margin: -30px -10px -30px -10px">
+						<img ID="imgageQRCode" Width="350px" Height="350px" />
+					</div>
+					<div id="popup_details" class="mt-4" style="vertical-align: top;">
+						<div style="background-color: transparent; width: 40%; display: inline-block; vertical-align: top;">
+							<div style="text-align: left;">
+								<div><label ID="Label1" CssClass="labelMedium">Device Group Name</label></div>
+								<div><label ID="Label3" CssClass="labelMedium">Device Group Description</label></div>
+							</div>
+							<div>
+							</div>
+						</div>
+						<div style="background-color: transparent; width: 55%; display: inline-block; vertical-align: top;">
+							<div style="text-align: left; width: 250px">
+								<div>:<label ID="popGrpName" CssClass="labelMedium"></label></div>
+								<div>:<label ID="popGrpDescription" CssClass="labelMedium"></label></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<hr class="hr1" />
+				<div class="bottom section">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Grid -->
+	@(Html.Kendo().Grid(Model.Groups)
+		.Name("DeviceGroupsGrid")
+		.Columns(columns =>
+		{
+			columns.Template(@<text>
+		<div class="text-center">
+			<span class="button" data-toggle="tooltip" title="Edit" onclick="onEditClick('#= GID #')">
+				<img src="~/img/3_User%20Maintenance/icon_edit_grey.png" alt="Edit" />
+			</span>
+		</div>
+	</text>).Title("Options");
+			columns.Template(@<text>
+		<div class="text-center">
+			<span class="button" data-toggle="tooltip" title="QR" onclick="onViewQRClick('#= GID #')">
+				<img src="~/img/4_MDM/qr300x300.png" width="44px" height="44px" />
+			</span>
+		</div>
+	</text>).Title("QR");
+			columns.Bound(p => p.GroupName).Title("Device Group Name");
+			columns.Bound(p => p.GroupDesc).Title("Device Group Description");
+			columns.Bound(p => p.CreatedDate).Title("Last Created").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.Created_By).Title("Created By");
+			columns.Bound(p => p.UpdatedDate).Title("Last Updated").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.Updated_By).Title("Updated By");
+		})
+		.ToolBar(t => t.Search())
+		.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
+		.Sortable()
+		.Search(s => { s.Field(o => o.GroupName, "contains"); s.Field(o => o.GroupDesc, "contains"); })
+		.Events(e => e.DataBound("onGridDataBound"))
+		)
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+
+		function onEditClick(id) {
+			$.ajax({
+					url: "@Url.Page("/DeviceGroup")?handler=Edit",
+					method: "POST",
+					data: { id: id },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MDMAndroid/DeviceGroupAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+
+		function onViewQRClick(id) {
+			 var basePath = '@Url.Content("~/")';
+			$.ajax({
+					url: "@Url.Page("/DeviceGroup")?handler=View",
+					method: "POST",
+					data: { id: id },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data)
+					{
+						if(data.message == 'Success')
+						{
+							$("#popGrpName").text(data.groupName);
+							$("#popGrpDescription").text(data.groupDescription);
+							$('#imgageQRCode').attr('src', basePath + data.imageUrl);
+							$('#myNav').show();
+						}
+					}
+				})
+		}
+
+		function onAddClick() {
+			$.ajax({
+					url: "@Url.Page("/DeviceGroup")?handler=Add",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MDMAndroid/DeviceGroupAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+	</script>
+}

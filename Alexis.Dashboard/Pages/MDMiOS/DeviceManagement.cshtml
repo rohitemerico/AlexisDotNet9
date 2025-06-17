@@ -1,0 +1,361 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MDMiOS.DeviceManagementModel
+@{
+	ViewData["Title"] = "iOS MDM > Device Management";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button onclick="fnCloseModal();" class="btn theme_gradient_btn">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Updates Modal -->
+	<div id="updatesModalPopUp" class="modal fade">
+		<div class="modal-dialog modal-dialog-centered" style="max-width: 70%">
+			<div class="modal-content">
+				<div id="ModalHeaderID" class="modal-header"></div>
+				<div class="modal-body" id="UpdatesContent">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn theme_gradient_btn" data-dismiss="modal">OK</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!--Model Popup Device Details-->
+	<div id="modalPopUp" class="modal fade">
+		<div class="modal-dialog modal-dialog-centered" style="max-width: 70%">
+			<div class="modal-content">
+				<div id="ModalHeaderID" class="modal-header"></div>
+				<div class="modal-body" id="DetailsContent">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn theme_gradient_btn" data-dismiss="modal" onclick="window.location.reload();">OK</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- Grid -->
+	@(Html.Kendo().Grid(Model.Devices)
+		.Name("DevicesGrid")
+		.Columns(columns =>
+		{
+			columns.Bound(p => p.MachineName)
+			.Title("Device Name")
+			.ClientTemplate(
+			"<div class='clickme' style='display: grid;'>" +
+			"<a onclick='fnDetails(\"#= MachineUDID #\",\"#= MachineSerial #\")'>" +
+			"#= MachineName #" +
+			"</a>" +
+			"</div>"
+			).Sortable(true);
+			columns.Bound(p => p.MachineName).Title("Device Name");
+			columns.Bound(p => p.MachineSerial).Title("Device Serial No.");
+			columns.Bound(p => p.Bdesc).Title("Branch");
+			columns.Bound(p => p.OSVersion).Title("OS Version");
+			columns.Bound(p => p.IsSupervised).Title("Supervision Allowed");
+			columns.Template(@<text>
+		# if (IsSupervised && LostModeEnabled) { #
+		<div class='clickme' style='display: grid;'>
+			<a alt="Disable" onclick="fnDisableLostMode('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Disable</a>
+			<a alt="Play Sound" onclick="fnPlaySound('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Play Sound</a>
+			<a alt="Check Location" target="_blank" href="https://maps.google.com/?q=#= LostLatitude #,#= LostLongitude #">Check Location</a>
+		</div>
+		# } #
+		# if (IsSupervised &&!LostModeEnabled) { #
+		<div class='clickme' style='display: grid;'>
+			<a alt="Enable" onclick="fnEnableLostMode('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Enable</a>
+		</div>
+		# } #
+		# if (!IsSupervised && !IsSupervised) { #
+		<div class='clickme' style='display: grid;'><label> Not allowed</label></div>
+		# } #
+	</text>).Title("Lost Mode");
+			columns.Template(@<text>
+		<div class='clickme' style='display: grid;'>
+			<a alt="Remove Passcode" onclick="fnRemovePassCode('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Remove Passcode</a>
+			<a alt="Restart" onclick="fnRestart('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Restart</a>
+			<a alt="Shutdown" onclick="fnShutdown('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Shutdown</a>
+			<a alt="Refresh OS Update" onclick="fnRefreshOSUpdate('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Refresh OS Update</a>
+			<a alt="Refresh Firmware Info" onclick="fnRefreshFirmwareInfo('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Refresh Firmware Info</a>
+			<a alt="Factory Reset" onclick="fnFactoryReset('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Factory Reset</a>
+		</div>
+	</text>).Title("Controls");
+			columns.Template(@<text>
+		<div class='clickme'>
+			<a alt="Check Updates" onclick="fnCheckUpdates('#= MachineName #', '#= MachineUDID #','#= MachineSerial #')">Check Updates</a>
+		</div>
+	</text>).Title("Updates");
+		})
+		.ToolBar(t => t.Search())
+		.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
+		.Sortable()
+		.Search(s => { s.Field(o => o.MachineName, "contains"); })
+		.Events(e => e.DataBound("onGridDataBound"))
+		)
+</div>
+
+@section Styles {
+	<link rel="stylesheet" href="~/css/iOS_MDM/element.css" />
+	}
+
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+		function fnCloseModal(){
+			$('#myModal').modal('hide');
+		}
+
+		function fnRemovePassCode(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Confirm Remove Passcode to " + MachineName + " devices?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=RemovePassCode",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnRestart(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Confirm Restart device " + MachineName + "?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=Restart",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnShutdown(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Confirm Shutdown device " + MachineName + "?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=Shutdown",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnRefreshOSUpdate(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Schedule an OS Scan on device " + MachineName + "?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=RefreshOSUpdate",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnRefreshFirmwareInfo(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Refresh firmware info on device " + MachineName + "?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=RefreshFirmwareInfo",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnFactoryReset(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Confirm Factory Reset to " + MachineName + " devices?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=FactoryReset",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnEnableLostMode(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Enable Lost Mode on device " + MachineName + " ?");
+			if(confirmed)
+			{
+				$.ajax({
+							url: "@Url.Page("/DeviceManagement")?handler=EnableLostMode",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnDisableLostMode(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Confirm disabling device " + MachineName + " from lost mode?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=DisableLostMode",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnPlaySound(MachineName, MachineUDID, MachineSerial)
+		{
+			var confirmed = confirm("Confirm playing sound on lost device?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=PlayLostModeSound",
+						method: "POST",
+						data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+
+		function fnDetails(MachineUDID, MachineSerial)
+		{
+			$.ajax({
+					url: "@Url.Page("/DeviceManagement")?handler=Details",
+					method: "POST",
+					data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (result)
+					{
+						$("#DetailsContent").html(result);
+						$("#modalPopUp").modal('show');
+					}
+				});
+		}
+
+		function fnCheckUpdates(MachineName, MachineUDID, MachineSerial)
+		{
+			$.ajax({
+					url: "@Url.Page("/DeviceManagement")?handler=CheckUpdates",
+					method: "POST",
+					data: { MachineUDID: MachineUDID,MachineSerial: MachineSerial },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (result)
+					{
+						$("#UpdatesContent").html(result);
+						$("#updatesModalPopUp").modal('show');
+					}
+				});
+		}
+
+		function fnScheduleOSUpdate(HumanReadableName,UDID, ProductKey, ProductVersion)
+		{
+			var confirmed = confirm("Confirm update the OS version of this device to "+ HumanReadableName +" ?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/DeviceManagement")?handler=ScheduleOSUpdate",
+						method: "POST",
+						data: { UDID: UDID,ProductKey: ProductKey,ProductVersion:ProductVersion },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+				});
+			}
+		}
+
+	</script>
+	}

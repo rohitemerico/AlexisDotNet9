@@ -1,0 +1,27 @@
+﻿
+div[name^="hiddenGroup_"] {
+    display: none;
+}
+
+div.active {
+    display: block;
+}
+.nav .nav-item button.nav-link {
+    color: #AAAAAA;
+    border-color: #dee2e6 #dee2e6 #fff;
+    margin-right: 10px;
+    padding: 10px 20px;
+    font-family: 'ITC Avant Garde Gothic Std Demi';
+    font-size: 14px;
+}
+
+    .nav .nav-item button.nav-link.active {
+        color: #E83B68;
+        font-weight: bold;
+    }
+
+.tab-content .tab-pane.active {
+    border: 1px solid #dee2e6;
+    box-shadow: 0px 0px 6px #0000000D;
+    background-color: white;
+}

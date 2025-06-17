@@ -1,0 +1,204 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.KioskMaintenanceAddModel
+@{
+	ViewData["Title"] = Model.PageTitleText;
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@using Kendo.Mvc.UI
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/MachineMaintenance/KioskMaintenance" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="main-content text-gray-600 small" style="padding: 50px; text-align: left; color: #5D5D5D;">
+		<form method="post" action="" enctype="multipart/form-data">
+			<div class="row justify-content-md-center">
+				<div class="panel" style="width: 850px; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Settings </h3>
+						<div class="right">
+						</div>
+					</div>
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Machine Name</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MachineName" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MachineName" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Machine Serial</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MachineSerial" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MachineSerial" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Address</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<textarea asp-for="Address" rows="2" cols="20" Style="border-color:#E3E3E3;height:50px;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;"></textarea>
+								<br />
+								<span asp-validation-for="Address" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Latitude</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Latitude" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="Latitude" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Longitude</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Longitude" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="Longitude" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Machine ID</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="KioskID" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="KioskID" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Group Template </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<select asp-for="GroupTemplate" asp-items="Model.Groups" Style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;">
+								</select>
+								<br />
+								<span asp-validation-for="GroupTemplate" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">IP Address</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="IP" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="IP" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Port Number</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Port" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="Port" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Station ID</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="StationID" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="StationID" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Remarks</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<textarea asp-for="Remarks" rows="2" cols="20" Style="border-color:#E3E3E3;height:50px;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;"></textarea>
+							</td>
+						</tr>
+						@if (Model.ActiveVisible)
+						{
+							<tr id="active">
+								<td style="border: 0px; padding-left: 50px;">Status</td>
+								<td style="border: 0px;">:&nbsp;</td>
+								<td style="border: 0px;">
+									<label class="switch">
+										<input type="checkbox" asp-for="Status" />
+										<span class="slider round"></span>
+									</label>
+									Active
+								</td>
+							</tr>
+						}
+						<tr>
+							<td colspan="3" style="text-align: center; border: 0px;">
+								<input type="hidden" asp-for="KID" />
+								<input type="button" value="Back" id="btn_cancel" class="mx-2 btn theme_outline_only_btn" onclick="onCancelClick()">
+								<input type="submit" value="@Model.ConfirmText" class="mx-2 btn theme_gradient_btn" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+
+
+</div>
+
+
+
+
+@section Scripts {
+	<script type="text/javascript">
+		function onCancelClick() {
+			$.ajax({
+					url: "@Url.Page("/KioskMaintenanceAdd")?handler=Cancel",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/KioskMaintenance")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+	</script>
+}

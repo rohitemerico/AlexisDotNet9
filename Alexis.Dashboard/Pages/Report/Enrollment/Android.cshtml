@@ -1,0 +1,59 @@
+﻿@page
+@model Alexis.Dashboard.Pages.Report.Enrollment.AndroidModel
+@{
+	ViewData["Title"] = "Android MDM > Android MDM Enrollment";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	@(Html.Kendo().Grid(Model.Devices)
+		.Name("DevicesGrid")
+		.ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); }).Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+		.Columns(columns =>
+		{
+			columns.Bound(c => c.deviceMACAdd).Title("Device Client Id");
+			columns.Bound(c => c.DEVICENAME).Title("Device Name");
+			columns.Bound(c => c.GROUPNAME).Title("Device Group");			
+			columns.Bound(c => c.DEVICE_LOCATION).Title("Lat,Lng");
+			columns.Bound(c => c.BATTERYLEVEL).Title("Battery Level (%)");
+			columns.Bound(p => p.CONNECTIONSTATUS_String).Title("Connection Status");
+			columns.Bound(p => p.TOUCHSCREENSTATUS_String).Title("Touch Screen Status");
+			columns.Bound(p => p.CARDREADERSPERDAY).Title("Card readers per day");
+			columns.Bound(c => c.enrollDatetime).Title("Enrolled Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(c => c.lastSyncDatetime).Title("Last Sync").Format("{0:MM/dd/yyyy hh:mm:ss tt}"); 
+			columns.Bound(c => c.STATUS).Title("Status");
+		})
+		.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
+		.Sortable()
+		.Search(s =>
+		{
+			s.Field(o => o.deviceMACAdd, "contains");
+			s.Field(o => o.DEVICENAME, "contains");
+			s.Field(o => o.GROUPNAME, "contains");
+			s.Field(o => o.STATUS, "contains");
+			s.Field(o => o.DEVICE_LOCATION, "contains");
+			s.Field(o => o.BATTERYLEVEL, "contains");
+			s.Field(o => o.enrollDatetime, "contains");
+			s.Field(o => o.lastSyncDatetime, "contains");
+		})
+		.Events(e => e.DataBound("onGridDataBound"))
+		)
+</div> 

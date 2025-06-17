@@ -1,0 +1,159 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.AlertMaintenanceModel
+@{
+	ViewData["Title"] = "Machine Alert";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+			<!-- Add New -->
+			<button class="btn reportBtn theme_gradient_btn" type="button" onclick="onAddClick()"><i class="fa fa-plus"> </i> Add New</button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Grid -->
+	@(Html.Kendo().Grid(Model.Alerts)
+		.Name("AlertGrid")
+		.Columns(columns =>
+		{
+			columns.Template(@<text>
+		<div class="text-center">
+			# if (Visible) { #
+			<span class="button" data-toggle="tooltip" title="Edit" onclick="onEditClick('#= aID #')">
+				<img src="~/img/3_User%20Maintenance/icon_edit_grey.png" alt="Edit" />
+			</span>
+			# } #
+		</div>
+	</text>).Title("Options").Width(100);
+			columns.Bound(p => p.aDesc).Title("Alert Name");
+			columns.Bound(p => p.aMinCardBal).Title("Low Card Balance");
+			columns.Bound(p => p.aMinChequeBal).Title("Low Cheque Balance");
+			columns.Bound(p => p.aMinPaperBal).Title("Low Paper Balance");
+			columns.Bound(p => p.aMinRejCardBal).Title("Low Reject Card Balance");
+			columns.Bound(p => p.aCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.CreatedName).Title("Created By");
+			columns.Bound(p => p.aUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.updatedby).Title("Updated By");
+			columns.Bound(p => p.AlertStatus)
+			.Title("Status")
+			.ClientTemplate(
+			"<div style='font-size: 0.85em;'>" +
+			"<span class='#= AlertStatus == \"Active\" ? \"status_active\" : (AlertStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+			"#= AlertStatus #" +
+			"</span>" +
+			"</div>"
+			).Sortable(true);
+		})
+		.ToolBar(t => t.Search())
+		.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
+		.Sortable()
+		.ClientDetailTemplateId("template")
+		.Events(e => e.DetailExpand("onDetailExpand"))
+		.Search(s => { s.Field(o => o.aDesc, "contains"); })
+		.Events(e => e.DataBound("onGridDataBound"))
+		)
+	<script id="template" type="text/kendo-tmpl">
+		@(Html.Kendo().TabStrip().Name("tabStrip_#=aID#")
+												.SelectedIndex(0)
+												.Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+												.Items(items =>
+												{
+													items.Add().Text("Alert Maintenance Information").Content(
+																"<div class='details1'>" +
+														"<table style='width:100%;' class='tbl-details'>" +
+															"<tr><td><b>People In Charge</b></td><td>Email</td><td>SMS</td><td>Time Interval (Hours)</td></tr>" +
+																			"<tr><td>Card Alert</td><td>#= aCardEmail #</td><td>#= aCardSms #</td><td>#= aCardTInterval #</td></tr>" +
+																			"<tr><td>Cheque Alert</td><td>#= aChequeEmail #</td><td>#= aChequeSms #</td><td>#= aChequeTInterval #</td></tr>" +
+																			"<tr><td>Maintenance Alert</td><td>#= aMaintenanceEmail #</td><td>#= aMaintenanceSms #</td><td>#= aMaintenanceTInterval #</td></tr>" +
+																			"<tr><td>Security Alerts</td><td>#= aSecurityEmail #</td><td>#= aSecuritySms #</td><td>#= aSecurityTInterval #</td></tr>" +
+																			"<tr><td>Trouble Shooting Alert</td><td>#= aTroubleshootEmail #</td><td>#= aTroubleshootSms #</td><td>#= aTroubleshootTInterval #</td></tr>" +
+														"</table>" +
+													"</div>" +
+
+													"<div class='details2'></br>" +
+												"<table style='width:100%;' class='tbl-details'>" +
+																	"<tr><td colspan='4'><b>Low Cartridge Balance</b></td></tr>" +
+																	"<tr><td style='width:25%;'>Low Ribbon Indent Front Balance</td><td style='width:25%;'>#= AMINRIBFRONTBAL #</td><td style='width:25%;'>Low Ribbon Indent Rear Balance</td><td style='width:25%;'>#= AMINRIBREARBAL #</td></tr>" +
+																	"<tr><td style='width:25%;'>Low Ribbon Tipping Balance</td><td style='width:25%;'>#= AMINRIBTIPBAL #</td><td style='width:25%;'>Low Cheque Printer Catridge</td><td style='width:25%;'>#= AMINCHEQUEPRINTCATRIDGE #</td></tr>" +
+																	"<tr><td style='width:25%;'>Low Printer Catridge Balance</td><td style='width:25%;'>#= AMINCATRIDGEBAL #</td></tr>" +
+												"</table>" +
+											"</div>"
+													);
+												}).ToClientTemplate())
+	</script>
+	@* <script>
+		function dataBound() {
+			this.expandRow(this.tbody.find("tr.k-master-row").first());
+		}
+	</script> *@
+</div>
+@section Styles
+{
+	<style type="text/css">
+		.tbl-details, .tbl-details th, .tbl-details td {
+			border: 1px solid black;
+		}
+	</style>
+}
+@section Scripts {
+	<script type="text/javascript">
+		
+		function onEditClick(id) {
+			$.ajax({
+					url: "@Url.Page("/AlertMaintenance")?handler=Edit",
+					method: "POST",
+					data: { id: id },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/AlertMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+
+		function onAddClick() {
+			$.ajax({
+					url: "@Url.Page("/AlertMaintenance")?handler=Add",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/AlertMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+			function onDetailExpand(e) {
+				var grid = $("#AlertGrid").data("kendoGrid");
+
+			grid.tbody.find("tr.k-master-row").each(function () {
+				var row = $(this);
+				if (row[0] !== e.masterRow[0]) {
+					grid.collapseRow(row);
+				}
+			});
+		}
+	</script>
+}

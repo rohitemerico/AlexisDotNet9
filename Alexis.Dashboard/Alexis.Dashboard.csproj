@@ -1,0 +1,84 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>cc9c404d-ea7d-4243-9e5a-022eac58fbf8</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Connected Services\**" />
+		<Content Remove="Connected Services\**" />
+		<EmbeddedResource Remove="Connected Services\**" />
+		<None Remove="Connected Services\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="ApkReader.cs" />
+		<Compile Remove="Helper\ConfigHelper.cs" />
+		<Compile Remove="Helper\DataHelper.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Dashboard\Dashboard.Common.Business.Component\Dashboard.Common.Business.Component.csproj" />
+		<ProjectReference Include="..\Dashboard\Dashboard.Common.Data.Component\Dashboard.Common.Data.Component.csproj" />
+		<ProjectReference Include="..\Dashboard\Dashboard.Entities\Dashboard.Entities.csproj" />
+		<ProjectReference Include="..\Dashboard\Dashboard.Infra\Dashboard.Infra.csproj" />
+		<ProjectReference Include="..\MDM_Android\MDM.Android.Business.BusinessLogics.MDM\MDM.Android.Business.BusinessLogics.MDM.csproj" />
+		<ProjectReference Include="..\MDM_iOS\MDM.iOS.Business.BusinessLogics.MDM\MDM.iOS.Business.BusinessLogics.MDM.csproj" />
+		<ProjectReference Include="..\MDM_iOS\MDM.iOS.Business.BusinessLogics.MDM_APNS\MDM.iOS.Business.BusinessLogics.MDM_APNS.csproj" />
+		<ProjectReference Include="..\MDM_iOS\MDM.iOS.Business.BusinessLogic\MDM.iOS.Business.BusinessLogic.csproj" />
+		<ProjectReference Include="..\MDM_iOS\MDM.iOS.Entities\MDM.iOS.Entities.csproj" />
+		<ProjectReference Include="..\MDM_Windows\MDM.Win.Business.BusinessLogics.MDM\MDM.Win.Business.BusinessLogics.MDM.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\vStatic\AdFolder\" />
+		<Folder Include="wwwroot\vStatic\Android\AndroidGroups\" />
+		<Folder Include="wwwroot\vStatic\Android\AndroidProfiles\" />
+		<Folder Include="wwwroot\vStatic\Temp\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
+		<PackageReference Include="jQuery" Version="3.7.1" />
+		<PackageReference Include="jQuery.Validation" Version="1.21.0" />
+		<PackageReference Include="KendoUIProfessional" Version="2023.3.1114" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
+		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.4" />
+		<PackageReference Include="System.ServiceModel.Duplex" Version="6.0.*" />
+		<PackageReference Include="System.ServiceModel.Federation" Version="8.1.2" />
+		<PackageReference Include="System.ServiceModel.Http" Version="8.1.2" />
+		<PackageReference Include="System.ServiceModel.NetTcp" Version="8.1.2" />
+		<PackageReference Include="System.ServiceModel.Security" Version="6.0.*" />
+		<PackageReference Include="Telerik.Licensing" Version="1.6.7" />
+		<PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2023.3.1114" />
+		<PackageReference Include="ZXing.Net" Version="0.16.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EditorConfigFiles Remove="D:\Workspace\Alexis\trunk\AlexisDotNet9\trunk\Alexis\Alexis.Dashboard\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="telerik-license_rht.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="Connected Services\MDMWebService\Reference.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="D:\Workspace\Alexis\trunk\AlexisDotNet9\trunk\Alexis\Alexis.Dashboard\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Resources\aapt.exe">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+</Project>

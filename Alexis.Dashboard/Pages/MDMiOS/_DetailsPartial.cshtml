@@ -1,0 +1,196 @@
+﻿@model DeviceInfo
+<div class="font_demi" style="color:#5D5D5D; font-size: 18px;">
+	<div>
+		<fieldset>
+			<legend>Device Details</legend>
+			<div>
+				<table class="table table-striped table-bordered table-hover" cellspacing="0" rules="all" border="1" id="gvMachineDetail" style="border-collapse:collapse;width: 100%">
+
+					<tbody>
+						<tr>
+							<td class="header">Machine Name</td>
+							<td>@Model.MachineName</td>
+						</tr>
+						<tr>
+							<td class="header">IMEI</td>
+							<td>@Model.MachineImei</td>
+						</tr>
+						<tr>
+							<td class="header">Serial Number</td>
+							<td>@Model.MachineSerial</td>
+						</tr>
+						<tr>
+							<td class="header">Build Version</td>
+							<td>@Model.BuildVersion</td>
+						</tr>
+						<tr>
+							<td class="header">OS Version</td>
+							<td>@Model.OSVersion</td>
+						</tr>
+						<tr>
+							<td class="header">Machine Status</td>
+							<td>@Model.MachineStatus</td>
+						</tr>
+						<tr>
+							<td class="header">Available Device Capacity</td>
+							<td>@Model.AvailableDevice_Capacity</td>
+						</tr>
+						<tr>
+							<td class="header">Device Capacity</td>
+							<td>@Model.DeviceCapacity</td>
+						</tr>
+						<tr>
+							<td class="header">Passcode Present</td>
+							<td>@Model.PasscodePresent</td>
+						</tr>
+						<tr>
+							<td class="header">Passcode Compliant</td>
+							<td>@Model.PasscodeCompliant</td>
+						</tr>
+						<tr>
+							<td class="header">Passcode Compliant With Profiles</td>
+							<td>@Model.PasscodeCompliantWithProfiles</td>
+						</tr>
+						<tr>
+							<td class="header">Wi-Fi MAC Address</td>
+							<td>@Model.WifiMAC</td>
+						</tr>
+						<tr>
+							<td class="header">Bluetooth MAC Address</td>
+							<td>@Model.BluetoothMAC</td>
+						</tr>
+						<tr>
+							<td class="header">Roaming Status</td>
+							<td>@Model.IsRoaming</td>
+						</tr>
+						<tr>
+							<td class="header">Device is Supervised</td>
+							<td>@Model.IsSupervised</td>
+						</tr>
+						<tr>
+							<td class="header">Firmware Version</td>
+							<td>@Model.FirmwareVersion</td>
+						</tr>
+						<tr>
+							<td class="header">Firmware Battery Status</td>
+							<td>@Model.FirmwareBatteryStatus</td>
+						</tr>
+						<tr>
+							<td class="header">Firmware Battery Level</td>
+							<td>@Model.FirmwareBatteryLevel</td>
+						</tr>
+						<tr>
+							<td class="header">Firmware Serial No</td>
+							<td>@Model.FirmwareSerial</td>
+						</tr>
+						<tr>
+							<td class="header">&nbsp;</td>
+							<td>@Model.Latitude</td>
+						</tr>
+						<tr>
+							<td class="header">&nbsp;</td>
+							<td>@Model.Longitude</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</fieldset>
+	</div>
+	<div>
+		<fieldset>
+			<legend>Certificate Listings</legend>
+			<div>
+				<table class="table table-striped table-bordered table-hover" cellspacing="0" rules="all" border="1" id="gvCertificates" style="border-collapse:collapse;width: 100%">
+					<tbody>
+						@if (Model.Certificates != null && Model.Certificates.Any())
+						{
+							<tr>
+								<th scope="col">Certificate Name</th>
+								<th scope="col">Identity Certificate?</th>
+							</tr>
+							foreach (var item in Model.Certificates)
+							{
+								<tr>
+									<td>@item.CertName</td>
+									<td>@item.IsIdentityCert</td>
+								</tr>
+							}
+						}
+						else
+						{
+							<tr>
+								<td>No Certificates found.</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</fieldset>
+	</div>
+	<div>
+		<fieldset>
+			<legend>Installed Applications</legend>
+			<div>
+				<table class="table table-striped table-bordered table-hover" cellspacing="0" rules="all" border="1" id="gvCertificates" style="border-collapse:collapse;width: 100%">
+					<tbody>
+						@if (Model.Applications != null && Model.Applications.Any())
+						{
+							<tr>
+								<th scope="col">Application Name</th>
+								<th scope="col">Version</th>
+								<th scope="col">Bundle Identifier</th>
+							</tr>
+							foreach (var item in Model.Applications)
+							{
+								<tr>
+									<td>@item.AppName</td>
+									<td>@item.Version</td>
+									<td>@item.Identifier</td>
+								</tr>
+							}
+						}
+						else
+						{
+							<tr>
+								<td>No Applications found.</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</fieldset>
+	</div>
+	<div>
+		<fieldset>
+			<legend>Location History</legend>
+			<div>
+				<table class="table table-striped table-bordered table-hover" cellspacing="0" rules="all" border="1" id="gvLocations" style="border-collapse:collapse;width: 100%">
+					<tbody>
+						@if (Model.Locations != null && Model.Locations.Any())
+						{
+							<tr>
+								<th scope="col">Machine Name</th>
+								<th scope="col">Location</th>
+								<th scope="col">Created Date</th>
+							</tr>
+							foreach (var item in Model.Locations)
+							{
+								<tr>
+									<td>@item.MachineName</td>
+									<td>@item.Location</td>
+									<td>@item.CreatedDate</td>
+								</tr>
+							}
+						}
+						else
+						{
+							<tr>
+								<td>No Location History.</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</fieldset>
+	</div>
+</div>

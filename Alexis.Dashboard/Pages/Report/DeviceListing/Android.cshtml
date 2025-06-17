@@ -1,0 +1,208 @@
+﻿@page
+@model Alexis.Dashboard.Pages.Report.DeviceListing.AndroidModel
+
+@using Alexis.Dashboard.Helper
+@{
+	ViewData["Title"] = "Android MDM > Android MDM Listing";
+	var tabEnumNames = Enum.GetNames(typeof(DeviceListingTabGroup));
+	var currentTabName = Enum.GetName(typeof(DeviceListingTabGroup), Model.CurrentTab);
+	string activateTabClass = Model.ActivateTab ?? "active";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+
+@section Styles {
+	<link href="~/css/reporting/navtabs.css" rel="stylesheet" />
+	<!-- Bootstrap 5-->
+	<link href="~/css/bootstrap-5.0.2-dist/bootstrap.min.css" rel="stylesheet" />
+	<script src="~/js/bootstrap-5.0.2-dist/bootstrap.bundle.min.js"></script>
+	<style>
+		a {
+			color: inherit;
+			text-decoration: inherit;
+		}
+
+			a:hover {
+				color: inherit;
+			}
+	</style>
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+		</div>
+	</div>
+</nav>
+
+
+<div class="contentRoot navbar navbar-default">
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		@for (int i = 0; i < tabEnumNames.Length; i++)
+		{
+			var tabName = tabEnumNames[i];
+			var isActive = currentTabName == tabName;
+			var tabClass = "nav-link" + (isActive ? $" {activateTabClass}" : "");
+
+			<li class="nav-item" role="presentation">
+				<button class="@tabClass" id="tab_@tabName" data-bs-toggle="tab" data-bs-target="#@tabName" type="button" role="tab" aria-controls="@tabName" aria-selected="true" onclick="onGridClick('@tabName')">@tabName.Replace("_", " ")</button>
+			</li>
+		}
+	</ul>
+
+	<div class="tab-content" id="myTabContent">
+		<!-- Tab 1 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(DeviceListingTabGroup), Model.CurrentTab) == Enum.GetName(typeof(DeviceListingTabGroup), 1) ? activateTabClass : "")" id="Devices" role="tabpanel" aria-labelledby="tab_Devices">
+			@(Html.Kendo().Grid(Model.Devices)
+						.Name("DevicesGrid")
+						.ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); }).Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+						.Columns(columns =>
+						{
+							columns.Bound(c => c.deviceMACAdd).Title("Device Client Id");
+							columns.Bound(c => c.DEVICENAME).Title("Device Name");
+							columns.Bound(c => c.GROUPNAME).Title("Device Group");
+							columns.Bound(c => c.STATUS).Title("Status");
+							columns.Bound(c => c.DEVICE_LOCATION).Title("Lat,Lng");
+							columns.Bound(c => c.BATTERYLEVEL).Title("Battery Level (%)");
+							columns.Bound(p => p.CONNECTIONSTATUS_String).Title("Connection Status");
+							columns.Bound(p => p.TOUCHSCREENSTATUS_String).Title("Touch Screen Status");
+							columns.Bound(p => p.CARDREADERSPERDAY).Title("Card readers per day");
+							columns.Bound(c => c.enrollDatetime).Title("Enrolled Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+							columns.Bound(c => c.lastSyncDatetime).Title("Last Sync").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+						})
+						.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+						.Scrollable(s => s.Height("calc(80vh - 200px)"))
+						.HtmlAttributes(new { style = "margin: 0 15px;" })
+						.Sortable()
+						.Search(s =>
+						{
+							s.Field(o => o.deviceMACAdd, "contains");
+							s.Field(o => o.DEVICENAME, "contains");
+							s.Field(o => o.GROUPNAME, "contains");
+							s.Field(o => o.STATUS, "contains");
+							s.Field(o => o.DEVICE_LOCATION, "contains");
+							s.Field(o => o.BATTERYLEVEL, "contains");
+							s.Field(o => o.enrollDatetime, "contains");
+							s.Field(o => o.lastSyncDatetime, "contains");
+						})
+						.Events(e => e.DataBound("onGridDataBound"))
+						)
+		</div>
+
+		<!-- Tab 2 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(DeviceListingTabGroup), Model.CurrentTab) == Enum.GetName(typeof(DeviceListingTabGroup), 2) ? activateTabClass : "")" id="Device_Groups" role="tabpanel" aria-labelledby="tab_Device_Groups">
+			@(Html.Kendo().Grid(Model.DeviceGroups)
+						.Name("DeviceGroupsGrid")
+						.ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); }).Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+						.Columns(columns =>
+						{
+							columns.Bound(c => c.GROUPNAME).Title("Device Group Name");
+							columns.Bound(c => c.GROUPDESC).Title("Description");
+							columns.Bound(c => c.CREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+							columns.Bound(c => c.CREATED_BY).Title("Created By");
+							columns.Bound(c => c.UPDATEDDATE).Title("Last Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+							columns.Bound(c => c.UPDATED_BY).Title("Last Updated By").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+						})
+						.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+						.Scrollable(s => s.Height("calc(80vh - 200px)"))
+						.HtmlAttributes(new { style = "margin: 0 15px;" })
+						.Sortable()
+						.Search(s =>
+						{
+							s.Field(o => o.GROUPNAME, "contains");
+							s.Field(o => o.GROUPDESC, "contains");
+							s.Field(o => o.CREATEDDATE, "contains");
+							s.Field(o => o.CREATED_BY, "contains");
+							s.Field(o => o.UPDATEDDATE, "contains");
+							s.Field(o => o.UPDATED_BY, "contains");
+						})
+						.Events(e => e.DataBound("onGridDataBound"))
+						)
+		</div>
+
+		<!-- Tab 3 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(DeviceListingTabGroup), Model.CurrentTab) == Enum.GetName(typeof(DeviceListingTabGroup), 3) ? activateTabClass : "")" id="Applications" role="tabpanel" aria-labelledby="tab_Applications">
+			@(Html.Kendo().Grid(Model.ApplicationInfo)
+						.Name("ApplicationInfoGrid")
+						.ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); }).Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+						.Columns(columns =>
+						{
+							columns.Bound(c => c.APPLICATION_NAME).Title("App Name");
+							columns.Bound(c => c.VER).Title("Version");
+							columns.Bound(c => c.FPATH).Title("Folder Path");
+							columns.Bound(c => c.CREATED_ON).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+							columns.Bound(c => c.CREATED_BY).Title("Created By");
+							columns.Bound(c => c.UPDATED_ON).Title("Last Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+							columns.Bound(c => c.UPDATED_BY).Title("Last Updated By").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+						})
+						.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+						.Scrollable(s => s.Height("calc(80vh - 200px)"))
+						.HtmlAttributes(new { style = "margin: 0 15px;" })
+						.Sortable()
+						.Search(s =>
+						{
+							s.Field(o => o.APPLICATION_NAME, "contains");
+							s.Field(o => o.VER, "contains");
+							s.Field(o => o.FPATH, "contains");
+						})
+						.Events(e => e.DataBound("onGridDataBound"))
+						)
+		</div>
+
+		<!-- Tab 4 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(DeviceListingTabGroup), Model.CurrentTab) == Enum.GetName(typeof(DeviceListingTabGroup), 4) ? activateTabClass : "")" id="Profiles" role="tabpanel" aria-labelledby="tab_Profiles">
+			@(Html.Kendo().Grid(Model.ProfileInfo)
+						.Name("ProfileInfoGrid")
+						.ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); }).Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+						.Columns(columns =>
+						{
+							columns.Bound(c => c.PROFILE_NAME).Title("Profile Name");
+							columns.Bound(c => c.STATUS).Title("Status").ClientTemplate("#= STATUS == \"1\" ? \"Active\"  : \"Inactive\" #");
+							columns.Bound(c => c.FPATH).Title("Folder Path");
+							columns.Bound(c => c.CREATED_ON).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+							columns.Bound(c => c.CREATED_BY).Title("Created By");
+							columns.Bound(c => c.LAST_UPDATED_ON).Title("Last Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+							columns.Bound(c => c.UPDATED_BY).Title("Last Updated By").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+						})
+						.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+						.Scrollable(s => s.Height("calc(80vh - 200px)"))
+						.HtmlAttributes(new { style = "margin: 0 15px;" })
+						.Sortable()
+						.Search(s =>
+						{
+							s.Field(o => o.PROFILE_NAME, "contains");
+							s.Field(o => o.STATUS, "contains");
+							s.Field(o => o.FPATH, "contains");
+						})
+						.Events(e => e.DataBound("onGridDataBound"))
+						)
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		function onGridClick(name) {
+			$.ajax({
+					url: "@Url.Page("/Android")?handler=ChangeGrid",
+					method: "POST",
+					data: { name: name },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+							window.location.reload();
+					}
+				})
+		}
+	</script>
+}

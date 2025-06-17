@@ -1,0 +1,130 @@
+﻿@model WiFiViewModel
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h4 class="modal-title">
+				WiFi Details
+				<input type="hidden" ID="Profile_WIFI_ID" value="@Model.Profile_WIFI_ID" />
+			</h4>
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		</div>
+		<div class="modal-body">
+			<div ID="pnlWifi">
+				<div class="form-group">
+					<label class="control-label">Service Set Identifier (SSID)</label><br />Identification of the wireless network to connect to<br />
+					<input type="text" asp-for="ServiceSetIdentifier" required="required" class="form-control reqwifi" placeholder="[required]" />
+				</div>
+				<input type="checkbox" asp-for="HiddenNetwork" /><label for="HiddenNetwork">Hidden Network</label><br />Enable if target network is not open or broadcasting<br />
+				<input type="checkbox" asp-for="AutoJoin" /><label for="AutoJoin">Auto Join</label><br />Automatically join this wireless network<br />
+				<input type="checkbox" asp-for="DisableCaptiveNetworkDetection" /><label for="DisableCaptiveNetworkDetection">Disable Captive Network Detection</label><br />Do not show the captive network assistant<br />
+				<label class="control-label">Proxy Setup</label><br />Configures proxies to be used with this network<br />
+				<select asp-for="ProxySetup" class="form-control" onchange="onChange_ddlProxySetup()">
+					<option value="None">None</option>
+					<option value="Manual">Manual</option>
+					<option value="Automatic">Automatic</option>
+				</select>
+				<div ID="pnlManualPS" style="display:none">
+					<div class="form-group">
+						<label class="control-label">Server and Port</label><br />Hostname or IP address, and port number for the proxy server<br />
+						<input type="text" asp-for="ProxyServer" placeholder="[required]" class="form-control reqwifi" style="display: inline-block; width:217px;" required="required" />
+						<label>:</label>
+						<input type="text" asp-for="ProxyServerPort" style="display: inline-block; width:50px;" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">Username</label><br />Username used to connect to the proxy<br />
+						<input type="text" asp-for="Username" class="form-control" placeholder="[optional]" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">Password</label><br />Password used to authenticate with the proxy<br />
+						<input type="text" asp-for="ProxyPassword" TextMode="Password" class="form-control" placeholder="[optional]" />
+					</div>
+				</div>
+				<div ID="pnlAutomaticWiFi" style="display:none">
+					<div class="form-group">
+						<label class="control-label">Proxy Server URL</label>URL used to retrieve proxy settings<br />
+						<input type="text" asp-for="ProxyURL" class="form-control" placeholder="[optional]" />
+					</div>
+					<div class="form-group">
+						<input type="checkbox" asp-for="PacUnreachable" /><label for="PacUnreachable">Allow direct connection if PAC is unreachable</label>
+					</div>
+				</div>
+
+				<div ID="pnlSecurityType">
+					<div class="form-group">
+						<label class="control-label">Security Type</label>
+						<br />
+						Wireless network encryption to use when connecting
+						<br />
+						<select asp-for="SecurityType" class="form-control" onchange="onChange_ddlSecurityType()">
+							<option value="None">None</option>
+							<option value="WEP">WEP</option>
+							<option value="WW2P">WPA / WPA2 Personal</option>
+							<option value="WPA2E">WPA2 Enterprise (iOS 8 or later except Apple TV)</option>
+							<option value="Any">Any (Enterprise)</option>
+						</select>
+					</div>
+					<div ID="pnlPasswordWiFi" style="display:none">
+						<div class="form-group">
+							<label class="control-label">Password</label><br />Password for the wireless network
+							<input type="text" asp-for="SecurityPassword" class="form-control reqwifi" required="required" TextMode="Password" />
+						</div>
+					</div>
+				</div>
+				<div ID="pnlNetwork">
+					<div class="form-group">
+						<label class="control-label">Network Type</label><br />Configures network to appear as legacy or standard<br />
+						<select asp-for="NetworkType" class="form-control" onchange="">
+							<option value="Standard">Standard</option>
+							<option value="LegacyHotspot">Legacy Hotspot</option>
+						</select>
+					</div>
+				</div>
+				<div ID="upFastLaneWifi">
+					<div class="form-group">
+						<label class="control-label">Fast Lane QoS Marking</label><br />
+						<select asp-for="FastLaneQosmarking" class="form-control" onchange="onChange_ddlFastLaneWifi()">
+							<option value="DoNotRestrict">Do Not restrict QoS Marking</option>
+							<option value="Restrict">Restrict Qos marking</option>
+						</select>
+					</div>
+					<div ID="pnlResQos" style="display:none">
+						<input type="checkbox" asp-for="EnableQos" Checked /><label for="EnableQos">Enable QoS marking</label>
+						<br />
+						<input type="checkbox" asp-for="Whitelist" Checked /><label for="Whitelist">Whitelist Apple audio/video calling</label>						
+						<table id="tbl-whitelist-data" class="table table-striped table-bordered table-hover">
+							<tr>
+								<th>Description</th>
+								<th>Control</th>
+							</tr>
+							@if (Model.WhiteListApps != null && Model.WhiteListApps.Any())
+							{
+								for (int i = 0; i < Model.WhiteListApps.Count; i++)
+								{
+									<tr data-index="@i">
+										<td class="whitelistAppText">@Model.WhiteListApps[i].ToString()</td>
+										<td>
+											<a class="btn btn-sm btn-link edit-whitelist-btn">Edit</a>
+											<a class="btn btn-sm btn-primary update-whitelist-btn d-none">Update</a>
+											<a class="btn btn-sm btn-secondary cancel-whitelist-btn d-none">Cancel</a>
+										</td>
+									</tr>
+								}
+							}							
+						</table>
+						<table class="table table-striped table-bordered table-hover">
+							<tr>
+								<td><input ID="txtWhitelistApps" class="form-control" /></td>
+								<td><a ID="btnAdd_Whitelist" class="btn btn-primary" onclick="btnAdd_Whitelist_Click()">Add</a></td>
+							</tr>
+						</table>
+
+
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a title="btnConfirm" class="btn btn-primary" style="border-radius: 2px 2px 2px 2px;" ID="lBWifi" onclick="lBWifi_Click()">Proceed</a>
+			</div>
+		</div>
+	</div>
+</div>

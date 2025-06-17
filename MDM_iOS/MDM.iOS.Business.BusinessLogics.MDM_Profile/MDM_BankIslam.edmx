@@ -1,0 +1,1049 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BankIslamModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="MDM_HttpProxy">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ProxyType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProxyServer" Type="nvarchar" MaxLength="50" />
+          <Property Name="Port" Type="nvarchar" MaxLength="50" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="AllowByPassingProxy" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MDM_Profile">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Profile_Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Profile_Desc" Type="nvarchar(max)" />
+          <Property Name="Profile_GroupID" Type="int" />
+          <Property Name="Profile_Status" Type="int" />
+          <Property Name="LastUpdateDate" Type="datetime" />
+          <Property Name="PlistContent" Type="text" />
+          <Property Name="Profile_APNS_Path" Type="nvarchar(max)" />
+          <Property Name="Profile_Enroll_Path" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_Cellular">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ConfiguredAPNType" Type="nvarchar" MaxLength="50" />
+          <Property Name="DefaultAPN_Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="DefaultAPN_AuthenticationType" Type="nvarchar" MaxLength="50" />
+          <Property Name="DefaultAPN_UserName" Type="nvarchar" MaxLength="50" />
+          <Property Name="DefaultAPN_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="DataAPN_Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="DataAPN_AuthenticationType" Type="nvarchar" MaxLength="50" />
+          <Property Name="DataAPN_UserName" Type="nvarchar" MaxLength="50" />
+          <Property Name="DataAPN_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="DataAPN_ProxyServer" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_General">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Identifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="Organization" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConsentMessage" Type="nvarchar" MaxLength="50" />
+          <Property Name="Security" Type="nvarchar" MaxLength="50" />
+          <Property Name="AuthorizationPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="AutomaticallyRemoveProfile" Type="nvarchar" MaxLength="50" />
+          <Property Name="AutomaticallyRemoveProfile_Date" Type="datetime" />
+          <Property Name="AutomaticallyRemoveProfile_Days" Type="nvarchar" MaxLength="50" />
+          <Property Name="AutomaticallyRemoveProfile_Hours" Type="nvarchar" MaxLength="50" />
+          <Property Name="Branch_ID" Type="uniqueidentifier" />
+          <Property Name="Profile_APNS_Path" Type="nvarchar(max)" />
+          <Property Name="Profile_Enroll_Path" Type="nvarchar(max)" />
+          <Property Name="LastUpdateDate" Type="datetime" />
+          <Property Name="CProfileId" Type="uniqueidentifier" />
+          <Property Name="pStatus" Type="int" />
+          <Property Name="LastUpdateBy" Type="uniqueidentifier" />
+          <Property Name="CreatedBy" Type="uniqueidentifier" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_General_BranchID">
+          <Key>
+            <PropertyRef Name="IID" />
+          </Key>
+          <Property Name="IID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Profile_ID" Type="uniqueidentifier" />
+          <Property Name="cProfile_ID" Type="uniqueidentifier" />
+          <Property Name="Branch_ID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_LDAP">
+          <Key>
+            <PropertyRef Name="Profile_LDAP_ID" />
+          </Key>
+          <Property Name="Profile_LDAP_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AccountDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="AccountUsername" Type="nvarchar" MaxLength="50" />
+          <Property Name="AccountPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="AccountHostname" Type="nvarchar" MaxLength="50" />
+          <Property Name="UseSSL" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_LDAP_SearchSettings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Profile_LDAP_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="Scope" Type="nvarchar" MaxLength="50" />
+          <Property Name="SearchBase" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_Passcode">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AllowSimpleValue" Type="nvarchar" MaxLength="50" />
+          <Property Name="Requirealphanumericvalue" Type="nvarchar" MaxLength="50" />
+          <Property Name="MinimumPasscodeLength" Type="nvarchar" MaxLength="50" />
+          <Property Name="MinimumNumberOfComplexCharacters" Type="nvarchar" MaxLength="50" />
+          <Property Name="MaximumPasscodeAge" Type="nvarchar" MaxLength="50" />
+          <Property Name="MaximumAutoLock" Type="nvarchar" MaxLength="50" />
+          <Property Name="PasscodeHistory" Type="nvarchar" MaxLength="50" />
+          <Property Name="MaximumGracePeriod" Type="nvarchar" MaxLength="50" />
+          <Property Name="MaximumNumberOfFailedAttempts" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_Restriction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RestrictionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsCheck" Type="bit" />
+          <Property Name="Queue" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_Restriction_Advance">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AcceptCookies" Type="nvarchar" MaxLength="50" />
+          <Property Name="RestrictAppUsage" Type="nvarchar" MaxLength="50" />
+          <Property Name="App_Identify" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_VPN">
+          <Key>
+            <PropertyRef Name="Profile_VPN_ID" />
+          </Key>
+          <Property Name="Profile_VPN_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ConnectionName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ConnectionType" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Server" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Account" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Account_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_MachineAuthentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_GroupName" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_SharedSecret" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_UseHybridAuthentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_PromptForPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_ProxySetup" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Proxy_Server" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Proxy_Port" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Authentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Authentication_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="IPSEC_ProxyServerURL" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_SendAllTrafficThroughVPN" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_AlwaysOnVPN" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_AllowUserToDisableAutomaticConnection" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_UserSameTunnelConfigurationForCellularAndWifi" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_Server" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_RemoteIdentifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_LocalIdentifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_MachineAuthentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_SharedSecret" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_EnableEAP" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_EnableNATKeepaliveWhileTheDeviceIsAsleep" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_NATKeepAliveInternal" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_DeadPeerDetectionRate" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_DisableRedirects" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_DisableMobilityAndMultihoming" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_UseIPv4IPv6InternalSubnetAttributes" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_EnablePerfectDForwordSecrecy" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_EnableCertificateRevocationCheck" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_IKESA_EncryptionAlgorithm" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_IKESA_IntegrityAlgorithm" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_IKESA_DiffieHellmanGroup" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_IKESA_LifeTimeInMinutes" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiServer" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiRemoteIdentifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiLocalIdentifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiMachineAuthentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiSharedSecret" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiEnableEAP" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiEnableNATKeepaliveWhileTheDeviceIsAsleep" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiNATKeepAliveInternal" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiDeadPeerDetectionRate" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiDisableRedirects" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiDisableMobilityAndMultihoming" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiUseIPv4IPv6InternalSubnetAttributes" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiEnablePerfectDForwordSecrecy" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiEnableCertificateRevocationCheck" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularServer" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularRemoteIdentifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularLocalIdentifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularMachineAuthentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularSharedSecret" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularEnableEAP" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularEnableNATKeepaliveWhileTheDeviceIsAsleep" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularNATKeepAliveInternal" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularDeadPeerDetectionRate" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularDisableRedirects" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularDisableMobilityAndMultihoming" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularUseIPv4IPv6InternalSubnetAttributes" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularEnablePerfectDForwordSecrecy" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularEnableCertificateRevocationCheck" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_Child_EncryptionAlgorithm" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_Child_IntegrityAlgorithm" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_Child_DiffleHellmanGroup" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_Child_LifetimeInMinutes" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ServiceExceptions_VoiceMail" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ServiceExceptions_AirPrint" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_AllowTrafficFromCaptiveWebSheetOutsideTheVPNTunnel" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_AllowTrafficFromAllCaptiveNetworkingAppsOustsideVPNTunnel" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_DisconnectOnIdle" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_DisconnectOnIdle_Minutes" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_DisconnectOnIdle_Seconds" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CaptiveNetworkingAppBundleIdentifiers" Type="nvarchar" MaxLength="500" />
+          <Property Name="IKEV2_Account" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_Account_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ProxySetup" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ProxySetup_Server" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ProxySetup_Port" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ProxySetup_Authentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ProxySetup_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_ProxySetup_ProxyServerUrl" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_EAP_Authentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiEAP_Authentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularEAP_Authentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_Server" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_Account" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_UserAuthentication_RSASecurID" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_UserAuthentication_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_SendAllTrafficeThroughVPN" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_MachineAuthentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_GroupName" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_SharedSecret" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_UseHybridAuthentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_PromptForPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_ProxySetup" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_ProxySetup_Server" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_ProxySetup_Port" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_ProxySetup_Authentication" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_ProxySetup_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="L2TP_ProxySetupURL" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularAccount" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_CellularAccount_Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiAccount" Type="nvarchar" MaxLength="50" />
+          <Property Name="IKEV2_WifiAccount_Password" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_WIFI">
+          <Key>
+            <PropertyRef Name="Profile_WIFI_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Profile_WIFI_ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ServiceSetIdentifier" Type="nvarchar" MaxLength="50" />
+          <Property Name="HiddenNetwork" Type="nvarchar" MaxLength="50" />
+          <Property Name="AutoJoin" Type="nvarchar" MaxLength="50" />
+          <Property Name="DisableCaptiveNetworkDetection" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProxySetup" Type="nvarchar" MaxLength="50" />
+          <Property Name="SecurityType" Type="nvarchar" MaxLength="50" />
+          <Property Name="SecurityTypePassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="NetworkType" Type="nvarchar" MaxLength="50" />
+          <Property Name="FastLaneQosMarking" Type="nvarchar" MaxLength="50" />
+          <Property Name="EnableQosMarking" Type="nvarchar" MaxLength="50" />
+          <Property Name="WhitelistAppleAudioVideoCalling" Type="nvarchar" MaxLength="50" />
+          <Property Name="ServerIPAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="ServerPort" Type="nvarchar" MaxLength="50" />
+          <Property Name="ServerProxyURL" Type="nvarchar" MaxLength="50" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="App_Identifity" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProxyPACFallbackAllowed" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MDM_Restriction_Menu">
+          <Key>
+            <PropertyRef Name="RID" />
+          </Key>
+          <Property Name="RID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RestrictionName" Type="nvarchar" MaxLength="100" />
+          <Property Name="RestrictionDesc" Type="nvarchar" MaxLength="100" />
+          <Property Name="Queue" Type="int" />
+          <Property Name="Active" Type="int" />
+          <Property Name="RGroup" Type="int" />
+          <Property Name="GroupHeader" Type="int" />
+          <Property Name="NumberType" Type="int" />
+          <Property Name="Partition" Type="int" />
+        </EntityType>
+        <EntityType Name="User_Branch">
+          <Key>
+            <PropertyRef Name="bID" />
+          </Key>
+          <Property Name="bID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="bDesc" Type="nvarchar" MaxLength="100" />
+          <Property Name="bStatus" Type="int" />
+          <Property Name="bMonday" Type="bit" />
+          <Property Name="bTuesday" Type="bit" />
+          <Property Name="bWednesday" Type="bit" />
+          <Property Name="bThursday" Type="bit" />
+          <Property Name="bFriday" Type="bit" />
+          <Property Name="bSaturday" Type="bit" />
+          <Property Name="bSunday" Type="bit" />
+          <Property Name="bOpenTime" Type="time" Precision="7" />
+          <Property Name="bCloseTime" Type="time" Precision="7" />
+          <Property Name="bCreatedDate" Type="datetime" />
+          <Property Name="bApprovedDate" Type="datetime" />
+          <Property Name="bDeclinedDate" Type="datetime" />
+          <Property Name="bUpdatedDate" Type="datetime" />
+          <Property Name="bCreatedBy" Type="uniqueidentifier" />
+          <Property Name="bApprovedBy" Type="uniqueidentifier" />
+          <Property Name="bDeclinedBy" Type="uniqueidentifier" />
+          <Property Name="bUpdatedBy" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityContainer Name="BankIslamModelStoreContainer">
+          <EntitySet Name="MDM_HttpProxy" EntityType="Self.MDM_HttpProxy" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile" EntityType="Self.MDM_Profile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_Cellular" EntityType="Self.MDM_Profile_Cellular" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_General" EntityType="Self.MDM_Profile_General" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_General_BranchID" EntityType="Self.MDM_Profile_General_BranchID" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_LDAP" EntityType="Self.MDM_Profile_LDAP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_LDAP_SearchSettings" EntityType="Self.MDM_Profile_LDAP_SearchSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_Passcode" EntityType="Self.MDM_Profile_Passcode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_Restriction" EntityType="Self.MDM_Profile_Restriction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_Restriction_Advance" EntityType="Self.MDM_Profile_Restriction_Advance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_VPN" EntityType="Self.MDM_Profile_VPN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Profile_WIFI" EntityType="Self.MDM_Profile_WIFI" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MDM_Restriction_Menu" EntityType="Self.MDM_Restriction_Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Branch" EntityType="Self.User_Branch" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BankIslamModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="MDM_Profile_Cellular">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="ConfiguredAPNType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DefaultAPN_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DefaultAPN_AuthenticationType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DefaultAPN_UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DefaultAPN_Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DataAPN_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DataAPN_AuthenticationType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DataAPN_UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DataAPN_Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DataAPN_ProxyServer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_LDAP">
+          <Key>
+            <PropertyRef Name="Profile_LDAP_ID" />
+          </Key>
+          <Property Name="Profile_LDAP_ID" Type="Guid" Nullable="false" />
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="AccountDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AccountUsername" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AccountPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AccountHostname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UseSSL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_LDAP_SearchSettings">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Profile_LDAP_ID" Type="Guid" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Scope" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SearchBase" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ID" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_Passcode">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="AllowSimpleValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Requirealphanumericvalue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MinimumPasscodeLength" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MinimumNumberOfComplexCharacters" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MaximumPasscodeAge" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MaximumAutoLock" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PasscodeHistory" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MaximumGracePeriod" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MaximumNumberOfFailedAttempts" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_Restriction">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="RID" Type="Guid" Nullable="false" />
+          <Property Name="RestrictionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsCheck" Type="Boolean" />
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="Queue" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_VPN">
+          <Key>
+            <PropertyRef Name="Profile_VPN_ID" />
+          </Key>
+          <Property Name="Profile_VPN_ID" Nullable="false" Type="Guid" />
+          <Property Name="Profile_ID" Nullable="false" Type="Guid" />
+          <Property Name="ConnectionName" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="ConnectionType" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Server" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Account" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Account_Password" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_MachineAuthentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_GroupName" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_SharedSecret" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_UseHybridAuthentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_PromptForPassword" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_ProxySetup" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Proxy_Server" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Proxy_Port" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Authentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Password" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_ProxyServerURL" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IPSEC_Authentication_Password" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_SendAllTrafficThroughVPN" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_AlwaysOnVPN" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_Server" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_RemoteIdentifier" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_LocalIdentifier" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_MachineAuthentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_SharedSecret" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_EnableEAP" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_DeadPeerDetectionRate" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_DisableRedirects" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_DisableMobilityAndMultihoming" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_UseIPv4IPv6InternalSubnetAttributes" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_EnablePerfectDForwordSecrecy" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_EnableCertificateRevocationCheck" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_IKESA_EncryptionAlgorithm" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_IKESA_IntegrityAlgorithm" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_IKESA_DiffieHellmanGroup" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_IKESA_LifeTimeInMinutes" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_Child_EncryptionAlgorithm" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_Child_IntegrityAlgorithm" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_Child_LifetimeInMinutes" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_Child_DiffleHellmanGroup" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_ServiceExceptions_VoiceMail" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_ServiceExceptions_AirPrint" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_AllowTrafficFromCaptiveWebSheetOutsideTheVPNTunnel" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_AllowTrafficFromAllCaptiveNetworkingAppsOustsideVPNTunnel" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_DisconnectOnIdle" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_DisconnectOnIdle_Minutes" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_DisconnectOnIdle_Seconds" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_CaptiveNetworkingAppBundleIdentifiers" MaxLength="500" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_AllowUserToDisableAutomaticConnection" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_UserSameTunnelConfigurationForCellularAndWifi" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_EnableNATKeepaliveWhileTheDeviceIsAsleep" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_NATKeepAliveInternal" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_Account" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_Account_Password" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_EAP_Authentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_WifiEAP_Authentication" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiServer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiRemoteIdentifier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiLocalIdentifier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiMachineAuthentication" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiSharedSecret" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiEnableEAP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiEnableNATKeepaliveWhileTheDeviceIsAsleep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiNATKeepAliveInternal" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiDeadPeerDetectionRate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiDisableRedirects" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiAccount_Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiDisableMobilityAndMultihoming" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiUseIPv4IPv6InternalSubnetAttributes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiEnablePerfectDForwordSecrecy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_WifiEnableCertificateRevocationCheck" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularServer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularRemoteIdentifier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularLocalIdentifier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularMachineAuthentication" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularSharedSecret" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularEnableEAP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularEAP_Authentication" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularAccount" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularAccount_Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularEnableNATKeepaliveWhileTheDeviceIsAsleep" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularDeadPeerDetectionRate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularNATKeepAliveInternal" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularDisableRedirects" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularDisableMobilityAndMultihoming" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularUseIPv4IPv6InternalSubnetAttributes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularEnablePerfectDForwordSecrecy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_CellularEnableCertificateRevocationCheck" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IKEV2_ProxySetup" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_ProxySetup_Server" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_ProxySetup_Port" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_ProxySetup_Authentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_ProxySetup_Password" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="IKEV2_ProxySetup_ProxyServerUrl" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_Server" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_Account" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_UserAuthentication_Password" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_UserAuthentication_RSASecurID" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_MachineAuthentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_GroupName" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_SharedSecret" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_UseHybridAuthentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_PromptForPassword" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_ProxySetup" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_ProxySetup_Server" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_ProxySetup_Port" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_ProxySetup_Authentication" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_ProxySetup_Password" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_ProxySetupURL" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="L2TP_SendAllTrafficeThroughVPN" MaxLength="50" FixedLength="false" Unicode="true" Type="String" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_WIFI">
+          <Key>
+            <PropertyRef Name="Profile_WIFI_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="Profile_WIFI_ID" Type="Guid" Nullable="false" />
+          <Property Name="ServiceSetIdentifier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="HiddenNetwork" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AutoJoin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DisableCaptiveNetworkDetection" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProxySetup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityTypePassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NetworkType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FastLaneQosMarking" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EnableQosMarking" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WhitelistAppleAudioVideoCalling" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ServerIPAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ServerPort" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ServerProxyURL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="App_Identifity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProxyPACFallbackAllowed" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="BankIslamEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="MDM_Profile_Cellular" EntityType="Self.MDM_Profile_Cellular" />
+          <EntitySet Name="MDM_Profile_LDAP" EntityType="Self.MDM_Profile_LDAP" />
+          <EntitySet Name="MDM_Profile_LDAP_SearchSettings" EntityType="Self.MDM_Profile_LDAP_SearchSettings" />
+          <EntitySet Name="MDM_Profile_Passcode" EntityType="Self.MDM_Profile_Passcode" />
+          <EntitySet Name="MDM_Profile_Restriction" EntityType="Self.MDM_Profile_Restriction" />
+          <EntitySet Name="MDM_Profile_VPN" EntityType="Self.MDM_Profile_VPN" />
+          <EntitySet Name="MDM_Profile_WIFI" EntityType="Self.MDM_Profile_WIFI" />
+          <EntitySet Name="MDM_Profile_Restriction_Advance" EntityType="BankIslamModel.MDM_Profile_Restriction_Advance" />
+          <EntitySet Name="MDM_Profile" EntityType="BankIslamModel.MDM_Profile" />
+          <EntitySet Name="User_Branch" EntityType="BankIslamModel.User_Branch" />
+          <EntitySet Name="MDM_Restriction_Menu" EntityType="BankIslamModel.MDM_Restriction_Menu" />
+          <EntitySet Name="MDM_Profile_General_BranchID" EntityType="BankIslamModel.MDM_Profile_General_BranchID" />
+          <EntitySet Name="MDM_HttpProxy" EntityType="BankIslamModel.MDM_HttpProxy" />
+          <EntitySet Name="MDM_Profile_General" EntityType="BankIslamModel.MDM_Profile_General" />
+        </EntityContainer>
+        <EntityType Name="MDM_Profile_Restriction_Advance">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="AcceptCookies" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RestrictAppUsage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="App_Identify" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MDM_Profile">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="Profile_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Profile_Desc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Profile_GroupID" Type="Int32" />
+          <Property Name="Profile_Status" Type="Int32" />
+          <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="PlistContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Profile_APNS_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Profile_Enroll_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User_Branch">
+          <Key>
+            <PropertyRef Name="bID" />
+          </Key>
+          <Property Name="bID" Type="Guid" Nullable="false" />
+          <Property Name="bDesc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="bStatus" Type="Int32" />
+          <Property Name="bMonday" Type="Boolean" />
+          <Property Name="bTuesday" Type="Boolean" />
+          <Property Name="bWednesday" Type="Boolean" />
+          <Property Name="bThursday" Type="Boolean" />
+          <Property Name="bFriday" Type="Boolean" />
+          <Property Name="bSaturday" Type="Boolean" />
+          <Property Name="bSunday" Type="Boolean" />
+          <Property Name="bOpenTime" Type="Time" Precision="7" />
+          <Property Name="bCloseTime" Type="Time" Precision="7" />
+          <Property Name="bCreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="bApprovedDate" Type="DateTime" Precision="3" />
+          <Property Name="bDeclinedDate" Type="DateTime" Precision="3" />
+          <Property Name="bUpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="bCreatedBy" Type="Guid" />
+          <Property Name="bApprovedBy" Type="Guid" />
+          <Property Name="bDeclinedBy" Type="Guid" />
+          <Property Name="bUpdatedBy" Type="Guid" />
+        </EntityType>
+        <EntityType Name="MDM_Restriction_Menu">
+          <Key>
+            <PropertyRef Name="RID" />
+          </Key>
+          <Property Name="RID" Type="Guid" Nullable="false" />
+          <Property Name="RestrictionName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="RestrictionDesc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Queue" Type="Int32" />
+          <Property Name="Active" Type="Int32" />
+          <Property Name="RGroup" Type="Int32" />
+          <Property Name="GroupHeader" Type="Int32" />
+          <Property Name="NumberType" Type="Int32" />
+          <Property Name="Partition" Type="Int32" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_General_BranchID">
+          <Key>
+            <PropertyRef Name="IID" />
+          </Key>
+          <Property Name="cProfile_ID" Type="Guid" />
+          <Property Name="IID" Type="Guid" Nullable="false" />
+          <Property Name="Branch_ID" Type="Guid" />
+          <Property Name="Profile_ID" Type="Guid" />
+        </EntityType>
+        <EntityType Name="MDM_HttpProxy">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="ProxyType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProxyServer" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Port" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AllowByPassingProxy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MDM_Profile_General">
+          <Key>
+            <PropertyRef Name="Profile_ID" />
+          </Key>
+          <Property Name="Profile_ID" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Identifier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Organization" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ConsentMessage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Security" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AuthorizationPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AutomaticallyRemoveProfile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AutomaticallyRemoveProfile_Date" Type="DateTime" Precision="3" />
+          <Property Name="AutomaticallyRemoveProfile_Days" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AutomaticallyRemoveProfile_Hours" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Branch_ID" Type="Guid" />
+          <Property Name="Profile_APNS_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Profile_Enroll_Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastUpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="CProfileId" Type="Guid" />
+          <Property Name="pStatus" Type="Int32" />
+          <Property Name="LastUpdateBy" Type="Guid" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BankIslamModelStoreContainer" CdmEntityContainer="BankIslamEntities">
+          <EntitySetMapping Name="MDM_Profile_Cellular">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_Cellular">
+              <MappingFragment StoreEntitySet="MDM_Profile_Cellular">
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+                <ScalarProperty Name="ConfiguredAPNType" ColumnName="ConfiguredAPNType" />
+                <ScalarProperty Name="DefaultAPN_Name" ColumnName="DefaultAPN_Name" />
+                <ScalarProperty Name="DefaultAPN_AuthenticationType" ColumnName="DefaultAPN_AuthenticationType" />
+                <ScalarProperty Name="DefaultAPN_UserName" ColumnName="DefaultAPN_UserName" />
+                <ScalarProperty Name="DefaultAPN_Password" ColumnName="DefaultAPN_Password" />
+                <ScalarProperty Name="DataAPN_Name" ColumnName="DataAPN_Name" />
+                <ScalarProperty Name="DataAPN_AuthenticationType" ColumnName="DataAPN_AuthenticationType" />
+                <ScalarProperty Name="DataAPN_UserName" ColumnName="DataAPN_UserName" />
+                <ScalarProperty Name="DataAPN_Password" ColumnName="DataAPN_Password" />
+                <ScalarProperty Name="DataAPN_ProxyServer" ColumnName="DataAPN_ProxyServer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_LDAP">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_LDAP">
+              <MappingFragment StoreEntitySet="MDM_Profile_LDAP">
+                <ScalarProperty Name="Profile_LDAP_ID" ColumnName="Profile_LDAP_ID" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+                <ScalarProperty Name="AccountDescription" ColumnName="AccountDescription" />
+                <ScalarProperty Name="AccountUsername" ColumnName="AccountUsername" />
+                <ScalarProperty Name="AccountPassword" ColumnName="AccountPassword" />
+                <ScalarProperty Name="AccountHostname" ColumnName="AccountHostname" />
+                <ScalarProperty Name="UseSSL" ColumnName="UseSSL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_LDAP_SearchSettings">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_LDAP_SearchSettings">
+              <MappingFragment StoreEntitySet="MDM_Profile_LDAP_SearchSettings">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Profile_LDAP_ID" ColumnName="Profile_LDAP_ID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Scope" ColumnName="Scope" />
+                <ScalarProperty Name="SearchBase" ColumnName="SearchBase" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_Passcode">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_Passcode">
+              <MappingFragment StoreEntitySet="MDM_Profile_Passcode">
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+                <ScalarProperty Name="AllowSimpleValue" ColumnName="AllowSimpleValue" />
+                <ScalarProperty Name="Requirealphanumericvalue" ColumnName="Requirealphanumericvalue" />
+                <ScalarProperty Name="MinimumPasscodeLength" ColumnName="MinimumPasscodeLength" />
+                <ScalarProperty Name="MinimumNumberOfComplexCharacters" ColumnName="MinimumNumberOfComplexCharacters" />
+                <ScalarProperty Name="MaximumPasscodeAge" ColumnName="MaximumPasscodeAge" />
+                <ScalarProperty Name="MaximumAutoLock" ColumnName="MaximumAutoLock" />
+                <ScalarProperty Name="PasscodeHistory" ColumnName="PasscodeHistory" />
+                <ScalarProperty Name="MaximumGracePeriod" ColumnName="MaximumGracePeriod" />
+                <ScalarProperty Name="MaximumNumberOfFailedAttempts" ColumnName="MaximumNumberOfFailedAttempts" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_Restriction">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_Restriction">
+              <MappingFragment StoreEntitySet="MDM_Profile_Restriction">
+                <ScalarProperty Name="Queue" ColumnName="Queue" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+                <ScalarProperty Name="RID" ColumnName="RID" />
+                <ScalarProperty Name="RestrictionName" ColumnName="RestrictionName" />
+                <ScalarProperty Name="IsCheck" ColumnName="IsCheck" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_VPN">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_VPN">
+              <MappingFragment StoreEntitySet="MDM_Profile_VPN">
+                <ScalarProperty Name="IKEV2_WifiAccount_Password" ColumnName="IKEV2_WifiAccount_Password" />
+                <ScalarProperty Name="IKEV2_WifiAccount" ColumnName="IKEV2_WifiAccount" />
+                <ScalarProperty Name="IKEV2_CellularAccount_Password" ColumnName="IKEV2_CellularAccount_Password" />
+                <ScalarProperty Name="IKEV2_CellularAccount" ColumnName="IKEV2_CellularAccount" />
+                <ScalarProperty Name="IKEV2_CellularEAP_Authentication" ColumnName="IKEV2_CellularEAP_Authentication" />
+                <ScalarProperty Name="IKEV2_WifiEAP_Authentication" ColumnName="IKEV2_WifiEAP_Authentication" />
+                <ScalarProperty Name="IKEV2_CellularEnableCertificateRevocationCheck" ColumnName="IKEV2_CellularEnableCertificateRevocationCheck" />
+                <ScalarProperty Name="IKEV2_CellularEnablePerfectDForwordSecrecy" ColumnName="IKEV2_CellularEnablePerfectDForwordSecrecy" />
+                <ScalarProperty Name="IKEV2_CellularUseIPv4IPv6InternalSubnetAttributes" ColumnName="IKEV2_CellularUseIPv4IPv6InternalSubnetAttributes" />
+                <ScalarProperty Name="IKEV2_CellularDisableMobilityAndMultihoming" ColumnName="IKEV2_CellularDisableMobilityAndMultihoming" />
+                <ScalarProperty Name="IKEV2_CellularDisableRedirects" ColumnName="IKEV2_CellularDisableRedirects" />
+                <ScalarProperty Name="IKEV2_CellularDeadPeerDetectionRate" ColumnName="IKEV2_CellularDeadPeerDetectionRate" />
+                <ScalarProperty Name="IKEV2_CellularNATKeepAliveInternal" ColumnName="IKEV2_CellularNATKeepAliveInternal" />
+                <ScalarProperty Name="IKEV2_CellularEnableNATKeepaliveWhileTheDeviceIsAsleep" ColumnName="IKEV2_CellularEnableNATKeepaliveWhileTheDeviceIsAsleep" />
+                <ScalarProperty Name="IKEV2_CellularEnableEAP" ColumnName="IKEV2_CellularEnableEAP" />
+                <ScalarProperty Name="IKEV2_CellularSharedSecret" ColumnName="IKEV2_CellularSharedSecret" />
+                <ScalarProperty Name="IKEV2_CellularMachineAuthentication" ColumnName="IKEV2_CellularMachineAuthentication" />
+                <ScalarProperty Name="IKEV2_CellularLocalIdentifier" ColumnName="IKEV2_CellularLocalIdentifier" />
+                <ScalarProperty Name="IKEV2_CellularRemoteIdentifier" ColumnName="IKEV2_CellularRemoteIdentifier" />
+                <ScalarProperty Name="IKEV2_CellularServer" ColumnName="IKEV2_CellularServer" />
+                <ScalarProperty Name="IKEV2_WifiEnableCertificateRevocationCheck" ColumnName="IKEV2_WifiEnableCertificateRevocationCheck" />
+                <ScalarProperty Name="IKEV2_WifiEnablePerfectDForwordSecrecy" ColumnName="IKEV2_WifiEnablePerfectDForwordSecrecy" />
+                <ScalarProperty Name="IKEV2_WifiUseIPv4IPv6InternalSubnetAttributes" ColumnName="IKEV2_WifiUseIPv4IPv6InternalSubnetAttributes" />
+                <ScalarProperty Name="IKEV2_WifiDisableMobilityAndMultihoming" ColumnName="IKEV2_WifiDisableMobilityAndMultihoming" />
+                <ScalarProperty Name="IKEV2_WifiDisableRedirects" ColumnName="IKEV2_WifiDisableRedirects" />
+                <ScalarProperty Name="IKEV2_WifiDeadPeerDetectionRate" ColumnName="IKEV2_WifiDeadPeerDetectionRate" />
+                <ScalarProperty Name="IKEV2_WifiNATKeepAliveInternal" ColumnName="IKEV2_WifiNATKeepAliveInternal" />
+                <ScalarProperty Name="IKEV2_WifiEnableNATKeepaliveWhileTheDeviceIsAsleep" ColumnName="IKEV2_WifiEnableNATKeepaliveWhileTheDeviceIsAsleep" />
+                <ScalarProperty Name="IKEV2_WifiEnableEAP" ColumnName="IKEV2_WifiEnableEAP" />
+                <ScalarProperty Name="IKEV2_WifiSharedSecret" ColumnName="IKEV2_WifiSharedSecret" />
+                <ScalarProperty Name="IKEV2_WifiMachineAuthentication" ColumnName="IKEV2_WifiMachineAuthentication" />
+                <ScalarProperty Name="IKEV2_WifiLocalIdentifier" ColumnName="IKEV2_WifiLocalIdentifier" />
+                <ScalarProperty Name="IKEV2_WifiRemoteIdentifier" ColumnName="IKEV2_WifiRemoteIdentifier" />
+                <ScalarProperty Name="IKEV2_WifiServer" ColumnName="IKEV2_WifiServer" />
+                <ScalarProperty Name="ConnectionType" ColumnName="ConnectionType" />
+                <ScalarProperty Name="IPSEC_Authentication_Password" ColumnName="IPSEC_Authentication_Password" />
+                <ScalarProperty Name="IKEV2_EAP_Authentication" ColumnName="IKEV2_EAP_Authentication" />
+                <ScalarProperty Name="IKEV2_ProxySetup_ProxyServerUrl" ColumnName="IKEV2_ProxySetup_ProxyServerUrl" />
+                <ScalarProperty Name="IKEV2_ProxySetup_Password" ColumnName="IKEV2_ProxySetup_Password" />
+                <ScalarProperty Name="IKEV2_ProxySetup_Authentication" ColumnName="IKEV2_ProxySetup_Authentication" />
+                <ScalarProperty Name="IKEV2_ProxySetup_Port" ColumnName="IKEV2_ProxySetup_Port" />
+                <ScalarProperty Name="IKEV2_ProxySetup_Server" ColumnName="IKEV2_ProxySetup_Server" />
+                <ScalarProperty Name="IKEV2_ProxySetup" ColumnName="IKEV2_ProxySetup" />
+                <ScalarProperty Name="IKEV2_Account_Password" ColumnName="IKEV2_Account_Password" />
+                <ScalarProperty Name="IKEV2_Account" ColumnName="IKEV2_Account" />
+                <ScalarProperty Name="IPSEC_Account_Password" ColumnName="IPSEC_Account_Password" />
+                <ScalarProperty Name="L2TP_SendAllTrafficeThroughVPN" ColumnName="L2TP_SendAllTrafficeThroughVPN" />
+                <ScalarProperty Name="IKEV2_NATKeepAliveInternal" ColumnName="IKEV2_NATKeepAliveInternal" />
+                <ScalarProperty Name="IKEV2_EnableNATKeepaliveWhileTheDeviceIsAsleep" ColumnName="IKEV2_EnableNATKeepaliveWhileTheDeviceIsAsleep" />
+                <ScalarProperty Name="IKEV2_UserSameTunnelConfigurationForCellularAndWifi" ColumnName="IKEV2_UserSameTunnelConfigurationForCellularAndWifi" />
+                <ScalarProperty Name="IKEV2_AllowUserToDisableAutomaticConnection" ColumnName="IKEV2_AllowUserToDisableAutomaticConnection" />
+                <ScalarProperty Name="IKEV2_Child_DiffleHellmanGroup" ColumnName="IKEV2_Child_DiffleHellmanGroup" />
+                <ScalarProperty Name="IKEV2_CaptiveNetworkingAppBundleIdentifiers" ColumnName="IKEV2_CaptiveNetworkingAppBundleIdentifiers" />
+                <ScalarProperty Name="Profile_VPN_ID" ColumnName="Profile_VPN_ID" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+                <ScalarProperty Name="ConnectionName" ColumnName="ConnectionName" />
+                <ScalarProperty Name="IPSEC_Server" ColumnName="IPSEC_Server" />
+                <ScalarProperty Name="IPSEC_Account" ColumnName="IPSEC_Account" />
+                <ScalarProperty Name="IPSEC_MachineAuthentication" ColumnName="IPSEC_MachineAuthentication" />
+                <ScalarProperty Name="IPSEC_GroupName" ColumnName="IPSEC_GroupName" />
+                <ScalarProperty Name="IPSEC_SharedSecret" ColumnName="IPSEC_SharedSecret" />
+                <ScalarProperty Name="IPSEC_UseHybridAuthentication" ColumnName="IPSEC_UseHybridAuthentication" />
+                <ScalarProperty Name="IPSEC_PromptForPassword" ColumnName="IPSEC_PromptForPassword" />
+                <ScalarProperty Name="IPSEC_ProxySetup" ColumnName="IPSEC_ProxySetup" />
+                <ScalarProperty Name="IPSEC_Proxy_Server" ColumnName="IPSEC_Proxy_Server" />
+                <ScalarProperty Name="IPSEC_Proxy_Port" ColumnName="IPSEC_Proxy_Port" />
+                <ScalarProperty Name="IPSEC_Authentication" ColumnName="IPSEC_Authentication" />
+                <ScalarProperty Name="IPSEC_Password" ColumnName="IPSEC_Password" />
+                <ScalarProperty Name="IPSEC_ProxyServerURL" ColumnName="IPSEC_ProxyServerURL" />
+                <ScalarProperty Name="IKEV2_SendAllTrafficThroughVPN" ColumnName="IKEV2_SendAllTrafficThroughVPN" />
+                <ScalarProperty Name="IKEV2_AlwaysOnVPN" ColumnName="IKEV2_AlwaysOnVPN" />
+                <ScalarProperty Name="IKEV2_Server" ColumnName="IKEV2_Server" />
+                <ScalarProperty Name="IKEV2_RemoteIdentifier" ColumnName="IKEV2_RemoteIdentifier" />
+                <ScalarProperty Name="IKEV2_LocalIdentifier" ColumnName="IKEV2_LocalIdentifier" />
+                <ScalarProperty Name="IKEV2_MachineAuthentication" ColumnName="IKEV2_MachineAuthentication" />
+                <ScalarProperty Name="IKEV2_SharedSecret" ColumnName="IKEV2_SharedSecret" />
+                <ScalarProperty Name="IKEV2_EnableEAP" ColumnName="IKEV2_EnableEAP" />
+                <ScalarProperty Name="IKEV2_DeadPeerDetectionRate" ColumnName="IKEV2_DeadPeerDetectionRate" />
+                <ScalarProperty Name="IKEV2_DisableRedirects" ColumnName="IKEV2_DisableRedirects" />
+                <ScalarProperty Name="IKEV2_DisableMobilityAndMultihoming" ColumnName="IKEV2_DisableMobilityAndMultihoming" />
+                <ScalarProperty Name="IKEV2_UseIPv4IPv6InternalSubnetAttributes" ColumnName="IKEV2_UseIPv4IPv6InternalSubnetAttributes" />
+                <ScalarProperty Name="IKEV2_EnablePerfectDForwordSecrecy" ColumnName="IKEV2_EnablePerfectDForwordSecrecy" />
+                <ScalarProperty Name="IKEV2_EnableCertificateRevocationCheck" ColumnName="IKEV2_EnableCertificateRevocationCheck" />
+                <ScalarProperty Name="IKEV2_IKESA_EncryptionAlgorithm" ColumnName="IKEV2_IKESA_EncryptionAlgorithm" />
+                <ScalarProperty Name="IKEV2_IKESA_IntegrityAlgorithm" ColumnName="IKEV2_IKESA_IntegrityAlgorithm" />
+                <ScalarProperty Name="IKEV2_IKESA_DiffieHellmanGroup" ColumnName="IKEV2_IKESA_DiffieHellmanGroup" />
+                <ScalarProperty Name="IKEV2_IKESA_LifeTimeInMinutes" ColumnName="IKEV2_IKESA_LifeTimeInMinutes" />
+                <ScalarProperty Name="IKEV2_Child_EncryptionAlgorithm" ColumnName="IKEV2_Child_EncryptionAlgorithm" />
+                <ScalarProperty Name="IKEV2_Child_IntegrityAlgorithm" ColumnName="IKEV2_Child_IntegrityAlgorithm" />
+                <ScalarProperty Name="IKEV2_Child_LifetimeInMinutes" ColumnName="IKEV2_Child_LifetimeInMinutes" />
+                <ScalarProperty Name="IKEV2_ServiceExceptions_VoiceMail" ColumnName="IKEV2_ServiceExceptions_VoiceMail" />
+                <ScalarProperty Name="IKEV2_ServiceExceptions_AirPrint" ColumnName="IKEV2_ServiceExceptions_AirPrint" />
+                <ScalarProperty Name="IKEV2_AllowTrafficFromCaptiveWebSheetOutsideTheVPNTunnel" ColumnName="IKEV2_AllowTrafficFromCaptiveWebSheetOutsideTheVPNTunnel" />
+                <ScalarProperty Name="IKEV2_AllowTrafficFromAllCaptiveNetworkingAppsOustsideVPNTunnel" ColumnName="IKEV2_AllowTrafficFromAllCaptiveNetworkingAppsOustsideVPNTunnel" />
+                <ScalarProperty Name="IKEV2_DisconnectOnIdle" ColumnName="IKEV2_DisconnectOnIdle" />
+                <ScalarProperty Name="IKEV2_DisconnectOnIdle_Minutes" ColumnName="IKEV2_DisconnectOnIdle_Minutes" />
+                <ScalarProperty Name="IKEV2_DisconnectOnIdle_Seconds" ColumnName="IKEV2_DisconnectOnIdle_Seconds" />
+                <ScalarProperty Name="L2TP_Server" ColumnName="L2TP_Server" />
+                <ScalarProperty Name="L2TP_Account" ColumnName="L2TP_Account" />
+                <ScalarProperty Name="L2TP_UserAuthentication_Password" ColumnName="L2TP_UserAuthentication_Password" />
+                <ScalarProperty Name="L2TP_UserAuthentication_RSASecurID" ColumnName="L2TP_UserAuthentication_RSASecurID" />
+                <ScalarProperty Name="L2TP_MachineAuthentication" ColumnName="L2TP_MachineAuthentication" />
+                <ScalarProperty Name="L2TP_GroupName" ColumnName="L2TP_GroupName" />
+                <ScalarProperty Name="L2TP_SharedSecret" ColumnName="L2TP_SharedSecret" />
+                <ScalarProperty Name="L2TP_UseHybridAuthentication" ColumnName="L2TP_UseHybridAuthentication" />
+                <ScalarProperty Name="L2TP_PromptForPassword" ColumnName="L2TP_PromptForPassword" />
+                <ScalarProperty Name="L2TP_ProxySetup" ColumnName="L2TP_ProxySetup" />
+                <ScalarProperty Name="L2TP_ProxySetup_Server" ColumnName="L2TP_ProxySetup_Server" />
+                <ScalarProperty Name="L2TP_ProxySetup_Port" ColumnName="L2TP_ProxySetup_Port" />
+                <ScalarProperty Name="L2TP_ProxySetup_Authentication" ColumnName="L2TP_ProxySetup_Authentication" />
+                <ScalarProperty Name="L2TP_ProxySetup_Password" ColumnName="L2TP_ProxySetup_Password" />
+                <ScalarProperty Name="L2TP_ProxySetupURL" ColumnName="L2TP_ProxySetupURL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_WIFI">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_WIFI">
+              <MappingFragment StoreEntitySet="MDM_Profile_WIFI">
+                <ScalarProperty Name="ServerProxyURL" ColumnName="ServerProxyURL" />
+                <ScalarProperty Name="SecurityTypePassword" ColumnName="SecurityTypePassword" />
+                <ScalarProperty Name="ProxyPACFallbackAllowed" ColumnName="ProxyPACFallbackAllowed" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+                <ScalarProperty Name="Profile_WIFI_ID" ColumnName="Profile_WIFI_ID" />
+                <ScalarProperty Name="ServiceSetIdentifier" ColumnName="ServiceSetIdentifier" />
+                <ScalarProperty Name="HiddenNetwork" ColumnName="HiddenNetwork" />
+                <ScalarProperty Name="AutoJoin" ColumnName="AutoJoin" />
+                <ScalarProperty Name="DisableCaptiveNetworkDetection" ColumnName="DisableCaptiveNetworkDetection" />
+                <ScalarProperty Name="ProxySetup" ColumnName="ProxySetup" />
+                <ScalarProperty Name="SecurityType" ColumnName="SecurityType" />
+                <ScalarProperty Name="NetworkType" ColumnName="NetworkType" />
+                <ScalarProperty Name="FastLaneQosMarking" ColumnName="FastLaneQosMarking" />
+                <ScalarProperty Name="EnableQosMarking" ColumnName="EnableQosMarking" />
+                <ScalarProperty Name="WhitelistAppleAudioVideoCalling" ColumnName="WhitelistAppleAudioVideoCalling" />
+                <ScalarProperty Name="ServerIPAddress" ColumnName="ServerIPAddress" />
+                <ScalarProperty Name="ServerPort" ColumnName="ServerPort" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="App_Identifity" ColumnName="App_Identifity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_Restriction_Advance">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_Restriction_Advance">
+              <MappingFragment StoreEntitySet="MDM_Profile_Restriction_Advance">
+                <ScalarProperty Name="App_Identify" ColumnName="App_Identify" />
+                <ScalarProperty Name="RestrictAppUsage" ColumnName="RestrictAppUsage" />
+                <ScalarProperty Name="AcceptCookies" ColumnName="AcceptCookies" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile">
+              <MappingFragment StoreEntitySet="MDM_Profile">
+                <ScalarProperty Name="Profile_Enroll_Path" ColumnName="Profile_Enroll_Path" />
+                <ScalarProperty Name="Profile_APNS_Path" ColumnName="Profile_APNS_Path" />
+                <ScalarProperty Name="PlistContent" ColumnName="PlistContent" />
+                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+                <ScalarProperty Name="Profile_Status" ColumnName="Profile_Status" />
+                <ScalarProperty Name="Profile_GroupID" ColumnName="Profile_GroupID" />
+                <ScalarProperty Name="Profile_Desc" ColumnName="Profile_Desc" />
+                <ScalarProperty Name="Profile_Name" ColumnName="Profile_Name" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Branch">
+            <EntityTypeMapping TypeName="BankIslamModel.User_Branch">
+              <MappingFragment StoreEntitySet="User_Branch">
+                <ScalarProperty Name="bUpdatedBy" ColumnName="bUpdatedBy" />
+                <ScalarProperty Name="bDeclinedBy" ColumnName="bDeclinedBy" />
+                <ScalarProperty Name="bApprovedBy" ColumnName="bApprovedBy" />
+                <ScalarProperty Name="bCreatedBy" ColumnName="bCreatedBy" />
+                <ScalarProperty Name="bUpdatedDate" ColumnName="bUpdatedDate" />
+                <ScalarProperty Name="bDeclinedDate" ColumnName="bDeclinedDate" />
+                <ScalarProperty Name="bApprovedDate" ColumnName="bApprovedDate" />
+                <ScalarProperty Name="bCreatedDate" ColumnName="bCreatedDate" />
+                <ScalarProperty Name="bCloseTime" ColumnName="bCloseTime" />
+                <ScalarProperty Name="bOpenTime" ColumnName="bOpenTime" />
+                <ScalarProperty Name="bSunday" ColumnName="bSunday" />
+                <ScalarProperty Name="bSaturday" ColumnName="bSaturday" />
+                <ScalarProperty Name="bFriday" ColumnName="bFriday" />
+                <ScalarProperty Name="bThursday" ColumnName="bThursday" />
+                <ScalarProperty Name="bWednesday" ColumnName="bWednesday" />
+                <ScalarProperty Name="bTuesday" ColumnName="bTuesday" />
+                <ScalarProperty Name="bMonday" ColumnName="bMonday" />
+                <ScalarProperty Name="bStatus" ColumnName="bStatus" />
+                <ScalarProperty Name="bDesc" ColumnName="bDesc" />
+                <ScalarProperty Name="bID" ColumnName="bID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Restriction_Menu">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Restriction_Menu">
+              <MappingFragment StoreEntitySet="MDM_Restriction_Menu">
+                <ScalarProperty Name="Partition" ColumnName="Partition" />
+                <ScalarProperty Name="NumberType" ColumnName="NumberType" />
+                <ScalarProperty Name="GroupHeader" ColumnName="GroupHeader" />
+                <ScalarProperty Name="RGroup" ColumnName="RGroup" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="Queue" ColumnName="Queue" />
+                <ScalarProperty Name="RestrictionDesc" ColumnName="RestrictionDesc" />
+                <ScalarProperty Name="RestrictionName" ColumnName="RestrictionName" />
+                <ScalarProperty Name="RID" ColumnName="RID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_General_BranchID">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_General_BranchID">
+              <MappingFragment StoreEntitySet="MDM_Profile_General_BranchID">
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+                <ScalarProperty Name="Branch_ID" ColumnName="Branch_ID" />
+                <ScalarProperty Name="IID" ColumnName="IID" />
+                <ScalarProperty Name="cProfile_ID" ColumnName="cProfile_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_HttpProxy">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_HttpProxy">
+              <MappingFragment StoreEntitySet="MDM_HttpProxy">
+                <ScalarProperty Name="AllowByPassingProxy" ColumnName="AllowByPassingProxy" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Port" ColumnName="Port" />
+                <ScalarProperty Name="ProxyServer" ColumnName="ProxyServer" />
+                <ScalarProperty Name="ProxyType" ColumnName="ProxyType" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MDM_Profile_General">
+            <EntityTypeMapping TypeName="BankIslamModel.MDM_Profile_General">
+              <MappingFragment StoreEntitySet="MDM_Profile_General">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="LastUpdateBy" ColumnName="LastUpdateBy" />
+                <ScalarProperty Name="pStatus" ColumnName="pStatus" />
+                <ScalarProperty Name="CProfileId" ColumnName="CProfileId" />
+                <ScalarProperty Name="LastUpdateDate" ColumnName="LastUpdateDate" />
+                <ScalarProperty Name="Profile_Enroll_Path" ColumnName="Profile_Enroll_Path" />
+                <ScalarProperty Name="Profile_APNS_Path" ColumnName="Profile_APNS_Path" />
+                <ScalarProperty Name="Branch_ID" ColumnName="Branch_ID" />
+                <ScalarProperty Name="AutomaticallyRemoveProfile_Hours" ColumnName="AutomaticallyRemoveProfile_Hours" />
+                <ScalarProperty Name="AutomaticallyRemoveProfile_Days" ColumnName="AutomaticallyRemoveProfile_Days" />
+                <ScalarProperty Name="AutomaticallyRemoveProfile_Date" ColumnName="AutomaticallyRemoveProfile_Date" />
+                <ScalarProperty Name="AutomaticallyRemoveProfile" ColumnName="AutomaticallyRemoveProfile" />
+                <ScalarProperty Name="AuthorizationPassword" ColumnName="AuthorizationPassword" />
+                <ScalarProperty Name="Security" ColumnName="Security" />
+                <ScalarProperty Name="ConsentMessage" ColumnName="ConsentMessage" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Organization" ColumnName="Organization" />
+                <ScalarProperty Name="Identifier" ColumnName="Identifier" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Profile_ID" ColumnName="Profile_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram DiagramId="16f8508037d64c45bd948e9e1e0d9187" Name="Diagram1">
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_Cellular" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_LDAP" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_LDAP_SearchSettings" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_Passcode" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_Restriction" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_VPN" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_WIFI" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_Restriction_Advance" Width="1.5" PointX="6.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.User_Branch" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Restriction_Menu" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_General_BranchID" Width="1.5" PointX="8.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_HttpProxy" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BankIslamModel.MDM_Profile_General" Width="1.5" PointX="10.75" PointY="4.75" IsExpanded="true" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

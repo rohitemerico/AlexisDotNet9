@@ -1,0 +1,71 @@
+﻿/* ---------------------------------------------------
+    Css Start Here
+----------------------------------------------------- */
+.modal1 {
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    background-color: rgba(50,50,50, 0.95);
+}
+
+.overlay-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+    .overlay-content hr {
+        border: 1px solid #E8E8E8;
+        margin-top: 15px;
+        margin-bottom: 15px;
+        position: absolute;
+        width: 86%;
+        left: 7%;
+    }
+
+    .overlay-content .hr1 {
+        top: 50px;
+    }
+
+    .overlay-content .hr2 {
+        bottom: 50px;
+    }
+
+    .overlay-content .section {
+        text-align: left;
+        position: absolute;
+        left: 10%;
+    }
+
+    .overlay-content .caption {
+        top: 30px;
+        font-size: 18px;
+    }
+
+    .overlay-content .middle {
+        font-size: 14px;
+        font-family: 'ITC Avant Garde Gothic Std, Book';
+        top: 90px;
+        width: 80%;
+    }
+
+    .overlay-content .bottom {
+        bottom: 20px;
+    }
+
+.closebtn {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    font-size: 40px;
+    padding: 0px;
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+}

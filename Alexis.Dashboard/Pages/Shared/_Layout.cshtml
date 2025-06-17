@@ -1,0 +1,168 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<title>@ViewData["Title"] - V-Series</title>
+
+	<!-- Styles -->
+	<!-- Font Awesome 4.7-->
+	<link href="~/css/Font-Awesome-4.7.0/font-awesome.css" rel="stylesheet" />
+	<!-- Bootstrap 4 -->
+	<link rel="stylesheet" href="~/css/bootstrap-4.1.3/bootstrap.min.css" />
+
+	<!-- CustomScrollbar .css (for Menu)  -->
+	<link rel="stylesheet" href="~/css/jquery.mCustomScrollbar.css" />
+
+	<!--Chart.js 3.5.1-->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+	<!--Custom Style-->
+	<link rel="stylesheet" href="~/css/my-master.css" />
+	<link rel="stylesheet" href="~/css/General.css" />
+	<link href="~/css/map.css" rel="stylesheet" />
+	<!-- Tabs -->
+	<link rel="stylesheet" href="~/css/BlankPage.css" />
+
+	<!-- Table CSS -->
+	<link rel="stylesheet" href="~/css/Elements.css" />
+	<link rel="stylesheet" href="~/css/CustomTelerikRadGrid.css" />
+	<link rel="stylesheet" href="~/css/popupDialoguebox.css" />
+
+	<script language="javascript" type="text/javascript">
+		window.history.forward();
+
+		window.onload = function () {
+			document.onkeydown = function (e) {
+				return (e.which || e.keyCode) != 116;
+			};
+		}
+	</script>
+
+
+	<!-- jQuery CDN -->
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+	<!-- Popper.JS -->
+	<script src="~/js/popper.min.js"></script>
+	@* <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script> *@
+	<!-- Bootstrap JS -->
+	<script src="~/js/bootstrap.min.js"></script>
+	@* <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script> *@
+	<!-- jQuery Custom Scroller CDN -->
+	<script src="~/js/jquery.mcustomscrollbar.concat.min.js"></script>
+	@* <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script> *@
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#sidebar").mCustomScrollbar({
+				theme: "minimal"
+			});
+
+			$('#dismiss, .overlay').on('click', function () {
+				$('#sidebar').removeClass('active');
+				$('.overlay').removeClass('active');
+			});
+
+			$('#sidebarCollapse').on('click', function () {
+				$("#offcanvasExample").hide();
+				$('#sidebar').addClass('active');
+				$('.overlay').addClass('active');
+				$('.collapse.in').toggleClass('in');
+				$('a[aria-expanded=true]').attr('aria-expanded', 'false');
+			});
+		});
+
+		//Global Modal
+		function UpdateModalMessage(title, body, href) {
+			document.getElementById('gModalTitle').innerText = title;
+			document.getElementById('gModalBody').innerText = body;
+			document.getElementById('gModalLink').setAttribute("href", href);
+
+			if (href == "#")
+				document.getElementById('gModalLink').setAttribute("data-dismiss", "modal");
+		}
+
+		function ShowModal() {
+			var myModal = new bootstrap.Modal(document.getElementById('globalModal'), {});
+			myModal.show();
+		}
+
+		//function to auto adjust the kendo UI grid
+		function onGridDataBound(e) {
+			var grid = this;
+			var columns = grid.columns;
+			for (var i = 0; i < columns.length; i++) {
+				grid.autoFitColumn(i);
+			}
+			$(".k-grid-header-table").css("width", "100%");
+			$(".k-grid-table").css("width", "100%");
+		}
+	</script>
+	<!-- Kendo UI Core Styles -->
+	<link href="~/css/telerik/bootstrap-main.css" rel="stylesheet" />
+	<link href="~/css/telerik/default-main.css" rel="stylesheet" />
+	<!-- Kendo UI Core Scripts -->
+	<script src="~/js/kendo.all.min.js"></script>
+	<script src="~/js/telerik-license.js"></script>
+	<script src="~/js/kendo.aspnetmvc.min.js"></script>
+	<script src="~/js/jszip.min.js"></script>
+
+	
+	@RenderSection("Styles", required: false)
+</head>
+<body oncontextmenu="return false">
+	<div class="wrapper">
+		<!-- Sidebar -->
+		<div id="sidebar">
+			<div class="sidebar_header">
+				<button type="button" id="dismiss">
+					<img src="~/img/Menu/menu_btn_close.png" />
+				</button>
+				<img src="~/img/Logo/logo_alexis_v_series.png" />
+			</div>
+					@Html.Partial("_MenuPartial")
+			<footer class="sticky-footer bg-transparent">
+				<div class="container my-auto">
+					<div class="copyright text-center my-auto">
+						<span>Copyright  Emerico Sdn Bhd. All Rights Reserved</span>
+					</div>
+				</div>
+			</footer>
+		</div>
+		<!-- Page Content  -->
+		<!-- Navbar1  -->
+		<nav id="navbar" class="theme_gradient">
+			<div class="row">
+				<div class="col p-0 m-0">
+					<div class="navbar_header">
+						<button type="button" id="sidebarCollapse">
+							<img src="~/img/Menu/menu_btn.png" />
+						</button>
+						<img src="~/img/Logo/logo_alexis_v_series.png" />
+					</div>
+				</div>
+				<!-- User Information -->
+				<div class="col p-0 m-0 text-white">
+					<div class="d-flex flex-wrap justify-content-end align-content-center">
+						<label id="lblWelUsr" style="font-size: 16px;">@ViewData["User"]</label>
+					</div>
+					<div class="d-flex flex-wrap justify-content-end align-content-center">
+						<label id="lblLastLogin" style="font-size: 10px;">@ViewData["LastLogin"]</label>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Main Content -->
+		<div class="main-content" style="background-color: rgba(250,250,250,1);">
+			@RenderBody()
+		</div>
+	</div>
+
+	@RenderSection("Scripts", required: false)
+</body>
+</html>

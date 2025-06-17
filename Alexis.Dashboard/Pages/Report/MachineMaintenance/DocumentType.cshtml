@@ -1,0 +1,56 @@
+@page
+@model Alexis.Dashboard.Pages.Report.MachineMaintenance.DocumentTypeModel
+@{
+    ViewData["Title"] = "Report > Machine Maintenance > Document Type";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<form method="post">
+    <nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+        <div class="container-fluid row align-items-center flex-wrap">
+            <div class="col-12 col-lg-auto mb-2">
+                <div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+                    <label id="LabelTitle">@ViewData["Title"]</label>
+                </div>
+            </div>
+            <!-- NavBar2: Right -->
+            <div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+                <!-- Refresh -->
+                <button class="btn reportBtn theme_outline_only_btn" asp-page-handler="Clear" type="submit"><i class="fa fa-refresh fa-sm"></i> Refresh </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="contentRoot navbar navbar-default">
+        @(Html.Kendo().Grid(Model.DocTypes)
+            .Name("DocumentTypeGrid")
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.dName).Title("Document Name");
+                columns.Bound(c => c.dDesc).Title("Description");
+                columns.Bound(c => c.CComponentID).Title("Component");
+                columns.Bound(c => c.txtStatus).Title("Status");
+                columns.Bound(c => c.dCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+                columns.Bound(c => c.CreatedBy).Title("Created By");
+                columns.Bound(c => c.dUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+                columns.Bound(c => c.UpdatedBy).Title("Updated By");
+            })
+            .ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); })
+            .Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+            .Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+            .Scrollable(s => s.Height("calc(80vh - 200px)"))
+            .HtmlAttributes(new { style = "margin: 0 15px;" })
+            .Sortable()
+            .Search(s =>
+            {
+                s.Field(o => o.dName, "contains");
+                s.Field(o => o.dDesc, "contains");
+                s.Field(o => o.CComponentID, "contains");
+                s.Field(o => o.txtStatus, "contains");
+                s.Field(o => o.CreatedBy, "contains");
+                s.Field(o => o.UpdatedBy, "contains");
+            })
+            .Events(e => e.DataBound("onGridDataBound"))
+        )
+    </div>
+</form>

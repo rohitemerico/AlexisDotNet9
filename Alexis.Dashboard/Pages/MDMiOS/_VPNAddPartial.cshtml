@@ -1,0 +1,261 @@
+﻿@model VPNViewModel
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<h4 class="modal-title">
+				VPN Details
+				<input type="hidden" ID="Profile_VPN_ID" value="@Model.Profile_VPN_ID" />
+			</h4>
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		</div>
+		<div class="modal-body">
+			<div id="pnlVPN">
+				<div class="form-group">
+					<label class="control-label">Connection Name</label>
+					<br />
+					Display name of the connection (displayed on the device)
+					<br />
+					<input type="text" asp-for="ConnectionName" class="form-control req" required placeholder="[required]" />
+				</div>
+
+				<div class="form-group">
+					<label class="control-label">Connection Type</label>
+					<br />
+					Type of connection enabled by this policy
+					<br />
+				</div>
+
+				<select asp-for="ConnectionType" class="form-control" onchange="ddlConnType_SelectedIndexChanged()">
+					<option value="L2TP">L2TP</option>
+					<option value="IPsec">IPsec</option>
+				</select>
+
+				<div id="pnlL2TP">
+					<div class="form-group">
+						<label class="control-label">Server</label>
+						<br />
+						Hostname or IP address for server
+						<br />
+						<input type="text" asp-for="L2TP_Server" class="form-control req" required placeholder="[required]" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">Account</label>
+						<br />
+						User account for authentication the connection
+						<input type="text" asp-for="L2TP_Account" class="form-control req" required placeholder="[set on device]" />
+					</div>
+					<div class="form-group">
+						<label class="control-label">User Authentication</label>
+						<br />
+						Authentication type of connection
+						<br />
+						<div class="radio">
+							<label><input type="radio" asp-for="L2TP_UserAuthentication_RSASecurID" value="RSASecureID" /> RSA SecureID</label>
+						</div>
+						<div class="radio">
+							<label><input type="radio" asp-for="L2TP_UserAuthentication_RSASecurID" value="Password" /> Password</label>
+						</div>
+						<input type="password" asp-for="L2TP_UserAuthentication_Password" placeholder="[Password]" class="form-control" />
+					</div>
+
+					<div class="checkbox">
+						<label><input type="checkbox" asp-for="L2TP_SendAllTrafficeThroughVPN" /> Send All Traffic</label>
+					</div>
+					<p>Routes all network traffic through the VPN connection</p>
+
+					<div class="form-group">
+						<label class="control-label">Machine Authentication</label>
+						<br />
+						Authentication type for connection
+						<br />
+						<select asp-for="L2TP_MachineAuthentication" class="form-control">
+							<option value="SharedSecretGroupName">Shared Secret / Group Name</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Group Name</label>
+						<br />
+						Group identifier for the connection
+						<input type="text" asp-for="L2TP_GroupName" class="form-control" placeholder="[optional]" onchange="txtGroupNameL2TP_TextChanged()" />
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Shared Secret</label>
+						<br />
+						Shared secret for the connection
+						<input type="text" asp-for="L2TP_SharedSecret" placeholder="[optional]" class="form-control" />
+						<br />
+
+						<div id="pnlHybridL2TP" style="display:none;">
+							<div class="checkbox">
+								<label><input type="checkbox" asp-for="L2TP_UseHybridAuthentication" /> Use Hybrid Authentication</label>
+							</div>
+							<p>Authentication using secret, name, and server-side certificate.</p>
+						</div>
+
+						<div class="checkbox">
+							<label><input type="checkbox" asp-for="L2TP_PromptForPassword" /> Prompt for Password</label>
+						</div>
+						<p>Prompt user for password on the device</p>
+					</div>
+
+
+					<div class="form-group">
+						<label class="control-label">Proxy Setup</label>
+						<br />
+						Configures proxies to be used with this VPN connection.
+						<br />
+						<select asp-for="L2TP_ProxySetup" class="form-control" onchange="ddlProxySetupVPNL2TP_Changed()">
+							<option value="None">None</option>
+							<option value="Manual">Manual</option>
+							<option value="Automatic">Automatic</option>
+						</select>
+					</div>
+
+					<div id="pnlManualVPN" style="display:none;">
+						<div class="form-group">
+							<label class="control-label">Server and Port</label>
+							<br />
+							Hostname or IP address, and port number for the proxy server
+							<br />
+							<input type="text" asp-for="L2TP_ProxySetup_Server" placeholder="[required]" class="form-control reqwifi" style="display: inline-block; width:217px;" required="required" />
+							<label>:</label>
+							<input type="text" asp-for="L2TP_ProxySetup_Port" style="display: inline-block; width:50px;" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label class="control-label">Authentication</label>
+							<br />
+							Username used to connect to the proxy
+							<input type="text" asp-for="L2TP_ProxySetup_Authentication" class="form-control" placeholder="[set on device]" />
+						</div>
+						<div class="form-group">
+							<label class="control-label">Password</label>
+							<br />
+							Password used to authenticate with the proxy
+							<input type="password" asp-for="L2TP_ProxySetup_Password" class="form-control" />
+						</div>
+					</div>
+
+					<div id="pnlAutomatic" style="display:none;">
+						<div class="form-group">
+							<label class="control-label">Proxy Server URL</label>
+							<br />
+							URL used to retrieve proxy settings
+							<input type="text" asp-for="L2TP_ProxySetupURL" class="form-control" />
+						</div>
+					</div>
+				</div>
+
+				<div id="pnlIpSec" style="display:none;">
+					<div class="form-group">
+						<label class="control-label">Server</label>
+						<br />
+						Hostname or IP address for server
+						<input type="text" asp-for="IPSEC_SERVER" required class="form-control req" placeholder="[required]" />
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Account</label>
+						<br />
+						User account for authenticating the connection
+						<input type="text" asp-for="IPSEC_Account" required class="form-control req" placeholder="[set on device]" />
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Password</label>
+						<br />
+						Password for authenticating the connection
+						<input type="password" asp-for="IPSEC_Account_Password" required class="form-control req" placeholder="[set on device]" />
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Machine Authentication</label>
+						<br />
+						Authentication type for connection
+						<br />
+						<select asp-for="IPSEC_MachineAuthentication" class="form-control">
+							<option value="SharedSecretGroupName">Shared Secret / Group Name</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Group Name</label>
+						<br />
+						Group identifier for the connection
+						<input type="text" asp-for="IPSEC_GroupName" class="form-control" placeholder="[optional]" onchange="txtGroupNameIpSec_TextChanged()" />
+					</div>
+
+					<div class="form-group">
+						<label class="control-label">Shared Secret</label>
+						<br />
+						Shared secret for the connection
+						<input type="text" asp-for="IPSEC_SharedSecret" class="form-control" placeholder="[optional]" />
+					</div>
+
+					<div id="pnlHybrid" style="display:none;">
+						<div class="checkbox">
+							<label><input type="checkbox" asp-for="IPSEC_UseHybridAuthentication" /> Use Hybrid Authentication</label>
+						</div>
+						<p>Authentication using secret, name, and server-side certificate.</p>
+					</div>
+
+					<div class="checkbox">
+						<label><input type="checkbox" asp-for="IPSEC_PromptForPassword" /> Prompt for Password</label>
+					</div>
+					<p>Prompt user for password on the device</p>
+
+					<div class="form-group">
+						<label class="control-label">Proxy Setup</label>
+						<br />
+						Configures proxies to be used with this VPN connection.
+						<br />
+						<select asp-for="IPSEC_ProxySetup" class="form-control" onchange="ddlProxySetupVPNIPSEC_Changed()">
+							<option value="None">None</option>
+							<option value="Manual">Manual</option>
+							<option value="Automatic">Automatic</option>
+						</select>
+					</div>
+
+					<div id="pnlManualIPSECVPN" style="display:none;">
+						<div class="form-group">
+							<label class="control-label">Server and Port</label>
+							<br />
+							Hostname or IP address, and port number for the proxy server
+							<br />
+							<input type="text" asp-for="IPSEC_Proxy_Server" placeholder="[required]" class="form-control reqwifi" style="display: inline-block; width:217px;" required="required" />
+							<label>:</label>
+							<input type="text" asp-for="IPSEC_Proxy_Port" style="display: inline-block; width:50px;" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label class="control-label">Authentication</label>
+							<br />
+							Username used to connect to the proxy
+							<input type="text" asp-for="IPSEC_Authentication" class="form-control" placeholder="[set on device]" />
+						</div>
+						<div class="form-group">
+							<label class="control-label">Password</label>
+							<br />
+							Password used to authenticate with the proxy
+							<input type="password" asp-for="IPSEC_Password" class="form-control" />
+						</div>
+					</div>
+
+					<div id="pnlAutomaticIPSEC" style="display:none;">
+						<div class="form-group">
+							<label class="control-label">Proxy Server URL</label>
+							<br />
+							URL used to retrieve proxy settings
+							<input type="text" asp-for="IPSEC_ProxyServerURL" class="form-control" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+		<div class="modal-footer">
+			<a title="btnConfirm" class="btn btn-primary" style="border-radius: 2px 2px 2px 2px;" ID="lBVPN" onclick="btnConfirmVPN_Click()">Proceed</a>
+		</div>
+	</div>
+</div>

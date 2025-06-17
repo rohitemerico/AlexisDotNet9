@@ -1,0 +1,940 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.KioskManagementModel
+@using Alexis.Dashboard.Helper
+@{
+	ViewData["Title"] = "Machine Checker Maker";
+	var tabEnumNames = Enum.GetNames(typeof(MachineTabGroup));
+	var currentTabName = Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab);
+	string activateTabClass = Model.ActivateTab ?? "active";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+
+@section Styles {
+	<link href="~/css/reporting/navtabs.css" rel="stylesheet" />
+	<!-- Bootstrap 5-->
+	<link href="~/css/bootstrap-5.0.2-dist/bootstrap.min.css" rel="stylesheet" />
+	<script src="~/js/bootstrap-5.0.2-dist/bootstrap.bundle.min.js"></script>
+	<style>
+		a {
+			color: inherit;
+			text-decoration: inherit;
+		}
+
+			a:hover {
+				color: inherit;
+			}
+
+		.tbl-details, .tbl-details th, .tbl-details td {
+			border: 1px solid black;
+		}
+	</style>
+}
+
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();">
+				<i class="fa fa-refresh fa-sm pr-1"></i>Refresh </>
+			</button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Reject Modal -->
+	<div class="modal" id="myRejectModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form method="post">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Reject Confirmation</h4>
+					</div>
+					<!-- Modal body -->
+					<div class="modal-body">
+						<input type="hidden" asp-for="EntityIdToReject" />
+						<input type="hidden" asp-for="TargetTabToReject" />
+
+						Are you sure that you want to reject the selected checker maker?
+
+						<div class="my-3 font_medium" style="font-size: 14px; color: #5D5D5D;">
+							Remarks &nbsp <i class="fa fa-asterisk text-danger" style="font-size: smaller;"></i>
+						</div>
+						<textarea class="form-control" asp-for="RejectRemarks" style="font-size:14px;height:130px;"></textarea>
+					</div>
+					<!-- Modal footer -->
+					<div class="modal-footer">
+						<button type="button" class="btn theme_outline_only_btn" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" asp-page-handler="ConfirmReject" class="btn theme_gradient_btn">Confirm</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Decline Modal -->
+	<div class="modal" id="myDeclineModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form method="post">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Decline Confirmation</h4>
+					</div>
+					<!-- Modal body -->
+					<div class="modal-body">
+						<input type="hidden" asp-for="EntityIdToDecline" />
+						<input type="hidden" asp-for="TargetTabToDecline" />
+
+						Are you sure that you want to decline the selected checker maker?
+
+						<div class="my-3 font_medium" style="font-size: 14px; color: #5D5D5D;">
+							Remarks &nbsp <i class="fa fa-asterisk text-danger" style="font-size: smaller;"></i>
+						</div>
+						<textarea class="form-control" asp-for="RejectRemarks" style="font-size:14px;height:130px;"></textarea>
+					</div>
+					<!-- Modal footer -->
+					<div class="modal-footer">
+						<button type="button" class="btn theme_outline_only_btn" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" asp-page-handler="ConfirmDecline" class="btn theme_gradient_btn">Decline</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Approve Modal -->
+	<div class="modal" id="myApproveModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form method="post">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Approve Confirmation</h4>
+					</div>
+					<!-- Modal body -->
+					<div class="modal-body">
+						<input type="hidden" asp-for="EntityIdToApprove" />
+						<input type="hidden" asp-for="TargetTabToApprove" />
+						Are you sure that you want to approve the selected checker maker?
+					</div>
+					<!-- Modal footer -->
+					<div class="modal-footer">
+						<button type="button" class="btn theme_outline_only_btn" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" asp-page-handler="ConfirmApprove" class="btn theme_gradient_btn">Confirm</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button type="button" class="btn theme_gradient_btn" data-bs-dismiss="modal">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		@for (int i = 0; i < tabEnumNames.Length; i++)
+		{
+			var tabName = tabEnumNames[i];
+			var isActive = currentTabName == tabName;
+			var tabClass = "nav-link" + (isActive ? $" {activateTabClass}" : "");
+
+			<li class="nav-item" role="presentation">
+				<button class="@tabClass" id="tab_@tabName" data-bs-toggle="tab" data-bs-target="#@tabName" type="button" role="tab" aria-controls="@tabName" aria-selected="true" onclick="onGridClick('@tabName');">@tabName.Replace("_", " ")</button>
+			</li>
+		}
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<!-- Tab 1 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 1) ? activateTabClass : "")" id="Alert" role="tabpanel" aria-labelledby="tab_Alert">
+			@if (Model.AlertVisible)
+			{
+				@(Html.Kendo().Grid(Model.Alerts)
+							.Name("AlertGrid")
+							.Columns(columns =>
+							{
+								columns.Template(@<text>
+				<div class="text-center">
+					# if (AllowView) { #
+					<span class="button" data-toggle="tooltip" title="View">
+						<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= aID #')" />
+					</span>
+					# } #
+					# if (AllowApprove) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Alert','#= aID #')">
+						<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+					</span>
+					# } #
+					# if (AllowReject) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Alert','#= aID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+					# if (AllowDecline) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Alert','#= aID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+				</div>
+			</text>
+							).Title("Options").Width(150);
+								columns.Bound(p => p.aDesc).Title("Alert Name");
+								columns.Bound(p => p.aMinCardBal).Title("Low Card Balance");
+								columns.Bound(p => p.aMinChequeBal).Title("Low Cheque Balance");
+								columns.Bound(p => p.aMinPaperBal).Title("Low Paper Balance");
+								columns.Bound(p => p.aMinRejCardBal).Title("Low Reject Card Balance");
+								columns.Bound(p => p.aCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(p => p.CreatedName).Title("Created By");
+								columns.Bound(p => p.aUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(p => p.updatedby).Title("Updated By");
+								columns.Bound(p => p.AlertStatus)
+								.Title("Status")
+								.ClientTemplate(
+								"<div style='font-size: 0.85em;'>" +
+								"<span class='#= AlertStatus == \"Active\" ? \"status_active\" : (AlertStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+								"#= AlertStatus #" +
+								"</span>" +
+								"</div>"
+								).Sortable(true);
+							})
+							.ToolBar(t => t.Search())
+							.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+							.Scrollable(s => s.Height("calc(80vh - 200px)"))
+							.HtmlAttributes(new { style = "margin: 0 15px;" })
+							.Sortable()
+							.Search(s => { s.Field(o => o.aDesc, "contains"); })
+							.ClientDetailTemplateId("template1")
+							.Events(e => e.DataBound("onGridDataBound"))
+							)
+				<script id="template1" type="text/kendo-tmpl">
+					@(Html.Kendo().TabStrip()
+																					.Name("tabStrip_#=aID#")
+																					.SelectedIndex(0)
+																					.Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+																					.Items(items =>
+																					{
+																						items.Add().Text("Alert Maintenance Information").Content(
+																						"<div class='details1'>" +
+																						"<table style='width:100%;' class='tbl-details'>" +
+																						"<tr><td><b>People In Charge</b></td><td>Email</td><td>SMS</td><td>Time Interval (Hours)</td></tr>" +
+																						"<tr><td>Card Alert</td><td>#= aCardEmail #</td><td>#= aCardSms #</td><td>#= aCardTInterval #</td></tr>" +
+																						"<tr><td>Cheque Alert</td><td>#= aChequeEmail #</td><td>#= aChequeSms #</td><td>#= aChequeTInterval #</td></tr>" +
+																						"<tr><td>Maintenance Alert</td><td>#= aMaintenanceEmail #</td><td>#= aMaintenanceSms #</td><td>#= aMaintenanceTInterval #</td></tr>" +
+																						"<tr><td>Security Alerts</td><td>#= aSecurityEmail #</td><td>#= aSecuritySms #</td><td>#= aSecurityTInterval #</td></tr>" +
+																						"<tr><td>Trouble Shooting Alert</td><td>#= aTroubleshootEmail #</td><td>#= aTroubleshootSms #</td><td>#= aTroubleshootTInterval #</td></tr>" +
+																						"</table>" +
+																						"</div>" +
+
+																						"<div class='details2'></br>" +
+																						"<table style='width:100%;' class='tbl-details'>" +
+																						"<tr><td colspan='4'><b>Low Cartridge Balance</b></td></tr>" +
+																						"<tr><td style='width:25%;'>Low Ribbon Indent Front Balance</td><td style='width:25%;'>#= AMINRIBFRONTBAL #</td><td style='width:25%;'>Low Ribbon Indent Rear Balance</td><td style='width:25%;'>#= AMINRIBREARBAL #</td></tr>" +
+																						"<tr><td style='width:25%;'>Low Ribbon Tipping Balance</td><td style='width:25%;'>#= AMINRIBTIPBAL #</td><td style='width:25%;'>Low Cheque Printer Catridge</td><td style='width:25%;'>#= AMINCHEQUEPRINTCATRIDGE #</td></tr>" +
+																						"<tr><td style='width:25%;'>Low Printer Catridge Balance</td><td style='width:25%;'>#= AMINCATRIDGEBAL #</td></tr>" +
+																						"</table>" +
+																						"</div>"
+																						);
+																					}).ToClientTemplate()
+																					)
+				</script>
+			}
+		</div>
+		<!-- Tab 2 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 2) ? activateTabClass : "")" id="Application" role="tabpanel" aria-labelledby="tab_Application">
+			@if (Model.AppVisible)
+			{
+				@(Html.Kendo()
+							.Grid(Model.Applications)
+							.Name("ApplicationsGrid")
+							.Columns(columns =>
+							{
+								columns.Template(@<text>
+				<div class="text-center">
+					# if (AllowView) { #
+					<span class="button" data-toggle="tooltip" title="View">
+						<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= SysID #')" />
+					</span>
+					# } #
+					# if (AllowApprove) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('App','#= SysID #')">
+						<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+					</span>
+					# } #
+					# if (AllowReject) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('App','#= SysID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+					# if (AllowDecline) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('App','#= SysID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+				</div>
+			</text>).Title("Options").Width(250);
+								columns.Bound(p => p.VER).Title("Version");
+								columns.Bound(p => p.CREATEDDATETIME).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(p => p.FPATH).Title("URL");
+								columns.Bound(p => p.Pilot).Title("Pilot");
+								columns.Bound(p => p.FStatus).Title("Status")
+								.ClientTemplate(
+								"<div style='font-size: 0.85em;'>" +
+								"<span class='#= FStatus == \"Active\" ? \"status_active\" : (FStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+								"#= FStatus #" +
+								"</span>" +
+								"</div>"
+								)
+								.Sortable(true);
+								columns.Bound(p => p.COUNTDL).Title("Total Segment");
+							})
+							.ToolBar(t => t.Search())
+							.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+							.Scrollable(s => s.Height("calc(80vh - 200px)"))
+							.HtmlAttributes(new { style = "margin: 0 15px;" })
+							.Sortable()
+							.Search(s =>
+							{
+								s.Field(o => o.VER, "contains");
+								s.Field(o => o.FPATH, "contains");
+								s.Field(o => o.Pilot, "contains");
+								s.Field(o => o.FStatus, "contains");
+								s.Field(o => o.COUNTDL, "contains");
+							})
+							.Events(e => e.DataBound("onGridDataBound"))
+							)
+			}
+		</div>
+		<!-- Tab 3 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 3) ? activateTabClass : "")" id="Operating_Hour" role="tabpanel" aria-labelledby="tab_Operating_Hour">
+			@if (Model.BizOpVisible)
+			{
+				<div id="OperatingHourCreate">
+					<div id="radGrid_OperatingHour">
+						@(
+													Html.Kendo().Grid(Model.BusinessMaintenanceList)
+													.Name("BusinessMaintenanceGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= bId #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('BizOp','#= bId #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('BizOp','#= bId #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('BizOp','#= bId #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+						</div>
+
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(u => u.bDesc).Title("Name").Filterable(true);
+														columns.Bound(p => p.bSunday).Title("Sunday");
+														columns.Bound(p => p.bMonday).Title("Monday");
+														columns.Bound(p => p.bTuesday).Title("Tuesday");
+														columns.Bound(p => p.bWednesday).Title("Wednesday");
+														columns.Bound(p => p.bThursday).Title("Thursday");
+														columns.Bound(p => p.bFriday).Title("Friday");
+														columns.Bound(p => p.bSaturday).Title("Saturday");
+														columns.Bound(p => p.bStatus)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= bStatus == \"Active\" ? \"status_active\" : (bStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= bStatus #" +
+														"</span>" +
+														"</div>"
+														)
+														.Sortable(true);
+														columns.Bound(p => p.BCREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(p => p.CreatedBy).Title("Created By");
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s =>
+													{
+														s.Field(o => o.bDesc, "contains");
+													})
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Tab 4 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 4) ? activateTabClass : "")" id="Card" role="tabpanel" aria-labelledby="tab_Card">
+			@if (Model.CardVisible)
+			{
+				<div id="CardCreate">
+					<div id="radGrid_Card">
+						@(
+													Html.Kendo().Grid(Model.Cards)
+													.Name("CardGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= cID #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Card','#= cID #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Card','#= cID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Card','#= cID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+						</div>
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(p => p.cDesc).Title("Card Description");
+														columns.Bound(p => p.txtContactless).Title("Contact Type");
+														columns.Bound(p => p.cType).Title("Card Type");
+														columns.Bound(p => p.cBin).Title("Bin");
+														columns.Bound(p => p.cMask).Title("Mask Settings");
+														columns.Bound(p => p.txtStatus)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= txtStatus == \"Active\" ? \"status_active\" : (txtStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= txtStatus #" +
+														"</span>" +
+														"</div>"
+														);
+														columns.Bound(p => p.cCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(p => p.CreatedName).Title("Created By");
+														columns.Bound(p => p.cUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(p => p.UpdatedName).Title("Updated By");
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s =>
+													{
+														s.Field(o => o.cDesc, "contains");
+													})
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Tab 5 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 5) ? activateTabClass : "")" id="Machine_Management" role="tabpanel" aria-labelledby="tab_Machine_Management">
+			@if (Model.KioskCreateVisible)
+			{
+				<div id="MachineManagementCreate">
+					<div id="radGrid_MachineManagement">
+						@(
+													Html.Kendo().Grid(Model.KioskMaintenanceList)
+													.Name("KioskMaintenanceGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= mid #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Create','#= mid #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Create','#= mid #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Create','#= mid #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+						</div>
+
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(u => u.description).Title("Machine Name");
+														columns.Bound(p => p.mKioskID).Title("Machine ID");
+														columns.Bound(p => p.serial).Title("Machine Serial");
+														columns.Bound(p => p.createddate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(p => p.CreatedBy).Title("Created By");
+														columns.Bound(p => p.lastupdateddate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(p => p.UpdatedBy).Title("Updated By");
+														columns.Bound(p => p.mstatus)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= mstatus == \"Active\" ? \"status_active\" : (mstatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= mstatus #" +
+														"</span>" +
+														"</div>"
+														).Sortable(true);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.ClientDetailTemplateId("template5")
+													.Events(e => e.DetailExpand("onDetail5Expand"))
+													.Search(s =>
+													{
+														s.Field(o => o.description, "contains");
+														s.Field(o => o.mKioskID, "contains");
+														s.Field(o => o.serial, "contains");
+													})
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+						<script id="template5" type="text/kendo-tmpl">
+							@(
+																																																																																																																							Html.Kendo().TabStrip().Name("tab5Strip_#=mid#")
+																																																																																																																																																																			.SelectedIndex(0)
+																																																																																																																																																																			.Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+																																																																																																																																																																			.Items(items =>
+																																																																																																																																																																			{
+																																																																																																																																																																				items.Add().Text("Machine Management Information").Content("<div class='details'><label>Address :</label><b>#= address #</b><br/><label>Location :</label><b>#= latitude # , #= longitude #</b><br/><label>Hopper Template:</label><b>#= hopper #</b><br/><label>Document Template:</label><b>#= document #</b><br/><label>Alert Template:</label><b>#= alert #</b><br/><label>Group Template:</label><b>#= groupdesc #</b><br/><label>Business Hour Template:</label><b>#= businesshour #</b></div>");
+																																																																																																																																																																			}).ToClientTemplate()
+																																																																																																																							)
+						</script>
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Tab 6 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 6) ? activateTabClass : "")" id="Document_Type" role="tabpanel" aria-labelledby="tab_Document_Type">
+			@if (Model.DocTypeVisible)
+			{
+				<div id="DocumentTypeCreate">
+					<div id="radGrid_DocumentType">
+						@(
+													Html.Kendo().Grid(Model.DocTypes)
+													.Name("DocTypeGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= dID #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('DocType','#= dID #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('DocType','#= dID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('DocType','#= dID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+						</div>
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(t => t.dName).Title("Document Type Name");
+														columns.Bound(p => p.txtStatus)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= txtStatus == \"Active\" ? \"status_active\" : (txtStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= txtStatus #" +
+														"</span>" +
+														"</div>"
+														).Sortable(true);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s =>
+													{
+														s.Field(o => o.dName, "contains");
+													})
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Tab 7 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 7) ? activateTabClass : "")" id="Document" role="tabpanel" aria-labelledby="tab_Document">
+			@if (Model.DocVisible)
+			{
+				<div id="DocumentCreate">
+					<div id="radGrid_Document">
+						@(
+													Html.Kendo().Grid(Model.Docs)
+													.Name("DocGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= dID #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Document','#= dID #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Document','#= dID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Document','#= dID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+						</div>
+					</text>
+													).Title("Options").Width(150)
+													.HtmlAttributes(new { @class = "text-center" })
+													.HeaderHtmlAttributes(new { @class = "text-center" });
+														columns.Bound(t => t.dDesc).Title("Document Description").Sortable(true);
+														columns.Bound(p => p.dCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(p => p.CreatedBy).Title("Created By");
+														columns.Bound(p => p.docStatus)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= docStatus == \"Active\" ? \"status_active\" : (docStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= docStatus #" +
+														"</span>" +
+														"</div>"
+														).Sortable(true);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s => { s.Field(o => o.dDesc, "contains"); })
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Tab 8 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 8) ? activateTabClass : "")" id="Group" role="tabpanel" aria-labelledby="tab_Group">
+			@if (Model.GroupVisible)
+			{
+				<div id="GroupCreate">
+					<div id="radGrid_Group">
+						@(
+													Html.Kendo().Grid(Model.GroupMaintenanceList)
+													.Name("GroupMaintenanceGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= kId #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Group','#= kId #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Group','#= kId #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Group','#= kId #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+						</div>
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(p => p.Description).Title("Template Name");
+														columns.Bound(p => p.CreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(p => p.Status)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= Status #" +
+														"</span>" +
+														"</div>"
+														).Sortable(true);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.ClientDetailTemplateId("template8")
+													.Events(e => e.DetailExpand("onDetail8Expand"))
+													.Search(s => { s.Field(o => o.Description, "contains"); })
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+						<script id="template8" type="text/kendo-tmpl">
+							@(
+																																																																																																		Html.Kendo().TabStrip().Name("tab8Strip_#=kId#")
+																																																																																																																																																					.SelectedIndex(0)
+																																																																																																																																																					.Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+																																																																																																																																																					.Items(items =>
+																																																																																																																																																					{
+																																																																																																																																																						items.Add().Text("Machine Group Information").Content("<div class='details'><label>Hopper Template:</label><b>#= hopper #</b><br/><label>Document Template:</label><b>#= document #</b><br/><label>Alert Template:</label><b>#= alert #</b><br/><label>Business Hour Template:</label><b>#= businesshour #</b></div>");
+																																																																																																																																																					}).ToClientTemplate()
+																																																																																																																																																					)
+						</script>
+					</div>
+				</div>
+			}
+		</div>
+		<!-- Tab 9 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MachineTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MachineTabGroup), 9) ? activateTabClass : "")" id="Hopper" role="tabpanel" aria-labelledby="tab_Hopper">
+			@if (Model.HopperVisible)
+			{
+				@(Html.Kendo().Grid(Model.HopperMaintenanceList)
+							.Name("HopperMaintenanceGrid")
+							.Columns(columns =>
+							{
+								columns.Template(@<text>
+				<div class="text-center">
+					# if (AllowView) { #
+					<span class="button" data-toggle="tooltip" title="View">
+						<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= hID #')" />
+					</span>
+					# } #
+					# if (AllowApprove) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Hopper','#= hID #')">
+						<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+					</span>
+					# } #
+					# if (AllowReject) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Hopper','#= hID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+					# if (AllowDecline) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Hopper','#= hID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+				</div>
+
+			</text>).Title("Options");
+								columns.Bound(u => u.hDesc).Title("Hopper");
+								columns.Bound(p => p.hStatus).Title("Status")
+								.ClientTemplate(
+								"<div style='font-size: 0.85em;'>" +
+								"<span class='#= hStatus == \"Active\" ? \"status_active\" : (hStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+								"#= hStatus #" +
+								"</span>" +
+								"</div>"
+								).Sortable(true);
+								columns.Bound(p => p.hCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(p => p.CreatedBy).Title("Created By");
+								columns.Bound(p => p.hUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(p => p.UpdatedBy).Title("Updated By");
+
+							})
+							.ToolBar(t => t.Search())
+							.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+							.Scrollable(s => s.Height("calc(80vh - 200px)"))
+							.HtmlAttributes(new { style = "margin: 0 15px;" })
+							.Sortable()
+							.Search(s => { s.Field(o => o.hDesc, "contains"); })
+							.Events(e => e.DataBound("onGridDataBound"))
+							)
+			}
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+		function onRejectClick(tabCategory, entityId)
+		{
+			document.getElementById('TargetTabToReject').value = tabCategory;
+			document.getElementById('EntityIdToReject').value = entityId;
+			$("#myRejectModal").modal('show');
+			return false;
+		}
+
+		function onDeclineClick(tabCategory, entityId)
+		{
+			document.getElementById('TargetTabToDecline').value = tabCategory;
+			document.getElementById('EntityIdToDecline').value = entityId;
+			$("#myDeclineModal").modal('show');
+			return false;
+		}
+
+		function onApproveClick(tabCategory, entityId)
+		{
+			document.getElementById('TargetTabToApprove').value = tabCategory;
+			document.getElementById('EntityIdToApprove').value = entityId;
+			$("#myApproveModal").modal('show');
+			return false;
+		}
+
+		function onViewClick(entityId)
+		{
+			$.ajax({
+			url: "@Url.Page("/KioskManagement")?handler=View",
+			method: "GET",
+			success: function (data)
+			{
+				if(data.message == 'Success')
+				{
+					const baseUrl = '@Url.Content("~/Compare")';
+					window.location.href = baseUrl + "?id=" + entityId;
+				}
+				else
+				{
+					alert(data.message);
+				}
+			}
+			})
+		}
+
+		function onDetail8Expand(e) {
+			var grid = $("#GroupMaintenanceGrid").data("kendoGrid");
+			grid.tbody.find("tr.k-master-row").each(function ()
+			{
+				var row = $(this);
+				if (row[0] !== e.masterRow[0])
+				{
+					grid.collapseRow(row);
+				}
+			});
+		}
+
+		function onDetail5Expand(e)
+		{
+			var grid = $("#KioskMaintenanceGrid").data("kendoGrid");
+			grid.tbody.find("tr.k-master-row").each(function ()
+			{
+				var row = $(this);
+				if (row[0] !== e.masterRow[0])
+				{
+					grid.collapseRow(row);
+				}
+			});
+		}
+
+		function onGridClick(name)
+		{
+			$.ajax({
+					url: "@Url.Page("/KioskManagement")?handler=ChangeGrid",
+					method: "POST",
+					data: { name: name },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+							window.location.reload();
+					}
+				})
+		}
+	</script>
+}

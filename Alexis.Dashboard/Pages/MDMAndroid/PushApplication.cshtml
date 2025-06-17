@@ -1,0 +1,548 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MDMAndroid.PushApplicationModel
+
+@using Alexis.Dashboard.Helper
+@{
+	ViewData["Title"] = "Push Application";
+	var tabEnumNames = Enum.GetNames(typeof(MDMTabGroup));
+	var currentTabName = Enum.GetName(typeof(MDMTabGroup), Model.CurrentTab);
+	string activateTabClass = Model.ActivateTab ?? "active";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@section Styles {
+	<link href="~/css/reporting/navtabs.css" rel="stylesheet" />
+	<!-- Bootstrap 5-->
+	<link href="~/css/bootstrap-5.0.2-dist/bootstrap.min.css" rel="stylesheet" />
+	<script src="~/js/bootstrap-5.0.2-dist/bootstrap.bundle.min.js"></script>
+	<style>
+		a {
+			color: inherit;
+			text-decoration: inherit;
+		}
+
+			a:hover {
+				color: inherit;
+			}
+	</style>
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+		</div>
+	</div>
+</nav>
+
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button onclick="fnCloseModal();" class="btn theme_gradient_btn">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		@for (int i = 0; i < tabEnumNames.Length; i++)
+		{
+			var tabName = tabEnumNames[i];
+			var isActive = currentTabName == tabName;
+			var tabClass = "nav-link" + (isActive ? $" {activateTabClass}" : "");
+
+			<li class="nav-item" role="presentation">
+				<button class="@tabClass" id="tab_@tabName" data-bs-toggle="tab" data-bs-target="#@tabName" type="button" role="tab" aria-controls="@tabName" aria-selected="true" onclick="onGridClick('@tabName')">@tabName.Replace("_", " ")</button>
+			</li>
+		}
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<!-- Tab 1 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MDMTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MDMTabGroup), 1) ? activateTabClass : "")" id="By_Device" role="tabpanel" aria-labelledby="tab_By_Device">
+			@if (Model.DeviceVisible)
+			{
+				<div id="DeviceCreate">
+					<div id="radGrid_Device">
+						@(Html.Kendo().Grid(Model.Devices)
+													.Name("DeviceGrid")
+													.Columns(columns =>
+													{
+														columns.Bound(u => u.DEVICENAME).Title("Device Name");
+														columns.Bound(u => u.DEVICESTATUS)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= DEVICESTATUS == \"1\" ? \"status_active\" :  \"status_inactive\" #'>" +
+														"#= DEVICESTATUS == \"1\" ? \"Active\" :  \"Inactive\" #" +
+														"</span>" +
+														"</div>"
+														)
+														.Sortable(true);
+														columns.Bound(u => u.enrollDatetime).Title("Enrollment Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.lastSyncDatetime).Title("Last Sync Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.Restriction_LATITUDE).Title("Restriction Location")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span>(" +
+														"#= Restriction_LATITUDE #" + ",#= Restriction_LONGITUDE #" + ")  Radius : " + "#= Restriction_radius #" +
+														" m.</span>" +
+														"</div>"
+														).Width(300);
+														columns.Template(@<text>
+						<select name="ApplicationId-#= deviceMACAdd #" class="select dropdown1" style="min-width: 300px!important">
+							<option value="">--Select an Application--</option>
+							@foreach (var app in Model.Applications)
+							{
+							<option value="@app.APPID">@app.APPLICATION_NAME</option>
+							}
+						</select>
+					</text>).Title("Application List").Width(250);
+														columns.Template(@<text>
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Configure Restrictions" onclick="fnConfigRestrictionsByDevice('#= deviceMACAdd #')">Configure Restrictions</a>
+					</text>).Title("Action").Width(250);
+
+														columns.Template(@<text>
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Push Application" onclick="fnPushApplicationByDevice('#= deviceMACAdd #','#= DEVICENAME #')">Push Application</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove Application" onclick="fnRemoveApplicationByDevice('#= deviceMACAdd #','#= DEVICENAME #')">Remove Application</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Enable Kiosk Mode" onclick="fnEnableKioskModeByDevice('#= deviceMACAdd #','#= DEVICENAME #')">Enable Kiosk Mode</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove Kiosk Mode" onclick="fnRemoveKioskModeByDevice('#= deviceMACAdd #','#= DEVICENAME #')">Remove Kiosk Mode</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Enable GeoFence Mode" onclick="fnEnableGeoFenceModeByDevice('#= deviceMACAdd #','#= DEVICENAME #','#= Restriction_LATITUDE #','#= Restriction_LONGITUDE #','#= Restriction_radius #')">Enable GeoFence Mode</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove GeoFence Mode" onclick="fnRemoveGeoFenceModeByDevice('#= deviceMACAdd #','#= DEVICENAME #','#= Restriction_LATITUDE #','#= Restriction_LONGITUDE #','#= Restriction_radius #')">Remove GeoFence Mode</a>
+					</text>).Title("Controls").Width(300);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s => { s.Field(o => o.DEVICENAME, "contains"); })
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+					</div>
+				</div>
+			}
+
+		</div>
+		<!-- Tab 2 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MDMTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MDMTabGroup), 2) ? activateTabClass : "")" id="By_Device_Group" role="tabpanel" aria-labelledby="tab_By_Device_Group">
+			@if (Model.GroupVisible)
+			{
+				<div id="GroupsCreate">
+					<div id="radGrid_Groups">
+						@(
+													Html.Kendo().Grid(Model.Groups)
+													.Name("GroupsGrid")
+													.Columns(columns =>
+													{
+
+														columns.Bound(u => u.GroupName).Title("Group Name");
+														columns.Bound(u => u.GroupDesc).Title("Group Description");
+														columns.Template(@<text>
+						<select name="GroupId-#= GID #" class="select dropdown1" style="min-width: 300px!important">
+							<option value="">--Select an Application--</option>
+							@foreach (var app in Model.Applications)
+							{
+							<option value="@app.APPID">@app.APPLICATION_NAME</option>
+							}
+						</select>
+					</text>).Title("Application List").Width(250);
+
+														columns.Template(@<text>
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Push Application" onclick="fnPushApplicationByGroup('#= GID #','#= GroupName #')">Push Application</a>
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove Application" onclick="fnRemoveApplicationByGroup('#= GID #','#= GroupName #')">Remove Application</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Enable Kiosk Mode" onclick="fnEnableKioskModeByGroup('#= GID #','#= GroupName #')">Enable Kiosk Mode</a>
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove Kiosk Mode" onclick="fnRemoveKioskModeByGroup('#= GID #','#= GroupName #')">Remove Kiosk Mode</a>
+					</text>).Title("Controls").Width(300);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s => { s.Field(o => o.GroupName, "contains"); s.Field(o => o.GroupDesc, "contains"); })
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+</div>
+
+
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+
+		function fnCloseModal(){
+			$('#myModal').modal('hide');
+		}
+
+		function onGridClick(name) {
+			$.ajax({
+					url: "@Url.Page("/PushApplication")?handler=ChangeGrid",
+					method: "POST",
+					data: { name: name },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+							window.location.reload();
+					}
+				})
+		}
+
+		function fnPushApplicationByDevice(DID, deviceName)
+		{
+			var elementName1 = "ApplicationId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Push Application to "+deviceName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=PushApplicationDevice",
+							method: "POST",
+							data: { DeviceId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+
+		function fnRemoveApplicationByDevice(DID, deviceName)
+		{
+			var elementName1 = "ApplicationId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm remove Application from "+deviceName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=RemoveApplicationDevice",
+							method: "POST",
+							data: { DeviceId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnEnableKioskModeByDevice(DID, deviceName)
+		{
+			var elementName1 = "ApplicationId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Enable Kiosk Mode on "+deviceName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=EnableKioskModeApplicationDevice",
+							method: "POST",
+							data: { DeviceId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnRemoveKioskModeByDevice(DID, deviceName)
+		{
+			var elementName1 = "ApplicationId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Remove Kiosk Mode from "+deviceName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=RemoveKioskModeApplicationDevice",
+							method: "POST",
+							data: { DeviceId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnEnableGeoFenceModeByDevice(DID, deviceName, latitude, longitude, radius)
+		{
+			if(latitude == '0' || longitude =='0' || radius =='0')
+			{
+				alert("Please configure restriction parameters.");
+			}
+			else{
+				var confirmed = confirm("Confirm Enable GeoFence Mode on "+deviceName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=EnableGeoFenceModeDevice",
+							method: "POST",
+							data: { DeviceId: DID },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+
+		function fnRemoveGeoFenceModeByDevice(DID, deviceName, latitude, longitude, radius)
+		{
+			if(latitude == '0' || longitude =='0' || radius =='0')
+			{
+				alert("Please configure restriction parameters.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Remove GeoFence Mode from "+deviceName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=RemoveGeoFenceModeDevice",
+							method: "POST",
+							data: { DeviceId: DID },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+
+
+		function fnPushApplicationByGroup(DID,GroupName)
+		{
+			var elementName1 = "GroupId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Push Application to "+GroupName+" group?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=PushApplicationGroup",
+							method: "POST",
+							data: { GroupId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnRemoveApplicationByGroup(DID, GroupName)
+		{
+			var elementName1 = "GroupId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm remove Application from "+GroupName+" Group?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=RemoveApplicationGroup",
+							method: "POST",
+							data: { GroupId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnEnableKioskModeByGroup(DID, GroupName)
+		{
+			var elementName1 = "GroupId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Enable Kiosk Mode on "+GroupName+" Group?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=EnableKioskModeApplicationGroup",
+							method: "POST",
+							data: { GroupId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnRemoveKioskModeByGroup(DID, GroupName)
+		{
+			var elementName1 = "GroupId-"+DID;
+			var applicationId =  $('[name='+elementName1+']').val();
+
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Remove Kiosk Mode from "+GroupName+" Group?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=RemoveKioskModeApplicationGroup",
+							method: "POST",
+							data: { GroupId: DID,ApplicationId: applicationId },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+
+		function fnEnableGeoFenceModeByGroup(DID, GroupName)
+		{
+			var confirmed = confirm("Confirm Enable GeoFence Mode on "+GroupName+" Group?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/PushApplication")?handler=EnableGeoFenceModeGroup",
+						method: "POST",
+						data: { GroupId: DID },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+
+		function fnRemoveGeoFenceModeByGroup(DID, GroupName)
+		{
+			var confirmed = confirm("Confirm Remove GeoFence Mode from "+GroupName+" Group?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/PushApplication")?handler=RemoveGeoFenceModeGroup",
+						method: "POST",
+						data: { GroupId: DID },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+
+
+		function fnConfigRestrictionsByDevice(DID)
+		{
+
+				$.ajax({
+						url: "@Url.Page("/PushApplication")?handler=ConfigRestrictions",
+						method: "POST",
+						data: { DeviceId: DID },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							if(data.message == 'Success'){
+								window.location.href = "@Url.Content("~/MDMAndroid/ConfigRestrictions")";
+							}
+							else
+							{
+								alert(data.message);
+							}
+						}
+					});
+
+		}
+
+	</script>
+}

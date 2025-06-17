@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configurationSnapshot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-microsoft-com:xml-wcfconfigurationsnapshot">
+  <behaviors />
+  <bindings>
+    <binding digest="System.ServiceModel.Configuration.BasicHttpBindingElement, System.ServiceModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089:&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;Data name=&quot;File_PassSoap12&quot;&gt;&lt;security mode=&quot;Transport&quot; /&gt;&lt;/Data&gt;" bindingType="basicHttpBinding" name="File_PassSoap12" />
+    <binding digest="System.ServiceModel.Configuration.BasicHttpBindingElement, System.ServiceModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089:&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;Data name=&quot;File_PassSoap13&quot; /&gt;" bindingType="basicHttpBinding" name="File_PassSoap13" />
+  </bindings>
+  <endpoints>
+    <endpoint normalizedDigest="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;Data address=&quot;https://staging.emerico.biz/IOS_MDM_File_Pass/File_Pass.asmx&quot; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;File_PassSoap12&quot; contract=&quot;File_Pass.File_PassSoap&quot; name=&quot;File_PassSoap6&quot; /&gt;" digest="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&lt;Data address=&quot;https://staging.emerico.biz/IOS_MDM_File_Pass/File_Pass.asmx&quot; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;File_PassSoap12&quot; contract=&quot;File_Pass.File_PassSoap&quot; name=&quot;File_PassSoap6&quot; /&gt;" contractName="File_Pass.File_PassSoap" name="File_PassSoap6" />
+  </endpoints>
+</configurationSnapshot>

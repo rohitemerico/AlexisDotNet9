@@ -1,0 +1,55 @@
+﻿@page
+@model Alexis.Dashboard.Pages.Report.MachineMaintenance.KioskModel
+@{
+	ViewData["Title"] = "Machine Maintenance > Kiosk";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	@(Html.Kendo().Grid(Model.KioskMaintenanceList)
+		.Name("KioskMaintenanceGrid")
+		.Columns(columns =>
+		{
+
+			columns.Bound(u => u.description).Title("Machine Name");
+			columns.Bound(p => p.mKioskID).Title("Machine ID");
+			columns.Bound(p => p.serial).Title("Machine Serial");
+			columns.Bound(p => p.address).Title("Address");
+			columns.Bound(p => p.createddate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.CreatedBy).Title("Created By");
+			columns.Bound(p => p.lastupdateddate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.UpdatedBy).Title("Updated By");
+			columns.Bound(p => p.mstatus).Title("Status");
+		})
+		.ToolBar(toolbar => { toolbar.Excel(); toolbar.Search(); })
+		.Excel(excel => excel.FileName(Model.ExportFileName).Filterable(true).AllPages(true))
+		.Pageable(pager => pager.Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
+		.Sortable()
+		.Search(s =>
+		{
+			s.Field(o => o.description, "contains");
+			s.Field(o => o.mKioskID, "contains");
+			s.Field(o => o.serial, "contains");
+		})
+		.Events(e => e.DataBound("onGridDataBound"))
+		)
+</div>
+

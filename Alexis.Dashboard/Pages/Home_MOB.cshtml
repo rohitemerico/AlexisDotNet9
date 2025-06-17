@@ -1,0 +1,82 @@
+﻿@page
+@model Alexis.Dashboard.Pages.Home_MOBModel
+@{
+	ViewData["Title"] = "MOB";
+}
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid" style="padding-left: 1px; display: unset;">
+		<!-- Nav Item - Page Information -->
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<span id="LabelTitle">@ViewData["Title"]</span>
+			<select onchange="window.location.href = this.value;" style="float: right; margin-top: 2.5px; padding: 2px;">
+				@foreach (var item in Model.DashboardOptions)
+				{
+					var isSelected = item.Value == Model.DashboardSelector ? "selected" : "";
+					var optionHtml = $"<option value='{Url.Content(item.Value)}' {isSelected}>{item.Text}</option>";
+					@Html.Raw(optionHtml)
+				}
+			</select>
+		</div>
+	</div>
+	<div id="divNavBar2Addition" class="container-fluid" style="padding-left: 1px; padding-top: 20px;">
+		<form method="post">
+			<div id="ctrl_date_span_selector">
+				<span>Date Period:</span>
+				<select asp-for="DatePeriod" asp-items="Model.DatePeriodOptions" onchange="this.form.submit()"></select>
+			</div>
+		</form>
+		<!-- NavBar2: Left -->
+		<!-- NavBar2: Right -->
+		<div style="margin-bottom: 15px; margin-right: 50px; position: absolute; right: 0; display: flex; justify-content: flex-end;">
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<div class="px-5">
+		<div id="mainContainer">
+			<button type="button" class="btn btn-secondary my-2" onclick="fn_ToggleChart();">
+				<i id="togglerIcon" class="fa fa-line-chart" aria-hidden="true"></i>
+			</button>
+
+			<fieldset id="mainFieldset" class="p-2">
+				<legend class="w-auto text-center font_demi">Mobile OnBoarding (MOB)</legend>
+			</fieldset>
+			<br />
+
+			<table id="mainTable" class="table table-bordered">
+			</table>
+		</div>
+	</div>
+
+</div>
+
+@section Scripts {
+
+	<script type="text/javascript">
+		var summaryData = {
+			"Device": @Html.Raw(Model.Json_AllSummary)
+		};
+		var jsonData = @Html.Raw(Model.Json_TransType)
+
+	</script>
+
+	<script src="~/js/dashboard/mob.js"></script>
+}
+
+@section Styles {
+	<style>
+		#mainFieldset, .table-bordered td {
+			border: 1px solid #E83B68;
+		}
+
+		canvas {
+			margin: auto;
+		}
+
+		#mainTable tbody tr td {
+			width: 50% !important;
+		}
+	</style>
+}

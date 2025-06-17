@@ -1,0 +1,191 @@
+﻿@page
+@model Alexis.Dashboard.Pages.CompareModel
+@{
+	ViewData["Title"] = Model.PageTitleText;
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+	var modalStatus = TempData["ModalStatus"]?.ToString();
+}
+@section Styles {
+	<style>
+		.bordered {
+			text-align: left;
+			box-shadow: 0px 0px 6px #0000000D;
+			border: 0.25px solid #E3E3E3;
+			background-color: white;
+			border-radius: 5px;
+		}
+
+		.checker_det, .remark {
+			margin: 30px;
+		}
+
+		.value_det {
+			margin: 30px 40px;
+		}
+
+		.nested_row {
+			padding: 10px 0px;
+		}
+	</style>
+}
+@section Scripts {
+	<script type="text/javascript">
+			$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+
+		function onModalCloseClick(modalStatus)
+		{
+			if(modalStatus == "1"){
+				$.ajax({
+						url: "@Url.Page("/Compare")?handler=ModalCloseClick",
+						method: "GET",
+						success: function (data) {
+							if(data.message == 'Success'){
+								$('#myModal').modal('hide');
+								window.location.href = data.page;
+							}
+							else
+							{
+								$('#myModal').modal('hide');
+							}
+						}
+					})				
+			}
+			else
+			{
+				$('#myModal').modal('hide');
+			}
+		}
+	</script>
+}
+
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button type="button" class="btn theme_gradient_btn" data-bs-dismiss="modal" onclick="onModalCloseClick(@modalStatus);">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<form method="post">
+		@Html.AntiForgeryToken()
+		<div style="margin: 50px; color: #5D5D5D; font-size: 14px;" class="w-75">
+			<div class="row bordered">
+				<div class="col">
+					<div class="checker_det">
+						<h5 class="font_demi" style="font-size: 18px;">Checker Details</h5>
+
+						<div class="nested_row row">
+							<div class="col-4">
+								<span>Edited By</span>
+							</div>
+							<div class="col-8">
+								<span>:<label>@Model.EditedBy</label></span>
+							</div>
+						</div>
+						<div class="nested_row row">
+							<div class="col-4">
+								<span>Edited Menu</span>
+							</div>
+							<div class="col-8">
+								<span>:<label>@Model.MenuText</label></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="value_det">
+						<div class="nested_row row">
+							<div class="col" style="overflow: auto;">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th scope="col">Old Values</th>
+											<th scope="col">New Values</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												<textarea asp-for="OldText" readonly style="resize:none;width:95%;height:400px;color:#5D5D5D" class="font_book"></textarea>
+											</td>
+											<td>
+												<textarea asp-for="NewText" readonly style="resize:none;width:95%;height:400px;color:#5D5D5D" class="font_book"></textarea>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row bordered">
+				<div class="col">
+					<div class="remark">
+						<div class="nested_row row">
+							<div class="col-4">
+								<span>Remarks</span>
+							</div>
+							<div class="col-8">
+								<span>
+									:
+									<textarea asp-for="Remarks" placeholder="Remarks" style="border:#dee2e6; width:95%;height:50px;"></textarea>
+								</span>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="m-3">
+				<input type="hidden" asp-for="OriginalId" />
+				<input type="hidden" asp-for="CommandName" />
+				<input type="hidden" asp-for="CommandArgument" />
+				<input type="hidden" asp-for="NewString" />
+				<input type="submit" asp-page-handler="BackClick" class="mx-2 btn theme_outline_only_btn" id="btnBack" value="Back" />
+				@if (Model.btnDeclineVisible)
+				{
+					<input type="submit" asp-page-handler="DeclineClick" class="mx-2 btn theme_gradient_btn" id="btnDecline" value="Decline" />
+				}
+				@if (Model.btnApproveVisible)
+				{
+					<input type="submit" asp-page-handler="ApproveEditedClick" class="mx-2 btn theme_gradient_btn" id="btnApprove" value="Approve Edited" />
+				}
+				@if (Model.btnRejectCreateVisible)
+				{
+					<input type="submit" asp-page-handler="RejectCreatedClick" class="mx-2 btn theme_gradient_btn" id="btnRejectCreate" value="Reject Created" />
+				}
+				@if (Model.btnApproveCreateVisible)
+				{
+					<input type="submit" asp-page-handler="ApproveCreatedClick" class="mx-2 btn theme_gradient_btn" id="btnApproveCreate" value="Approve Created" />
+				}
+			</div>
+		</div>
+	</form>
+</div>
+

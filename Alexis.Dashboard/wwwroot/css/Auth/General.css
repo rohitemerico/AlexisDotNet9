@@ -1,0 +1,37 @@
+/* ---------------------------------------------------
+    User Card Layout Centered
+----------------------------------------------------- */
+body,
+html {
+    background: transparent linear-gradient(90deg, #E83B68 0%, #E83C4F 53%, #EA503E 100%) 0% 0% no-repeat padding-box;
+    font-family: 'ITC Avant Garde Gothic Std Medium';
+}
+
+body {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+    body form {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+.container-fluid .user_card {
+    width: 460px;
+    border-radius: 5px;
+    background: white;
+    margin: auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 30px;
+}
+
+@media only screen and (max-width: 600px) {
+    .container-fluid .user_card {
+        width: 100%;
+    }
+}

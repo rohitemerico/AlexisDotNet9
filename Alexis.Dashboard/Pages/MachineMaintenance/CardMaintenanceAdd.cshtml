@@ -1,0 +1,152 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.CardMaintenanceAddModel
+@{
+	ViewData["Title"] = Model.PageTitleText; 
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@using Kendo.Mvc.UI
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/MachineMaintenance/CardMaintenance" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--Main Content-->
+	<div class="main-content" style="padding: 50px;">
+		<div class="row justify-content-md-center">
+			<form method="post" action="">
+				@Html.AntiForgeryToken()
+				<div class="panel" style="border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white;">
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;"><h3 class="panel-title font_demi" style="font-size: 18px; padding-top: 20px; padding-bottom: 8px;">Setup </h3></td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Card Description </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="CardDesc" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="CardDesc" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Card Type </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<select asp-for="CardTypeId" asp-items="Model.CardTypeList" Style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;">
+								</select>
+								<br /><span asp-validation-for="CardTypeId" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Contact Type </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<select asp-for="ContactTypeId" asp-items="Model.ContactTypeList" Style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;">
+								</select>
+								<br /><span asp-validation-for="ContactTypeId" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">bin </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Bin" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br /><span asp-validation-for="Bin" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">mask Settings </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Mask" placeholder="Only use capital 'X' (e.g. XXXX)" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br /><span asp-validation-for="Mask" style="color: red;"></span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Remarks </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<textarea asp-for="Remarks" rows="2" cols="20" Style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px; height:50px;"></textarea>
+							</td>
+						</tr>
+						@if (Model.ActiveVisible)
+						{
+								<tr id="active" >
+									<td style="border: 0px; padding-left: 50px;">Status</td>
+									<td style="border: 0px;">:&nbsp;</td>
+									<td style="border: 0px;">
+										<label class="switch">
+											<input type="checkbox" asp-for="chkStatus" />
+											<span class="slider round"></span>
+										</label>
+										Active
+									</td>
+								</tr>
+						}
+						<tr>
+							<td colspan="3" style="text-align: center; border: 0px;">
+								<input type="hidden" asp-for="CardId" />
+								<input type="button" value="Back" id="btn_cancel" class="mx-2 btn theme_outline_only_btn" onclick="onCancelClick()">
+								<input type="submit" value="@Model.ConfirmText" class="mx-2 btn theme_gradient_btn" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+
+	<script type="text/javascript">
+
+		function onCancelClick() {
+			$.ajax({
+					url: "@Url.Page("/CardMaintenanceAdd")?handler=Cancel",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/CardMaintenance")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+	</script>
+}

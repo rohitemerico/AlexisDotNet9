@@ -1,0 +1,43 @@
+﻿@model List<UpdatesInfo>
+<div class="font_demi" style="color:#5D5D5D; font-size: 18px;">
+	<div>
+		<fieldset>
+			<legend>Available OS Updates</legend>
+
+			<div>
+				<table class="table table-striped table-bordered table-hover" cellspacing="0" rules="all" border="1" id="gvCertificates" style="border-collapse:collapse;width: 100%">
+					<tbody>
+						@if (Model != null && Model.Any())
+						{
+							<tr>
+								<th scope="col">OS Version</th>
+								<th scope="col">Product Key</th>
+								<th scope="col">Product Version</th>
+								<th scope="col">Restart required?</th>
+								<th scope="col">Update</th>
+							</tr>
+							foreach (var item in Model)
+							{
+								<tr>
+									<td>@item.HumanReadableName</td>
+									<td>@item.ProductKey</td>
+									<td>@item.ProductVersion</td>
+									<td>@item.RestartRequired</td>
+									<td>
+										<a alt="Enable" class="btn theme_outline_only_btn" onclick="fnScheduleOSUpdate('@item.HumanReadableName','@item.UDID', '@item.ProductKey','@item.ProductVersion')">Update</a>
+									</td>
+								</tr>
+							}
+						}
+						else
+						{
+							<tr>
+								<td>No Updates Available.</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</fieldset>
+	</div>
+</div>

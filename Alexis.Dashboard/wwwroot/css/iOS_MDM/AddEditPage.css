@@ -1,0 +1,59 @@
+﻿/* ---------------------------------------------------
+    Container with smaller width, normally for add/edit page
+----------------------------------------------------- */
+.container_addEdit {
+    box-shadow: 0px 0px 6px #0000000D;
+    border: 0.25px solid #E3E3E3;
+    border-radius: 5px;
+    background-color: white;
+    width: 75%;
+    text-align: left;
+    padding: 10px;
+    margin: auto;
+}
+
+
+    .container_addEdit .col_left > .row {
+        padding: 20px;
+    }
+
+    /*Individual wizard form*/
+    .container_addEdit .wizard_form {
+        margin: 20px;
+    }
+
+        .container_addEdit .wizard_form hr {
+            margin: 0px;
+        }
+
+        .container_addEdit .wizard_form .row {
+            margin: 20px 0px;
+        }
+
+            .container_addEdit .wizard_form .row div[class^="col"] label,
+            .container_addEdit .wizard_form .row div[class^="col"] h2 {
+                margin: 0px;
+                padding: 0px;
+            }
+
+            .container_addEdit .wizard_form .row div[class^="col"] h2 {
+                line-height: 2.5;
+            }
+
+            .container_addEdit .wizard_form .row div[class^="col"] .input_note {
+                margin-left: 10px;
+                padding: 10px 0px;
+                font-style: italic;
+                font-size: 10px;
+            }
+
+    .container_addEdit #wizard_cell .form-control {
+        width: 50%;
+    }
+
+
+input[type=checkbox], #myModal_BranchID input[type=radio] {
+    transform: scale(1.5);
+    margin: 10px;
+}
+

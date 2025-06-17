@@ -1,0 +1,148 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.HopperMaintenanceModel
+@{
+	ViewData["Title"] = "Machine Hopper";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+			<!-- Add New -->
+			<button class="btn reportBtn theme_gradient_btn" type="button" onclick="onAddClick()"><i class="fa fa-plus"> </i> Add New</button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Grid -->
+	<div id="radGrid_Role">
+		@(Html.Kendo().Grid(Model.HopperMaintenanceList)
+				.Name("HopperMaintenanceGrid")
+				.Columns(columns =>
+				{
+					columns.Template(@<text>
+			<div class="text-center">
+				# if (Visible) { #
+				<span class="button" data-toggle="tooltip" title="Edit" onclick="onEditClick('#= hID #')">
+					<img src="~/img/3_User%20Maintenance/icon_edit_grey.png" alt="Edit" />
+				</span>
+				# } #
+			</div>
+
+		</text>).Title("Options").Width(100);
+					columns.Bound(u => u.hDesc).Title("Hopper");
+					columns.Bound(p => p.hStatus)
+					.Title("Status")
+					.ClientTemplate(
+					"<div style='font-size: 0.85em;'>" +
+					"<span class='#= hStatus == \"Active\" ? \"status_active\" : (hStatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+					"#= hStatus #" +
+					"</span>" +
+					"</div>"
+					).Sortable(true);
+					columns.Bound(p => p.hCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+					columns.Bound(p => p.CreatedBy).Title("Created By");
+					columns.Bound(p => p.hUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+					columns.Bound(p => p.UpdatedBy).Title("Updated By");
+
+				})
+				.ToolBar(t => t.Search())
+				.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+				.Scrollable(s => s.Height("calc(80vh - 200px)"))
+				.HtmlAttributes(new { style = "margin: 0 15px;" })
+				.Sortable()
+				.ClientDetailTemplateId("template")
+				.Events(e => e.DetailExpand("onDetailExpand"))
+				.Search(s => { s.Field(o => o.hDesc, "contains"); })
+				.Events(e => e.DataBound("onGridDataBound"))
+				)
+		<script id="template" type="text/kendo-tmpl">
+			@(Html.Kendo().TabStrip().Name("tabStrip_#=hID#")
+				.SelectedIndex(0)
+				.Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+				.Items(items =>
+				{
+					items.Add().Text("").Content(
+"<div class='details'></br>" +
+"<table style='width:40%;' class='tbl-details'>" +
+"<tr><td style='width:25%;'><b>Hopper</b></td><td style='width:25%;'><b>Card Type</b></td><td style='width:25%;'><b>Bin</b></td><td style='width:25%;'><b>Mask Settings</b></td></tr>" +
+"<tr><td style='width:25%;'>Hopper 1</td><td style='width:25%;'>#= HC1 #</td><td style='width:25%;'>#= h1Range #</td><td style='width:25%;'>#= h1Mask #</td></tr>" +
+"<tr><td style='width:25%;'>Hopper 2</td><td style='width:25%;'>#= HC2 #</td><td style='width:25%;'>#= h2Range #</td><td style='width:25%;'>#= h2Mask #</td></tr>" +
+"<tr><td style='width:25%;'>Hopper 3</td><td style='width:25%;'>#= HC3 #</td><td style='width:25%;'>#= h3Range #</td><td style='width:25%;'>#= h3Mask #</td></tr>" + 
+"<tr><td style='width:25%;'>Hopper 4</td><td style='width:25%;'>#= HC4 #</td><td style='width:25%;'>#= h4Range #</td><td style='width:25%;'>#= h4Mask #</td></tr>" + 
+"<tr><td style='width:25%;'>Hopper 5</td><td style='width:25%;'>#= HC5 #</td><td style='width:25%;'>#= h5Range #</td><td style='width:25%;'>#= h5Mask #</td></tr>" + 
+"<tr><td style='width:25%;'>Hopper 6</td><td style='width:25%;'>#= HC6 #</td><td style='width:25%;'>#= h6Range #</td><td style='width:25%;'>#= h6Mask #</td></tr>" + 
+"<tr><td style='width:25%;'>Hopper 7</td><td style='width:25%;'>#= HC7 #</td><td style='width:25%;'>#= h7Range #</td><td style='width:25%;'>#= h7Mask #</td></tr>" + 
+"<tr><td style='width:25%;'>Hopper 8</td><td style='width:25%;'>#= HC8 #</td><td style='width:25%;'>#= h8Range #</td><td style='width:25%;'>#= h8Mask #</td></tr>" + 
+"</table>" +
+"</div>"
+					);
+				}).ToClientTemplate())
+		</script>
+	</div>
+</div>
+@section Styles
+{
+	<style type="text/css">
+		.tbl-details, .tbl-details th, .tbl-details td {
+			border: 1px solid black;
+		}
+	</style>
+}
+@section Scripts {
+	<script type="text/javascript">
+		
+		function onEditClick(id) {
+			$.ajax({
+					url: "@Url.Page("/HopperMaintenance")?handler=Edit",
+					method: "POST",
+					data: { id: id },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/HopperMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+
+		function onAddClick() {
+			$.ajax({
+					url: "@Url.Page("/HopperMaintenance")?handler=Add",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/HopperMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+		function onDetailExpand(e) {
+				var grid = $("#HopperMaintenanceGrid").data("kendoGrid");
+
+			grid.tbody.find("tr.k-master-row").each(function () {
+				var row = $(this);
+				if (row[0] !== e.masterRow[0]) {
+					grid.collapseRow(row);
+				}
+			});
+		}
+	</script>
+}

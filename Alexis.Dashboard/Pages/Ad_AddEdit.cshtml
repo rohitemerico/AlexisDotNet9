@@ -1,0 +1,153 @@
+﻿@page
+@model Alexis.Dashboard.Pages.Ad_AddEditModel
+@{
+	ViewData["Title"] = Model.PageTitleText;
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@using Kendo.Mvc.UI
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/Ad_Management" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content text-gray-600 small" style="padding: 50px; text-align: left; color: #5D5D5D;">
+		<form method="post" action="" enctype="multipart/form-data">
+			<div class="row justify-content-md-center">
+				<div class="panel" style="width: 850px; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Details </h3>
+						<div class="right">
+						</div>
+					</div>
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Description</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="aDesc" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="aDesc" style="color: red;"></span>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Machine Screen Backgroud Type (.jpg, .jpeg, .png) </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="file" asp-for="Upload" />
+								<span asp-validation-for="Upload" style="color: red;"></span>
+								@if (Model.ImageUrl != null && Model.DisplayVideo == false)
+								{
+									<img src="~/@Model.ImageUrl" style="margin:15px;" width="350" height="200" />
+								}
+								@if(Model.DisplayVideo)
+								{
+									<div id="displayVid" style="align-content: center;">
+										<video width="500" height="300" autoplay="autoplay" controls="controls">
+											<source type="video/mp4" src='~/@Model.ImageUrl' />
+										</video>
+									</div>
+								}
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Duration(minute)</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="aDuration" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="aDuration" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Remarks</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<textarea asp-for="Remarks" rows="2" cols="20" Style="border-color:#E3E3E3;height:50px;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;"></textarea>
+							</td>
+						</tr>
+						@if (Model.ActiveVisible)
+						{
+							<tr id="active" >
+								<td style="border: 0px; padding-left: 50px;">Status</td>
+								<td style="border: 0px;">:&nbsp;</td>
+								<td style="border: 0px;">
+									<label class="switch">
+										<input type="checkbox" asp-for="Status" />
+										<span class="slider round"></span>
+									</label>
+									Active
+								</td>
+							</tr>
+						}
+						<tr>
+							<td colspan="3" style="text-align: center; border: 0px;">
+								<input type="hidden" asp-for="aID" />
+								<input type="hidden" asp-for="ImageUrl" />
+								<input type="hidden" asp-for="FileName" />
+								<input type="hidden" asp-for="BackgroundText" />
+								<input type="button" value="Back" id="btn_cancel" class="mx-2 btn theme_outline_only_btn" onclick="onCancelClick()">
+								<input type="submit" value="@Model.ConfirmText" class="mx-2 btn theme_gradient_btn" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+</div>
+
+
+@section Scripts {
+	<script type="text/javascript">
+
+
+		function onCancelClick() {
+			$.ajax({
+					url: "@Url.Page("/Ad_AddEdit")?handler=Cancel",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/Ad_Management")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+	</script>
+}

@@ -1,0 +1,67 @@
+﻿.tabs {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+    .tabs label {
+        font-family: 'ITC Avant Garde Gothic Std Demi';
+        order: 1;
+        display: inline-block;
+        padding: 15px 20px 15px 20px;
+        margin-right: 10px;
+        margin-bottom: 0;
+        cursor: pointer;
+        background: #FCFCFC;
+        transition: background ease 0.2s;
+        color: #E3E3E3 !important;
+        border: 1px solid #E3E3E3;
+        border-bottom: 1px solid #fff !important;
+        margin-bottom: -3px;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .tabs .tab {
+        order: 99;
+        flex-grow: 1;
+        width: 100%;
+        display: none;
+        /*padding: 50px 0 0 0;*/
+        background: #fff;
+        border-radius: 5px;
+        border: 1px solid #E3E3E3;
+        opacity: 1;
+    }
+
+    .tabs input[type="radio"] {
+        display: none;
+    }
+
+        .tabs input[type="radio"]:checked + label {
+            background: #fff;
+            color: #E83B68 !important;
+            position: relative;
+            border: 1px solid #E3E3E3;
+            border-bottom: 1px solid #FFFFFF !important;
+            border-radius: 5px 5px 0 0;
+            opacity: 1;
+
+        }
+
+            .tabs input[type="radio"]:checked + label + .tab {
+                display: inline-block;
+            }
+
+/*@media (max-width: 0) {
+    .tabs .tab,
+    .tabs label {
+        order: initial;
+    }
+
+    .tabs label {
+        width: 100%;
+        margin-right: 0;
+        margin-top: 0.2rem;
+    }
+}*/
+
+

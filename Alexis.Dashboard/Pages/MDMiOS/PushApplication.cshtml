@@ -1,0 +1,412 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MDMiOS.PushApplicationModel
+@using Alexis.Dashboard.Helper
+@{
+	ViewData["Title"] = "iOS MDM > Push Application";
+	var tabEnumNames = Enum.GetNames(typeof(MDMiOSTabGroup));
+	var currentTabName = Enum.GetName(typeof(MDMiOSTabGroup), Model.CurrentTab);
+	string activateTabClass = Model.ActivateTab ?? "active";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@section Styles {
+	<link href="~/css/ios_mdm/element.css" rel="stylesheet" />
+	<link href="~/css/blankpage.css" rel="stylesheet" />
+	<link href="~/css/reporting/navtabs.css" rel="stylesheet" />
+	<!-- Bootstrap 5-->
+	<link href="~/css/bootstrap-5.0.2-dist/bootstrap.min.css" rel="stylesheet" />
+	<script src="~/js/bootstrap-5.0.2-dist/bootstrap.bundle.min.js"></script>
+	<style>
+		a {
+			color: inherit;
+			text-decoration: inherit;
+		}
+
+			a:hover {
+				color: inherit;
+			}
+	</style>
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+		</div>
+	</div>
+</nav>
+
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button onclick="fnCloseModal();" class="btn theme_gradient_btn">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		@for (int i = 0; i < tabEnumNames.Length; i++)
+		{
+			var tabName = tabEnumNames[i];
+			var isActive = currentTabName == tabName;
+			var tabClass = "nav-link" + (isActive ? $" {activateTabClass}" : "");
+
+			<li class="nav-item" role="presentation">
+				<button class="@tabClass" id="tab_@tabName" data-bs-toggle="tab" data-bs-target="#@tabName" type="button" role="tab" aria-controls="@tabName" aria-selected="true" onclick="onGridClick('@tabName')">@tabName.Replace("_", " ")</button>
+			</li>
+		}
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<!-- Tab 1 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MDMiOSTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MDMiOSTabGroup), 1) ? activateTabClass : "")" id="By_Device" role="tabpanel" aria-labelledby="tab_By_Device">
+
+			<div id="DeviceCreate">
+				<div id="radGrid_Device">
+					@(
+												Html.Kendo().Grid(Model.Devices)
+												.Name("DeviceGrid")
+												.Columns(columns =>
+												{
+													columns.Bound(u => u.MachineName).Title("Machine Name");
+													columns.Bound(u => u.MachineSerial).Title("Machine Serial No.");
+													columns.Bound(u => u.bDesc).Title("Branch");
+													columns.Template(@<text>
+						<select name="ProfileId-#= MachineSerial #" class="select dropdown1" style="min-width: 300px!important">
+							<option value="">--Select an Application--</option>
+							@foreach (var app in Model.Applications)
+							{
+							<option value="@app.AppID">@app.Name</option>
+							}
+						</select>
+					</text>).Title("Application List").Width(400);
+													columns.Template(@<text>
+						<table class="test">
+							<tr>
+								<td class="tabs">
+									<input type="radio" id="allowBackup-#=MachineSerial#" name="appConfiguration-#=MachineSerial#" value="true" checked="checked">
+									<label for="allowBackup-#=MachineSerial#">Allow Backup</label>
+								</td>
+							</tr>
+							<tr>
+								<td class="tabs">
+									<input type="radio" id="preventBackup-#=MachineSerial#" name="appConfiguration-#=MachineSerial#" value="false">
+									<label for="preventBackup-#=MachineSerial#">Prevent Backup</label>
+								</td>
+							</tr>
+						</table>
+					</text>).Title("App Configuration").Width(200);
+													columns.Template(@<text>
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Push Application" onclick="fnPushApplicationByMachine('#= MachineName #','#= MachineSerial #')">Push Application</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove Application" onclick="fnRemoveApplicationByMachine('#= MachineName #','#= MachineSerial #')">Remove Application</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Allow Single App Mode" onclick="fnAllowSingleAppModeByMachine('#= MachineUDID #','#= MachineName #', '#= MachineSerial #')">Allow Single App Mode</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove Single App Mode" onclick="fnRemoveSingleAppModeByMachine('#= MachineUDID #','#= MachineName #', '#= MachineSerial #')">Remove Single App Mode</a><br />
+
+					</text>).Title("");
+												})
+												.ToolBar(t => t.Search())
+												.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+												.Scrollable(s => s.Height("calc(80vh - 200px)"))
+												.HtmlAttributes(new { style = "margin: 0 15px;" })
+												.Sortable()
+												.Search(s => { s.Field(o => o.MachineName, "contains"); })
+												.Events(e => e.DataBound("onGridDataBound"))
+												)
+				</div>
+			</div>
+
+
+		</div>
+		<!-- Tab 2 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(MDMiOSTabGroup), Model.CurrentTab) == Enum.GetName(typeof(MDMiOSTabGroup), 2) ? activateTabClass : "")" id="By_Branch" role="tabpanel" aria-labelledby="tab_By_Branch">
+			<div class="m-3 d-flex flex-wrap align-content-center justify-content-center">
+				<div class="d-flex flex-wrap align-content-center justify-content-center">
+					<span class="pr-1 d-flex flex-wrap align-content-center justify-content-center">Target Branch:</span>
+					<select asp-for="BranchId" asp-items="Model.Branches" Class="form-control" Style="width: auto">
+					</select>
+				</div>
+
+				<div class="pl-5 d-flex flex-wrap align-content-center justify-content-center">
+					<a href="javascript:void(0);" onclick="fnCancelSingleAppModeAll()" Class="theme_gradient_btn d-flex flex-wrap align-content-center justify-content-center">Cancel Single App Mode All</a>
+				</div>
+			</div>
+			<div id="BranchCreate">
+				<div id="radGrid_Groups">
+					@(Html.Kendo().Grid(Model.Applications).Name("ApplicationsGrid")
+												.Columns(columns =>
+												{
+													columns.Bound(u => u.Name).Title("App Name");
+													columns.Bound(u => u.Desc).Title("Desc");
+													columns.Bound(u => u.Version).Title("Version");
+													columns.Template(@<text>
+						<table class="test">
+							<tr>
+								<td class="tabs">
+									<input type="radio" id="allowBackup-#=AppID#" name="appConfiguration-#=AppID#" value="true" checked="checked">
+									<label for="allowBackup-#=AppID#">Allow Backup</label>
+								</td>
+							</tr>
+							<tr>
+								<td class="tabs">
+									<input type="radio" id="preventBackup-#=AppID#" name="appConfiguration-#=AppID#" value="false">
+									<label for="preventBackup-#=AppID#">Prevent Backup</label>
+								</td>
+							</tr>
+						</table>
+					</text>).Title("App Configuration").Width(200);
+													columns.Template(@<text>
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Push Application" onclick="fnPushApplicationByBranch('#= AppID #','#= Name #')">Push Application</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Remove Application" onclick="fnRemoveApplicationByBranch('#= AppID #','#= Name #')">Remove Application</a><br />
+						<a class="btn reportBtn1 theme_outline_only_btn" alt="Single App Mode All" onclick="fnAllowSingleAppModeByBranch('#= AppID #','#= Name #')">Single App Mode All</a><br />
+
+					</text>).Title("");
+												})
+												.Sortable(false)
+												.ToolBar(t => t.Search())
+												.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+												.Scrollable(s => s.Height("calc(80vh - 200px)"))
+												.HtmlAttributes(new { style = "margin: 0 15px;" })
+												.Sortable()
+												.Events(e => e.DataBound("onGridDataBound"))
+												)
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+
+		function fnCloseModal(){
+			$('#myModal').modal('hide');
+		}
+
+
+		function fnPushApplicationByMachine(MachineName,MachineSerial)
+		{
+			var elementName1 = "ProfileId-"+MachineSerial;
+			var applicationId =  $('[name='+elementName1+']').val();
+			var	elementName = "appConfiguration-"+MachineSerial;
+			var backup = $('input[name='+elementName+']:checked').val();
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Push Application to "+MachineName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=PushApplicationByMachine",
+							method: "POST",
+							data: { MachineSerial: MachineSerial,ApplicationId: applicationId,allowBackup :backup  },
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnRemoveApplicationByMachine(MachineName,MachineSerial)
+		{
+			var elementName1 = "ProfileId-"+MachineSerial;
+			var applicationId =  $('[name='+elementName1+']').val();
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Remove Application to "+MachineName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=RemoveApplicationByMachine",
+							method: "POST",
+							data: { MachineSerial: MachineSerial,ApplicationId: applicationId},
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnAllowSingleAppModeByMachine(MachineUDID, MachineName, MachineSerial)
+		{
+			var elementName1 = "ProfileId-"+MachineSerial;
+			var applicationId =  $('[name='+elementName1+']').val();
+			var	elementName = "appConfiguration-"+MachineSerial;
+			var backup = $('input[name='+elementName+']:checked').val();
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm SingleAppMode to "+MachineName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=SingleAppModeByMachine",
+							method: "POST",
+							data: {MachineUDID: MachineUDID, MachineSerial: MachineSerial,ApplicationId: applicationId,allowBackup :backup},
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+		function fnRemoveSingleAppModeByMachine(MachineUDID, MachineName, MachineSerial)
+		{
+			var elementName1 = "ProfileId-"+MachineSerial;
+			var applicationId =  $('[name='+elementName1+']').val();
+			if(applicationId == ""){
+				alert("No application is selected.");
+			}
+			else
+			{
+				var confirmed = confirm("Confirm Remove SingleAppMode from "+MachineName+" device?");
+				if(confirmed)
+				{
+					$.ajax({
+							url: "@Url.Page("/PushApplication")?handler=RemoveSingleAppModeByMachine",
+							method: "POST",
+							data: {MachineUDID: MachineUDID, MachineSerial: MachineSerial,ApplicationId: applicationId},
+							headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+							success: function (data)
+							{
+								window.location.reload();
+							}
+						});
+				}
+			}
+		}
+
+
+		function fnPushApplicationByBranch(AppId, appName)
+		{
+			var branchId = $("#BranchId").val();
+			var	elementName = "appConfiguration-"+AppId;
+			var backup = $('input[name='+AppId+']:checked').val();
+			var confirmed = confirm("Confirm Push Application "+appName+" to selected device(s)?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/PushApplication")?handler=PushApplicationByBranch",
+						method: "POST",
+						data: { ApplicationId: AppId,BranchId: branchId,allowBackup :backup  },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+
+		}
+
+		function fnRemoveApplicationByBranch(AppId, appName)
+		{
+			var branchId = $("#BranchId").val();
+			var confirmed = confirm("Confirm Remove Application "+appName+" to selected device(s)?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/PushApplication")?handler=RemoveApplicationByBranch",
+						method: "POST",
+						data: { ApplicationId: AppId,BranchId: branchId},
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+		}
+
+		function fnAllowSingleAppModeByBranch(AppId, appName)
+		{
+			var branchId = $("#BranchId").val();
+			var	elementName = "appConfiguration-"+AppId;
+			var backup = $('input[name='+AppId+']:checked').val();
+			var confirmed = confirm("Confirm SingleAppMode "+appName+" to selected device(s)?");
+			if(confirmed)
+			{
+				$.ajax({
+						url: "@Url.Page("/PushApplication")?handler=SingleAppModeByBranch",
+						method: "POST",
+						data: { ApplicationId: AppId,BranchId: branchId,allowBackup :backup  },
+						headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+						success: function (data)
+						{
+							window.location.reload();
+						}
+					});
+			}
+
+		}
+
+		function fnCancelSingleAppModeAll()
+		{
+			var branchId = $("#BranchId").val();
+
+			$.ajax({
+					url: "@Url.Page("/PushApplication")?handler=CancelSingleAppModeByBranch",
+					method: "POST",
+					data: { BranchId: branchId},
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data)
+					{
+						window.location.reload();
+					}
+				});
+		}
+
+		function onGridClick(name) {
+			$.ajax({
+					url: "@Url.Page("/PushApplication")?handler=ChangeGrid",
+					method: "POST",
+					data: { name: name },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+							window.location.reload();
+					}
+				})
+		}
+	</script>
+}

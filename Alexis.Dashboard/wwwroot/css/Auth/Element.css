@@ -1,0 +1,84 @@
+/* ---------------------------------------------------
+    Elements inside/surrounding User Card
+----------------------------------------------------- */
+.container-fluid .auth_title {
+    font-family: 'ITC Avant Garde Gothic Std Demi';
+    font-size: 24px;
+}
+
+.container-fluid a {
+    text-decoration: none;
+}
+
+.container-fluid .adcb_logo {
+    height: 56px;
+    width: 238.43px;
+}
+
+.container-fluid .user_card .form-group,
+.container-fluid .user_card h4 {
+    margin-bottom: 30px;
+    opacity: 0.95;
+    color: #6b6363;
+}
+
+.container-fluid .user_card .form-group {
+    margin-bottom: 0px;
+}
+
+    .container-fluid .user_card .form-group input {
+        margin: 8px 0px;
+    }
+
+        .container-fluid .user_card .form-group input::placeholder {
+            opacity: 0.5;
+        }
+
+    .container-fluid .user_card .form-group span {
+        font-size: 14px;
+    }
+
+    .container-fluid .user_card .form-group .input-group-text {
+        cursor: pointer;
+        margin: 8px 0px;
+        background-color: white;
+    }
+
+    .container-fluid .user_card .form-group .input-group i {
+        color: #666666;
+    }
+
+.container-fluid .user_card .btn_login {
+    padding: 12px 10px;
+    background-image: linear-gradient(to right, #e83b63, #e83b5f, #e83b5c, #e83c58, #e83c54, #e83e51, #e93f4f, #e9414c, #e94449, #ea4647, #ea4944, #ea4c41);
+    color: #ffffff;
+}
+
+.container-fluid .user_card .btn-group {
+    width: 100%;
+    margin: 5px 0px;
+    right: 0;
+    bottom: 0;
+}
+
+    .container-fluid .user_card .btn-group input,
+    .container-fluid .user_card .btn-group button {
+        font-family: 'ITC Avant Garde Gothic Std Demi';
+    }
+
+.container-fluid .user_card .alert {
+    position: unset;
+    margin: 0;
+    padding: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.container-fluid .my-copyright {
+    font-size: 14px;
+    font-family: 'ITC Avant Garde Gothic Std Demi';
+}
+
+[id^=RequiredFieldValidator] {
+    color: red;
+}

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Dashboard\Dashboard.Common.Business.Component\Dashboard.Common.Business.Component.csproj" />
+    <ProjectReference Include="..\Dashboard\Dashboard.Entities\Dashboard.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

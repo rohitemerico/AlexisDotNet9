@@ -1,0 +1,1160 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MDMiOS.ProfileAddModel
+@{
+	ViewData["Title"] = "iOS MDM > Profile Management";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+	var idx = 0;
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/MDMiOS/ProfileManagement" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="loader_container" style="display:none;">
+		<h3 class="bg-warning">This will take some time. Please wait.</h3>
+		<div id="preloader">
+			<div id="loader"></div>
+		</div>
+	</div>
+
+	<form method="post" action="">
+		<div style="position: inherit; z-index:1;">
+			<div class="row justify-content-center">
+				<div class="col text-center p-0">
+					<div class="">
+						<div id="wizard_container">
+							<ul id="progressbar">
+								<li class="active" id="step1">
+									<strong>General</strong>
+								</li>
+								<li id="step2"><strong>Passcode</strong></li>
+								<li id="step3"><strong>Functionality</strong></li>
+								<li id="step4"><strong>Apps</strong></li>
+								<li id="step5"><strong>Wifi</strong></li>
+								<li id="step6"><strong>VPN</strong></li>
+								<li id="step7"><strong>Cellular</strong></li>
+								<li id="step8"><strong>Done</strong></li>
+							</ul>
+
+							<div class="container_addEdit">
+
+								<div class="progress">
+									<div class="progress-bar"></div>
+								</div>
+								<input type="hidden" asp-for="HiddenFieldMasterID" />
+								<input type="hidden" asp-for="HiddenFieldcProfileID" />
+								<fieldset data-name="wizard_gen">
+									<div id="wizard_gen" class="wizard_form">
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<h2>General</h2>
+											</div>
+											<div class="col-9 form-inline">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Select Branches</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<div id="pnlBranch">
+													<a ID="BtnBranch" class="btn btn-warning" OnClick="BtnBranch_Click()">Branch List </a>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label>Profile Name</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="Name" class="form-control w-50" placeholder="Enter Name" required="required" />
+												<span class="input_note">(Display name of the profile)</span>
+											</div>
+										</div>
+									</div>
+									<div class="sticky_footer">
+										<div class="row">
+											<div class="col">
+												<!-- Back -->
+												<a href="~/MDMiOS/ProfileManagement" class="btn btn_footer previous-step">Back to Main</a>
+											</div>
+											<div class="col">
+												<!-- Next -->
+												<input type="button" name="next-step" class="btn btn_footer next-step" value="Next" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset data-name="wizard_passcode">
+									<div id="wizard_passcode" class="wizard_form">
+										<div class="row">
+											<div class="col">
+												<h2>Passcode</h2>
+												<div ID="upCheckAll">
+													<input type="checkbox" asp-for="ckbCheckTogglePasscodeSettings" onclick="TogglePasscodeSettings();" />
+													<label for="ckbCheckTogglePasscodeSettings">Not Required</label>
+												</div>
+											</div>
+										</div>
+										<hr>
+
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Restrictions</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="checkbox" asp-for="ckbAllowSimpleValue" />
+												<label for="ckbAllowSimpleValue">Allow simple value</label>
+												<br />
+												<span class="input_note">(Permit the user of repeating ascending, and descending character sequences)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class=""></label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="checkbox" asp-for="ckbRequireAlphanumericValue" />
+												<label for="ckbRequireAlphanumericValue">Require alphanumeric value</label>
+												<span class="input_note">(Requires passcode to contain at least one letter and one number)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Minimum passcode length</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="MinPass" TextMode="Number" min="0" Style=" display: inline-block; width:70px;" class="form-control w-25 numeric-only" />
+												<span class="input_note">(Smallest number of passcode characters allowed)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Minimum number of complex characters</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="MinCC" TextMode="Number" min="0" Style="display: inline-block; width:70px;" class="form-control w-25 numeric-only" />
+												<span class="input_note">(Smallest number of non-alphanumeric characters allowed)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Maximum passcode age (1 - 730 days, or none)</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="MaxPassAge" TextMode="Number" min="0" Style="display: inline-block; width:70px;" class="form-control w-25 numeric-only" />
+												<span class="input_note">(Days after which passcode must be changed)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Maximum Auto-Lock (Minutes)</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="MaximumAutoLock" TextMode="Number" min="0" Style="display: inline-block; width:70px;" class="form-control w-25 numeric-only" />
+												<span class="input_note">(Longest auto-lock time available to the user)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Passcode history (1 - 50 passcodes, or none)</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="PassHistory" TextMode="Number" min="0" Style="display: inline-block; width:70px;" class="form-control w-25 numeric-only" />
+												<span class="input_note">(Number of unique passcodes before reuse)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Maximum grace period for device lock (minutes)</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="MaxGPeriod" TextMode="Number" min="0" Style="display: inline-block; width:70px;" class="form-control w-25 numeric-only" />
+												<span class="input_note">(Longest device lock grace period available to the user)</span>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-3 d-flex flex-wrap align-content-center">
+												<label class="">Maximum number of failed attempts</label>
+											</div>
+											<div class="col-9 form-inline">
+												<span>:&nbsp</span>
+												<input type="text" asp-for="MaxAttem" Style="display: inline-block" min="0" class="form-control w-25 numeric-only" />
+												<span class="input_note">(Number of passcode entry attempts allowed before all data on device will be erased)</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="sticky_footer">
+										<div class="row">
+											<div class="col">
+												<!-- Back -->
+												<input type="button" name="previous-step" class="btn btn_footer previous-step" value="Back" />
+											</div>
+											<div class="col">
+												<!-- Next -->
+												<input type="button" name="next-step" class="btn btn_footer next-step" value="Next" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset data-name="wizard_func">
+									<div id="wizard_func" class="wizard_form">
+										<div class="row">
+											<div class="col">
+												<h2>Functionality</h2>
+												<div ID="UpdatePanel5">
+													<input type="checkbox" asp-for="ckbCheckAllFunctionality" onclick="ToggleFunctionSettings()" />
+													<label for="ckbCheckAllFunctionality">Not Required</label>
+												</div>
+											</div>
+										</div>
+										<hr />
+										<div class="row">
+											<div class="col">
+												<div ID="updatestep3">
+													<input type="hidden" ID="hfGroupID" Value="0" />
+													<br />
+													<div ID="UpdatePanel1">
+														<div class="column-container">
+															@* <table id="dlRetriction" cellspacing="0" style="border-collapse:collapse;"> *@
+															@if (Model.Functionalities != null)
+															{
+																@* Split into 3 lists manually *@
+																int total = Model.Functionalities.Count;
+																int itemsPerColumn = (int)Math.Ceiling((double)total / 2);
+
+																var col1 = Model.Functionalities.Take(itemsPerColumn).ToList();
+																var col2 = Model.Functionalities.Skip(itemsPerColumn).Take(itemsPerColumn).ToList();
+
+																@foreach (var column in new[] { col1, col2 })
+																{
+																	<div class="column">
+																		@foreach (var item in column)
+																		{
+																			@if (item.GroupHeader == 1)
+																			{
+																				<div style="background-color:Gray;">
+																					<input type="checkbox" asp-for="@Model.Functionalities[idx].IsCheck" checked="@Model.Functionalities[idx].IsCheck" data-rgroup="@Model.Functionalities[idx].RGroup" data-groupheader="@Model.Functionalities[idx].GroupHeader" onchange="fn_checkboxFunctionality()" />
+																					<label>@item.RestrictionDesc</label>
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].Queue" value="@item.Queue" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RestrictionName" value="@item.RestrictionName" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].GroupHeader" value="@item.GroupHeader" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RGroup" value="@item.RGroup" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RID" value="@item.RID" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RestrictionDesc" value="@item.RestrictionDesc" />
+																				</div>
+																			}
+																			else
+																			{
+																				<div>
+																					<input type="checkbox" asp-for="@Model.Functionalities[idx].IsCheck" checked="@Model.Functionalities[idx].IsCheck" data-rgroup="@Model.Functionalities[idx].RGroup" data-groupheader="@Model.Functionalities[idx].GroupHeader" onchange="fn_checkboxFunctionality()" />
+																					<label>@item.RestrictionDesc</label>
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].Queue" value="@item.Queue" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RestrictionName" value="@item.RestrictionName" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].GroupHeader" value="@item.GroupHeader" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RGroup" value="@item.RGroup" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RID" value="@item.RID" />
+																					<input type="hidden" asp-for="@Model.Functionalities[idx].RestrictionDesc" value="@item.RestrictionDesc" />
+																				</div>
+																			}
+																			idx++;
+																		}
+																	</div>
+																}
+															}
+														</div>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+									<div class="sticky_footer">
+										<div class="row">
+											<div class="col">
+												<!-- Back -->
+												<input type="button" name="previous-step" class="btn btn_footer previous-step" value="Back" />
+											</div>
+											<div class="col">
+												<!-- Next -->
+												<input type="button" name="next-step" class="btn btn_footer next-step" value="Next" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset data-name="wizard_apps">
+									<div d="wizard_apps" class="wizard_form">
+										<div class="row">
+											<div class="col">
+												<h2>Apps</h2>
+
+												<div ID="upApps">
+													<input type="hidden" ID="HiddenField1" Value="0" />
+													<br />
+													<div ID="UpdatePanel3">
+														<table id="dlRetriction" cellspacing="0" style="border-collapse:collapse;">
+															@if (Model.Apps != null)
+															{
+																idx = 0;
+																foreach (var item in Model.Apps)
+																{
+																	<tr>
+																		@if (item.GroupHeader == 1)
+																		{
+																			<td style="background-color:Gray;">
+																				<input type="checkbox" asp-for="@Model.Apps[idx].IsCheck" checked="@Model.Apps[idx].IsCheck" data-rgroup="@Model.Apps[idx].RGroup" data-groupheader="@Model.Apps[idx].GroupHeader" onchange="fn_checkboxFunctionality()" />
+																				<label>@item.RestrictionDesc</label>
+																			</td>
+																		}
+																		else
+																		{
+																			<td>
+																				<input type="checkbox" asp-for="@Model.Apps[idx].IsCheck" checked="@Model.Apps[idx].IsCheck" data-rgroup="@Model.Apps[idx].RGroup" data-groupheader="@Model.Apps[idx].GroupHeader" onchange="fn_checkboxFunctionality()" />
+																				<label>@item.RestrictionDesc</label>
+																			</td>
+																		}
+																		<td>
+																			<p class="subTittle">
+																				<input type="hidden" asp-for="@Model.Apps[idx].Queue" value="@item.Queue" />
+																				<input type="hidden" asp-for="@Model.Apps[idx].RestrictionName" value="@item.RestrictionName" />
+																				<input type="hidden" asp-for="@Model.Apps[idx].GroupHeader" value="@item.GroupHeader" />
+																				<input type="hidden" asp-for="@Model.Apps[idx].RGroup" value="@item.RGroup" />
+																				<input type="hidden" asp-for="@Model.Apps[idx].RID" value="@item.RID" />
+																				<input type="hidden" asp-for="@Model.Apps[idx].RestrictionDesc" value="@item.RestrictionDesc" />
+
+																			</p>
+																		</td>
+																	</tr>
+																	idx++;
+																}
+															}
+														</table>
+													</div>
+													<div ID="UpdatePanel4">
+														<div class="my-5">
+															<div class="row">
+																<div class="col-3 d-flex flex-wrap align-content-center">
+																	<label class="">Accept cookies</label>
+																</div>
+																<div class="col-9 form-inline">
+																	<span>:&nbsp</span>
+																	<select asp-for="AcceptCookies" asp-items="Model.AcceptCookiesOptions" class="form-control"></select>
+																</div>
+															</div>
+
+															<div class="row">
+																<div class="col-3 d-flex flex-wrap align-content-center">
+																	<label class="">Restrict App Usage (supervised only)</label>
+																</div>
+																<div class="col-9 form-inline">
+																	<span>:&nbsp</span>
+																	<select asp-for="RestrictAppsUsage" asp-items="Model.RestrictAppsUsageOptions" class="form-control">
+																	</select>
+																</div>
+															</div>
+														</div>
+
+														<div ID="pnlRestrictionApp" style="display:none">
+															<div id="dvRestrictionApp">
+																@Html.Partial("_RestrictionApps", Model.RestrictionApps)
+															</div>
+															<table>
+																<tr>
+																	<td>
+																		<input type="text" ID="txtReApps" class="form-control" />
+																	</td>
+																	<td>
+																		<a class="btn btn-primary" ID="lkbAdd" OnClick="btnAddRestrictionApp_Click()">Add</a>
+																	</td>
+																</tr>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="sticky_footer">
+										<div class="row">
+											<div class="col">
+												<!-- Back -->
+												<input type="button" name="previous-step" class="btn btn_footer previous-step" value="Back" />
+											</div>
+											<div class="col">
+												<!-- Next -->
+												<input type="button" name="next-step" class="btn btn_footer next-step" value="Next" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset data-name="wizard_wifi">
+									<div d="wizard_wifi" class="wizard_form">
+										<div class="row">
+											<div class="col">
+												<h2>Wifi</h2>
+
+												<div ID="upNotRequired">
+													<input type="checkbox" asp-for="ckbNotRequiredWifi" />
+													<label for="ckbNotRequiredWifi">Not Required</label>
+												</div>
+											</div>
+										</div>
+										<hr />
+
+										<div class="row">
+											<div class="col">
+												<div ID="upWifi" UpdateMode="Always">
+													<a ID="btnAddWifi" onclick="btnAddWiFi_Click()" class="btn btn_theme">Add</a>
+													<div style="overflow-x: auto;" id="gvWifi">
+														@Html.Partial("_WiFiListPartial", Model.WiFiList)
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="sticky_footer">
+										<div class="row">
+											<div class="col">
+												<!-- Back -->
+												<input type="button" name="previous-step" class="btn btn_footer previous-step" value="Back" />
+											</div>
+											<div class="col">
+												<!-- Next -->
+												<input type="button" name="next-step" class="btn btn_footer next-step" value="Next" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset data-name="wizard_vpn">
+									<div d="wizard_vpn" class="wizard_form">
+										<div class="row">
+											<div class="col">
+												<h2>VPN</h2>
+												<div ID="upCheckBoxVPN" UpdateMode="Always">
+													<input type="checkbox" asp-for="ckbNotRequiredVPN" />
+													<label for="ckbNotRequiredVPN">Not Required</label>
+												</div>
+											</div>
+										</div>
+										<hr />
+
+										<div class="row">
+											<div class="col">
+												<div ID="upVPN" UpdateMode="Always">
+													<a ID="btnAddVPN" onclick="btnAddVPN_Click()" class="btn btn_theme">Add</a>
+													<br />
+													<div id="gvVPN">
+														@Html.Partial("_VPNListPartial", Model.VPNList)
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="sticky_footer">
+										<div class="row">
+											<div class="col">
+												<!-- Back -->
+												<input type="button" name="previous-step" class="btn btn_footer previous-step" value="Back" />
+											</div>
+											<div class="col">
+												<!-- Next -->
+												<input type="button" name="next-step" class="btn btn_footer next-step" value="Next" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset data-name="wizard_cell">
+									<div id="wizard_cell" class="wizard_form">
+										<div class="row">
+											<div class="col">
+												<h2>Cellular</h2>
+												<div ID="upCellularNotRequired" UpdateMode="Always">
+
+													<input type="checkbox" asp-for="ckbNotRequiredCell" onclick="ToggleCellularSettings()" />
+													<label for="ckbNotRequiredCell">Not Required</label>
+
+												</div>
+											</div>
+										</div>
+										<hr />
+
+										<!--Toggle different forms by APN Type-->
+										<div>
+											<input type="hidden" ID="hfData" />
+											<div ID="upCellular">
+
+
+												<!--Dropdown select APN Type-->
+												<div class="row">
+													<div class="col-3 d-flex flex-wrap align-content-center">
+														<label class="">Configured APN Type</label>
+													</div>
+													<div class="col-9 form-inline">
+														<span>:&nbsp</span>
+														<select asp-for="APNType" asp-items="Model.APNTypeOptions" class="form-control"></select>
+													</div>
+												</div>
+												<hr />
+
+												<!--Form group for default APN / Default and Data APNs -->
+												<div ID="defaultAPN" Visible="false">
+													<!--APN Name-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Default APN Name</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<input type="text" asp-for="DeAPN" required="required" class="form-control reqCell" placeholder="[required]" />
+															<br />
+															<span class="input_note">(Access Point Name for the default APN configuration)</span>
+														</div>
+													</div>
+													<!--APN Auth Type-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Default APN Authentication Type</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<select asp-for="DAAT" asp-items="Model.DAATOptions" class="form-control"></select>
+															<br />
+															<span class="input_note">(Authentication used by the default APN configuration)</span>
+														</div>
+													</div>
+													<!--APN Username-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Default APN Username</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<input type="text" asp-for="DAUN" class="form-control" placeholder="[optional]" />
+															<br />
+															<span class="input_note">(User name for authenticating the connection)</span>
+														</div>
+													</div>
+													<!--APN Password-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Default APN Password</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<input type="text" asp-for="DAPass" TextMode="Password" class="form-control" placeholder="[optional]" />
+														</div>
+													</div>
+												</div>
+
+												<div ID="DD_divider" Visible="false">
+													<hr />
+												</div>
+
+												<!--Form group for Data APN / Default and Data APNs -->
+												<div ID="pnlData" Visible="false">
+													<!--APN Name-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Data APN Name</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<input type="text" asp-for="DataAN" class="form-control" placeholder="[required]" />
+															<br />
+															<span class="input_note">(Access Point Name for the data APN configuration)</span>
+														</div>
+													</div>
+													<!--APN Auth Type-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Data APN Authentication Type</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<select asp-for="DataAAT" asp-items="Model.DAATOptions" class="form-control"></select>
+															<br />
+															<span class="input_note">(Authentication used by the data APN configuration)</span>
+														</div>
+													</div>
+													<!--APN Username-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Data APN Username</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<input type="text" asp-for="DataAUserName" class="form-control" placeholder="[optional]" />
+															<br />
+															<span class="input_note">(User name for authenticating the connection)</span>
+														</div>
+													</div>
+													<!--APN Password-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Data APN Password</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<input type="text" asp-for="DataAPass" class="form-control" TextMode="Password" placeholder="[optional]" />
+															<br />
+															<span class="input_note">(Password for authenticating the connection)</span>
+														</div>
+													</div>
+													<!--APN Proxy Server-->
+													<div class="row">
+														<div class="col-3 d-flex flex-wrap align-content-center">
+															<label class="">Data APN Proxy Server</label>
+														</div>
+														<div class="col-9 form-inline">
+															<span>:&nbsp</span>
+															<input type="text" asp-for="DataPS" class="form-control" placeholder="[optional]" />
+															<br />
+															<span class="input_note">(Optional proxy server hostname and port)</span>
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+
+									<div class="sticky_footer">
+										<div class="row">
+											<div class="col">
+												<!-- Back -->
+												<input type="button" name="previous-step" class="btn btn_footer previous-step" value="Back" />
+											</div>
+											<div class="col">
+												<!-- Next -->
+												<input type="button" name="next-step" class="btn btn_footer next-step" value="Next" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+								<fieldset>
+									<div class="finish">
+										<h2 class="text-center">
+											<strong>Confirm?</strong>
+										</h2>
+									</div>
+									<div class="row">
+										<div class="col d-flex flex-wrap align-content-center justify-content-center">
+											<input type="button" name="previous-step" class="previous-step" value="Back" />
+										</div>
+										<div class="col d-flex flex-wrap align-content-center justify-content-center">
+											<div ID="UpdatePanel6">
+												<input type="submit" ID="LinkButton2" class="btn theme_gradient_btn d-flex flex-wrap align-content-center justify-content-center" />
+											</div>
+										</div>
+									</div>
+								</fieldset>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="main-body-content">
+			<div class="modal fade" id="myModal_BranchID" tabindex="-1" role="dialog" aria-labelledby="lblModalTittleBranchID" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="lblModalTittleBranchID">Branch</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body text-left">
+							<div class="form-group">
+								<input type="checkbox" asp-for="ckbSelectall" />
+								<label for="ckbSelectall">Select All</label>
+							</div>
+							<div class="form-group" id="branchList">
+								@foreach (var branch in Model.BranchList)
+								{
+									<input type="checkbox" class="form-check-input branch-checkbox" style="padding-left:10px;" id="branch_@branch.BID" name="BranchIds" value="@branch.BID" checked="@branch.chk" />
+									<label class="form-check-label" for="branch_@branch.BID" style="padding-left:40px;">@branch.BDESC</label>
+									<br />
+								}
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal fade" id="myModal_Wifi" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		</div>
+
+
+		<div class="modal fade" id="myModal_VPN" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		</div>
+	</form>
+</div>
+@section Styles {
+	<link href="~/css/ios_mdm/element.css" rel="stylesheet" />
+	<link href="~/css/ios_mdm/addeditpage.css" rel="stylesheet" />
+	<link href="~/css/ios_mdm/bootstrap-wizard.css" rel="stylesheet" />
+	<link href="~/css/ios_mdm/profile.css" rel="stylesheet" />
+	<style type="text/css" rel="stylesheet">
+		a.no-click {
+			pointer-events: none;
+			opacity: 0.5 !important; /* Optional to indicate it's inactive */
+		}
+
+		.column-container {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 10px;
+		}
+
+		.column {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.group-header {
+			background-color: gray;
+			padding: 5px;
+		}
+
+		.input-error {
+			border: 2px solid red;
+		}
+	</style>
+}
+@section Scripts {
+	<script type="text/javascript" src="~/js/ios_mdm/bootstrap-wizard.js"></script>
+	<script>
+
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+
+			$('#dvRestrictionApp').on('click', '.edit-btn', function () {
+				var $row = $(this).closest('tr');
+				var originalText = $row.find('.resAppText').text().trim();
+
+				// Store original value in a data attribute
+				$row.data('originalText', originalText);
+				$row.find('.resAppText').html('<input type="text" class="form-control" value="' + originalText + '" />');
+				$row.find('.edit-btn').addClass('d-none');
+				$row.find('.update-btn, .cancel-btn').removeClass('d-none');
+			});
+
+			$('#dvRestrictionApp').on('click', '.cancel-btn', function () {
+				var $row = $(this).closest('tr');
+				// Get the original value from the data attribute
+				var originalText = $row.data('originalText');
+
+				$row.find('.resAppText').text(originalText);
+				$row.find('.edit-btn').removeClass('d-none');
+				$row.find('.update-btn, .cancel-btn').addClass('d-none');
+			});
+
+			$('#dvRestrictionApp').on('click', '.update-btn', function () {
+				var $row = $(this).closest('tr');
+				var newText = $row.find('input').val();
+				var index = $row.data('index');
+				var originalText = $row.data('originalText');
+				// Replace input with new text
+				$row.find('.resAppText').text(newText);
+				$row.find('.edit-btn').removeClass('d-none');
+				$row.find('.update-btn, .cancel-btn').addClass('d-none');
+
+				// send to server via AJAX
+				$.ajax({
+					url: "@Url.Page("/ProfileAdd")?handler=RestrictionAppEdit",
+					method: 'POST',
+					data: { Original : originalText,AppName : newText },
+					headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+					success: function (data) {
+						$("#dvRestrictionApp").html(data);
+					},
+					error: function () {
+						alert('Error saving data');
+					}
+				});
+			});
+		});
+
+
+		function btnAddRestrictionApp_Click() {
+			$.ajax({
+				url: "@Url.Page("/ProfileAdd")?handler=RestrictionAppAdd",
+				method: "POST",
+				data: { AppName : $("#txtReApps").val() },
+				headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+				success: function (data) {
+					$("#dvRestrictionApp").html(data);
+					$("#txtReApps").val('');
+				}
+			});
+		}
+
+		function btnAdd_Whitelist_Click() {
+			var rowCount = $('#tbl-whitelist-data tr').length -1;
+			var description = $("#txtWhitelistApps").val();
+			if(description != ''){
+			var newRow = `
+				<tr data-index="${rowCount}">
+					<td class="whitelistAppText">${description}</td>
+					<td>
+						<a class="btn btn-sm btn-link edit-whitelist-btn">Edit</a>
+						<a class="btn btn-sm btn-primary update-whitelist-btn d-none">Update</a>
+						<a class="btn btn-sm btn-secondary cancel-whitelist-btn d-none">Cancel</a>
+					</td>
+				</tr>
+			`;
+			$('#tbl-whitelist-data tbody').append(newRow);
+			$("#txtWhitelistApps").val('');
+			}
+		}
+
+		function fn_checkboxFunctionality()
+		{
+			// Get the checkbox that triggered the event
+			var checkbox = event.target;
+			var isGroupHeader = checkbox.dataset.groupheader === "1";
+			var rgroup = checkbox.dataset.rgroup;
+			var isbypass = (rgroup === "2" || rgroup === "6");
+			if(!isbypass)
+			{
+				if (isGroupHeader)
+				{
+					// If it's a group header, toggle all checkboxes with the same rgroup
+					var checkboxes = document.querySelectorAll('input[type="checkbox"][data-rgroup="' + rgroup + '"]');
+					checkboxes.forEach(function(cb) {cb.checked = checkbox.checked;});
+				}
+				else
+				{
+					var headerCheckbox = document.querySelector('input[type="checkbox"][data-rgroup="' + rgroup + '"][data-groupheader="1"]');
+					if (!headerCheckbox || !headerCheckbox.checked) {
+						checkbox.checked = false;
+					}
+				}
+			}
+		}
+
+		function disableLink(linkId) {
+			var $link = $('#' + linkId);
+			$link.addClass('disabled');
+			$link.css('pointer-events', 'none');
+			$link.css('opacity', '0.6'); // Optional visual cue
+		}
+
+		function enableLink(linkId) {
+			var $link = $('#' + linkId);
+			$link.removeClass('disabled');
+			$link.css('pointer-events', 'auto');
+			$link.css('opacity', '1');
+		}
+
+
+		function ValidateWiFi()
+		{
+			var isValid = true;
+			var ServiceSetIdentifier = $("#ServiceSetIdentifier").val().trim();
+			if (ServiceSetIdentifier === '') {
+				isValid=false;
+			}
+			var ProxySetup = $("#ProxySetup").val().trim();
+			if (ProxySetup === 'Manual')
+			{
+				var ProxyServer = $("#ProxyServer").val().trim();
+				if (ProxyServer === '') 
+				{
+					isValid=false;
+				}
+			}
+
+			if (!isValid) {
+				disableLink('lBWifi');
+			} else {
+				enableLink('lBWifi');
+			}
+		}
+
+		function btnAddWiFi_Click() {
+			$.ajax({
+				url: "@Url.Page("/ProfileAdd")?handler=LoadAddWiFi",
+				method: "POST",
+				data: { Profile_WIFI_ID: '' },
+				headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+				success: function (data) {
+					$("#myModal_Wifi").html(data);
+					ValidateWiFi();
+					$(document).on('input blur', '#ServiceSetIdentifier, #ProxyServer', function () {
+						ValidateWiFi();
+					});
+
+					$('#tbl-whitelist-data').on('click', '.edit-whitelist-btn', function () {
+						var $row = $(this).closest('tr');
+						var originalText = $row.find('.whitelistAppText').text().trim();
+						// Store original value in a data attribute
+						$row.data('originalText', originalText);
+
+						$row.find('.whitelistAppText').html('<input type="text" class="form-control" value="' + originalText + '" />');
+						$row.find('.edit-whitelist-btn').addClass('d-none');
+						$row.find('.update-whitelist-btn, .cancel-whitelist-btn').removeClass('d-none');
+					});
+
+					$('#tbl-whitelist-data').on('click', '.cancel-whitelist-btn', function () {
+						var $row = $(this).closest('tr');
+						var originalText = $row.data('originalText');
+
+						$row.find('.whitelistAppText').text(originalText);
+						$row.find('.edit-whitelist-btn').removeClass('d-none');
+						$row.find('.update-whitelist-btn, .cancel-whitelist-btn').addClass('d-none');
+					});
+					$('#tbl-whitelist-data').on('click', '.update-whitelist-btn', function () {
+						var $row = $(this).closest('tr');
+						var newText = $row.find('input').val();
+						var index = $row.data('index');
+						// Replace input with new text
+						$row.find('.whitelistAppText').text(newText);
+						$row.find('.edit-whitelist-btn').removeClass('d-none');
+						$row.find('.update-whitelist-btn, .cancel-whitelist-btn').addClass('d-none');
+					});
+
+
+					$('#myModal_Wifi').modal('show');
+				}
+			});
+		}
+
+		function lBWifi_Click() {
+			var allDescriptions = getWhitelistAppTexts();
+			var model = {
+				Profile_WIFI_ID: $("#Profile_WIFI_ID").val(),
+				ServiceSetIdentifier: $("#ServiceSetIdentifier").val(),
+				HiddenNetwork: $("#HiddenNetwork").is(":checked"),
+				AutoJoin: $("#AutoJoin").is(":checked"),
+				DisableCaptiveNetworkDetection: $("#DisableCaptiveNetworkDetection").is(":checked"),
+				ProxySetup: $("#ProxySetup").val(),
+				ProxyServer: $("#ProxyServer").val(),
+				ProxyServerPort: $("#ProxyServerPort").val(),
+				Username: $("#Username").val(),
+				ProxyPassword: $("#ProxyPassword").val(),
+				ProxyURL: $("#ProxyURL").val(),
+				PacUnreachable: $("#PacUnreachable").is(":checked"),
+				SecurityType: $("#SecurityType").val(),
+				SecurityPassword: $("#SecurityPassword").val(),
+				NetworkType: $("#NetworkType").val(),
+				FastLaneQosmarking: $("#FastLaneQosmarking").val(),
+				EnableQos: $("#EnableQos").is(":checked"),
+				Whitelist: $("#WhiteList").is(":checked"),
+				App_Identifity: allDescriptions.join(', ')
+			};
+			$.ajax({
+				url: "@Url.Page("/ProfileAdd")?handler=AddWiFi",
+				method: "POST",
+				data: model,
+				headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+				success: function (data) {
+					$("#gvWifi").html(data);
+					$('#myModal_Wifi').modal('hide');
+				}
+			});
+		}
+
+		function getWhitelistAppTexts() {
+			return $('.whitelistAppText')
+				.map(function() { return $(this).text().trim(); })
+				.get();
+		}
+
+		function fn_EditWiFi(Profile_WIFI_ID) {
+			$.ajax({
+				url: "@Url.Page("/ProfileAdd")?handler=LoadAddWiFi",
+				method: "POST",
+				data: { Profile_WIFI_ID: Profile_WIFI_ID },
+				headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+				success: function (data) {
+					$("#myModal_Wifi").html(data);
+					onChange_ddlProxySetup();
+					onChange_ddlSecurityType();
+					onChange_ddlFastLaneWifi();
+					$('#tbl-whitelist-data').on('click', '.edit-whitelist-btn', function () {
+						var $row = $(this).closest('tr');
+						var originalText = $row.find('.whitelistAppText').text().trim();
+						// Store original value in a data attribute
+						$row.data('originalText', originalText);
+
+						$row.find('.whitelistAppText').html('<input type="text" class="form-control" value="' + originalText + '" />');
+						$row.find('.edit-whitelist-btn').addClass('d-none');
+						$row.find('.update-whitelist-btn, .cancel-whitelist-btn').removeClass('d-none');
+					});
+
+					$('#tbl-whitelist-data').on('click', '.cancel-whitelist-btn', function () {
+						var $row = $(this).closest('tr');
+						var originalText = $row.data('originalText');
+
+						$row.find('.whitelistAppText').text(originalText);
+						$row.find('.edit-whitelist-btn').removeClass('d-none');
+						$row.find('.update-whitelist-btn, .cancel-whitelist-btn').addClass('d-none');
+					});
+					$('#tbl-whitelist-data').on('click', '.update-whitelist-btn', function () {
+						var $row = $(this).closest('tr');
+						var newText = $row.find('input').val();
+						var index = $row.data('index');
+						// Replace input with new text
+						$row.find('.whitelistAppText').text(newText);
+						$row.find('.edit-whitelist-btn').removeClass('d-none');
+						$row.find('.update-whitelist-btn, .cancel-whitelist-btn').addClass('d-none');
+					});
+					ValidateWiFi();
+					$(document).on('input blur', '#ServiceSetIdentifier, #ProxyServer', function () {
+						ValidateWiFi();
+					});
+					$('#myModal_Wifi').modal('show');
+				}
+			});
+
+		}
+
+		function btnAddVPN_Click() {
+			$.ajax({
+				url: "@Url.Page("/ProfileAdd")?handler=LoadAddVPN",
+				method: "POST",
+				data: { Profile_VPN_ID: '' },
+				headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+				success: function (data) {
+					$("#myModal_VPN").html(data);					
+					$('#myModal_VPN').modal('show');
+					ValidateVPN();
+					$(document).on('input blur', '#ConnectionName, #L2TP_Server, #L2TP_Account, #L2TP_UserAuthentication_Password, #L2TP_ProxySetup_Server, #IPSEC_SERVER, #IPSEC_Account, #IPSEC_Account_Password, #IPSEC_Proxy_Server', function () {
+						ValidateVPN();
+					});
+				}
+			});
+		}
+		function fn_EditVPN(Profile_VPN_ID) {
+			$.ajax({
+				url: "@Url.Page("/ProfileAdd")?handler=LoadAddVPN",
+				method: "POST",
+				data: { Profile_VPN_ID: Profile_VPN_ID },
+				headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+				success: function (data) {
+					$("#myModal_VPN").html(data);
+					ddlConnType_SelectedIndexChanged();
+					txtGroupNameL2TP_TextChanged();
+					txtGroupNameIpSec_TextChanged();
+					ddlProxySetupVPNL2TP_Changed();
+					ddlProxySetupVPNIPSEC_Changed();
+					$('#myModal_VPN').modal('show');
+					ValidateVPN();
+					$(document).on('input blur', '#ConnectionName, #L2TP_Server, #L2TP_Account, #L2TP_UserAuthentication_Password, #L2TP_ProxySetup_Server, #IPSEC_SERVER, #IPSEC_Account, #IPSEC_Account_Password, #IPSEC_Proxy_Server', function () {
+						ValidateVPN();
+					});
+				}
+			});
+
+		}
+
+		function btnConfirmVPN_Click() {
+			var model = {
+				Profile_VPN_ID: $("#Profile_VPN_ID").val(),
+				ConnectionName: $("#ConnectionName").val(),
+				ConnectionType: $("#ConnectionType").val(),
+				L2TP_Server: $("#L2TP_Server").val(),
+				L2TP_Account: $("#L2TP_Account").val(),
+				L2TP_UserAuthentication_RSASecurID: $('input[name="L2TP_UserAuthentication_RSASecurID"]:checked').val(),
+				L2TP_UserAuthentication_Password: $("#L2TP_UserAuthentication_Password").val(),
+				L2TP_SendAllTrafficeThroughVPN: $("#L2TP_SendAllTrafficeThroughVPN").is(":checked"),
+				L2TP_MachineAuthentication: $("#L2TP_MachineAuthentication").val(),
+				L2TP_GroupName: $("#L2TP_GroupName").val(),
+				L2TP_SharedSecret: $("#L2TP_SharedSecret").val(),
+				L2TP_UseHybridAuthentication: $("#L2TP_UseHybridAuthentication").is(":checked"),
+				L2TP_PromptForPassword: $("#L2TP_PromptForPassword").is(":checked"),
+				L2TP_ProxySetup: $("#L2TP_ProxySetup").val(),
+				L2TP_ProxySetup_Server: $("#L2TP_ProxySetup_Server").val(),
+				L2TP_ProxySetup_Port: $("#L2TP_ProxySetup_Port").val(),
+				L2TP_ProxySetupURL: $("#L2TP_ProxySetupURL").val(),
+				L2TP_ProxySetup_Authentication: $("#L2TP_ProxySetup_Authentication").val(),
+				L2TP_ProxySetup_Password: $("#L2TP_ProxySetup_Password").val(),
+
+				IPSEC_SERVER: $("#IPSEC_SERVER").val(),
+				IPSEC_Account: $("#IPSEC_Account").val(),
+				IPSEC_Account_Password: $("#IPSEC_Account_Password").val(),
+				IPSEC_MachineAuthentication: $("#IPSEC_MachineAuthentication").val(),
+				IPSEC_GroupName: $("#IPSEC_GroupName").val(),
+				IPSEC_SharedSecret: $("#IPSEC_SharedSecret").val(),
+				IPSEC_UseHybridAuthentication: $("#IPSEC_UseHybridAuthentication").is(":checked"),
+				IPSEC_PromptForPassword: $("#IPSEC_PromptForPassword").is(":checked"),
+				IPSEC_ProxySetup: $("#IPSEC_ProxySetup").val(),
+				IPSEC_Proxy_Server: $("#IPSEC_Proxy_Server").val(),
+				IPSEC_Proxy_Port: $("#IPSEC_Proxy_Port").val(),
+				IPSEC_Authentication: $("#IPSEC_Authentication").val(),
+				IPSEC_ProxyServerURL: $("#IPSEC_ProxyServerURL").val(),
+				IPSEC_Password: $("#IPSEC_Password").val(),
+			};
+			$.ajax({
+				url: "@Url.Page("/ProfileAdd")?handler=AddVPN",
+				method: "POST",
+				data: model,
+				headers: { RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val() },
+				success: function (data) {
+					$("#gvVPN").html(data);
+					$('#myModal_VPN').modal('hide');
+				}
+			});
+		}
+	</script>
+	<script src="~/js/ios_mdm/profile.js"></script>
+}

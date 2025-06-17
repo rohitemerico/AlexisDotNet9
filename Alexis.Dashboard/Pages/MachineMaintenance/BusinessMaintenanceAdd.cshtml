@@ -1,0 +1,183 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.BusinessMaintenanceAddModel
+@{
+	ViewData["Title"] = Model.PageTitleText;
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/MachineMaintenance/BusinessMaintenance" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--Main Content-->
+	<div class="main-content text-gray-600 small" style="padding: 50px; text-align: left; color: #5D5D5D;">
+		<form method="post" action="">
+			<div class="row justify-content-md-center">
+
+				<div class="panel pr-5" style="border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white;">
+
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Operating Hour Info </h3>
+						<div class="right">
+						</div>
+					</div>
+
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Branch Name</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input asp-for="BranchName" type="text" Style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="BranchName" style="color: red;"></span>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Working Day </td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<table style="padding: 0px; margin: 0px;">
+									<tr>
+										<td style="border: 0px;">Monday</td>
+										<td style="border: 0px;">Tuesday</td>
+										<td style="border: 0px;">Wednesday</td>
+										<td style="border: 0px;">Thursday</td>
+										<td style="border: 0px;">Friday</td>
+										<td style="border: 0px;">Saturday</td>
+										<td style="border: 0px;">Sunday</td>
+									</tr>
+									<tr style="text-align: center;">
+										<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="Monday" /><span class="slider round"></span></label></td>
+										<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="Tuesday" /><span class="slider round"></span></label></td>
+										<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="Wednesday" /><span class="slider round"></span></label></td>
+										<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="Thursday" /><span class="slider round"></span></label></td>
+										<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="Friday" /><span class="slider round"></span></label></td>
+										<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="Saturday" /><span class="slider round"></span></label></td>
+										<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="Sunday" /><span class="slider round"></span></label></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">
+								Branch Operating Hours
+							</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<select asp-for="Start" class="time-dropdown" style="font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px; width:200px; border-color:#E3E3E3;border-width:1px;">
+									@for (var hour = 0; hour < 24; hour++)
+									{
+										for (var half = 0; half < 2; half++)
+										{
+											var time = new TimeSpan(hour, half * 30, 0);
+											var text = time.ToString(@"hh\:mm");
+											<option value="@text">@text</option>
+										}
+									}
+								</select>
+								To
+								<select asp-for="End" class="time-dropdown" style="font-size: 14px; color: #5D5D5D; margin-left: 10px; padding: 6px; border-radius: 5px; width:200px; border-color:#E3E3E3;border-width:1px;">
+									@for (var hour = 0; hour < 24; hour++)
+									{
+										for (var half = 0; half < 2; half++)
+										{
+											var time = new TimeSpan(hour, half * 30, 0);
+											var text = time.ToString(@"hh\:mm");
+											var itemSelected = text == "17:00" ? "selected" : "";
+											<option value="@text">@text</option>
+										}
+									}
+								</select>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Remarks</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<textarea asp-for="Remarks" Style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;height:50px;"></textarea>
+							</td>
+						</tr>
+						@if (!string.IsNullOrWhiteSpace(Model.BusinessId))
+						{
+							<tr id="active">
+								<td style="border: 0px; padding-left: 50px;">Status</td>
+								<td style="border: 0px;">:&nbsp;</td>
+								<td style="border: 0px;"><label class="switch"><input type="checkbox" asp-for="ChkStatus" /><span class="slider round"></span></label>Active</td>
+							</tr>
+						}
+						<tr>
+							<td style="border: 0px; padding-left: 50px;"></td>
+							<td style="border: 0px;"></td>
+							<td style="border: 0px;">
+								<label>@Model.LabelInfo</label>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="text-align: center; border: 0px;">
+								<input type="hidden" asp-for="BusinessId" />
+								<input type="button" value="Back" id="btn_cancel" class="mx-2 btn theme_outline_only_btn" onclick="onCancelClick()">
+								<input type="submit" value="@Model.ConfirmText" class="mx-2 btn theme_gradient_btn" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+
+	<script type="text/javascript">
+
+		function onCancelClick() {
+			$.ajax({
+					url: "@Url.Page("/BusinessMaintenanceAdd")?handler=Cancel",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/BusinessMaintenance")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+	</script>
+}

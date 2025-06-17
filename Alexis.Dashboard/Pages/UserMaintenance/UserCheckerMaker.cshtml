@@ -1,0 +1,440 @@
+﻿@page
+@model Alexis.Dashboard.Pages.UserMaintenance.UserCheckerMakerModel
+@using Alexis.Dashboard.Helper
+@{
+	ViewData["Title"] = "User Checker Maker";
+	var tabEnumNames = Enum.GetNames(typeof(TabGroup));
+	var currentTabName = Enum.GetName(typeof(TabGroup), Model.CurrentTab);
+	string activateTabClass = Model.ActivateTab ?? "active";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@section Styles {
+	<link href="~/css/reporting/navtabs.css" rel="stylesheet" />
+	<!-- Bootstrap 5-->
+	<link href="~/css/bootstrap-5.0.2-dist/bootstrap.min.css" rel="stylesheet" />
+	<script src="~/js/bootstrap-5.0.2-dist/bootstrap.bundle.min.js"></script>
+	<style>
+		a {
+			color: inherit;
+			text-decoration: inherit;
+		}
+
+			a:hover {
+				color: inherit;
+			}
+	</style>
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();">
+				<i class="fa fa-refresh fa-sm pr-1"></i>Refresh </>
+			</button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+
+	<!-- Reject Modal -->
+	<div class="modal" id="myRejectModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form method="post">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Reject Confirmation</h4>
+					</div>
+					<!-- Modal body -->
+					<div class="modal-body">
+						<input type="hidden" asp-for="EntityIdToReject" />
+						<input type="hidden" asp-for="TargetTabToReject" />
+
+						Are you sure that you want to reject the selected checker maker?
+
+						<div class="my-3 font_medium" style="font-size: 14px; color: #5D5D5D;">
+							Remarks &nbsp <i class="fa fa-asterisk text-danger" style="font-size: smaller;"></i>
+						</div>
+						<textarea class="form-control" asp-for="RejectRemarks" style="font-size:14px;height:130px;"></textarea>
+					</div>
+					<!-- Modal footer -->
+					<div class="modal-footer">
+						<button type="button" class="btn theme_outline_only_btn" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" asp-page-handler="ConfirmReject" class="btn theme_gradient_btn">Confirm</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Decline Modal -->
+	<div class="modal" id="myDeclineModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form method="post">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Decline Confirmation</h4>
+					</div>
+					<!-- Modal body -->
+					<div class="modal-body">
+						<input type="hidden" asp-for="EntityIdToDecline" />
+						<input type="hidden" asp-for="TargetTabToDecline" />
+
+						Are you sure that you want to decline the selected checker maker?
+
+						<div class="my-3 font_medium" style="font-size: 14px; color: #5D5D5D;">
+							Remarks &nbsp <i class="fa fa-asterisk text-danger" style="font-size: smaller;"></i>
+						</div>
+						<textarea class="form-control" asp-for="RejectRemarks" style="font-size:14px;height:130px;"></textarea>
+					</div>
+					<!-- Modal footer -->
+					<div class="modal-footer">
+						<button type="button" class="btn theme_outline_only_btn" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" asp-page-handler="ConfirmDecline" class="btn theme_gradient_btn">Decline</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Approve Modal -->
+	<div class="modal" id="myApproveModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form method="post">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Approve Confirmation</h4>
+					</div>
+					<!-- Modal body -->
+					<div class="modal-body">
+						<input type="hidden" asp-for="EntityIdToApprove" />
+						<input type="hidden" asp-for="TargetTabToApprove" />
+						Are you sure that you want to approve the selected checker maker?
+					</div>
+					<!-- Modal footer -->
+					<div class="modal-footer">
+						<button type="button" class="btn theme_outline_only_btn" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" asp-page-handler="ConfirmApprove" class="btn theme_gradient_btn">Confirm</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<button type="button" class="btn theme_gradient_btn" data-bs-dismiss="modal">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		@for (int i = 0; i < tabEnumNames.Length; i++)
+		{
+			var tabName = tabEnumNames[i];
+			var isActive = currentTabName == tabName;
+			var tabClass = "nav-link" + (isActive ? $" {activateTabClass}" : "");
+
+			<li class="nav-item" role="presentation">
+				<button class="@tabClass" id="tab_@tabName" data-bs-toggle="tab" data-bs-target="#@tabName" type="button" role="tab" aria-controls="@tabName" aria-selected="true" onclick="onGridClick('@tabName')">@tabName</button>
+			</li>
+		}
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<!-- Tab 1 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(TabGroup), Model.CurrentTab) == Enum.GetName(typeof(TabGroup), 1) ? activateTabClass : "")" id="Role" role="tabpanel" aria-labelledby="tab_Role">
+			@if (Model.RoleVisible)
+			{
+				
+						@(
+													Html.Kendo().Grid(Model.Roles)
+													.Name("RoleGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= rID #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Role','#= rID #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Role','#= rID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Role','#= rID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
+							</span>
+							# } #
+						</div>
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(u => u.RDESC).Title("Role Name").Filterable(true);
+														columns.Bound(u => u.RCREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.CREATEDBY).Title("Created by");
+														columns.Bound(u => u.RUPDATEDDATE).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.UPDATEDBY).Title("Updated By");
+														columns.Bound(p => p.Status)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= Status #" +
+														"</span>" +
+														"</div>"
+														)
+														.Sortable(true);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s =>
+													{
+														s.Field(o => o.RDESC, "contains");
+													})
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+					
+			}
+		</div>
+		<!-- Tab 2 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(TabGroup), Model.CurrentTab) == Enum.GetName(typeof(TabGroup), 2) ? activateTabClass : "")" id="User" role="tabpanel" aria-labelledby="tab_User">
+			@if (Model.UserVisible)
+			{
+				
+						@(
+													Html.Kendo().Grid(Model.Users)
+													.Name("UserGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= aID #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('User','#= aID #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('User','#= aID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('User','#= aID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
+							</span>
+							# } #
+						</div>
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(u => u.uName).Title("User ID");
+														columns.Bound(u => u.uFullName).Title("Fullname");
+														columns.Bound(u => u.rDesc).Title("User Role");
+														columns.Bound(u => u.uCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.CreatedByName).Title("Created by");
+														columns.Bound(u => u.uUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.UpdatedByName).Title("Updated By");
+														columns.Bound(u => u.Status).Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= Status #" +
+														"</span>" +
+														"</div>"
+														)
+														.Sortable(true);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s =>
+													{
+														s.Field(o => o.uName, "contains");
+														s.Field(o => o.uFullName, "contains");
+														s.Field(o => o.rDesc, "contains");
+													})
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+					
+			}
+		</div>
+		<!-- Tab 3 Content -->
+		<div class="tab-pane fade @(Enum.GetName(typeof(TabGroup), Model.CurrentTab) == Enum.GetName(typeof(TabGroup), 3) ? activateTabClass : "")" id="Branch" role="tabpanel" aria-labelledby="tab_Branch">
+			@if (Model.BranchVisible)
+			{
+				
+						@(
+													Html.Kendo().Grid(Model.Branches)
+													.Name("BranchGrid")
+													.Columns(columns =>
+													{
+														columns.Template(@<text>
+						<div class="text-center">
+							# if (AllowView) { #
+							<span class="button" data-toggle="tooltip" title="View">
+								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= BID #')" />
+							</span>
+							# } #
+							# if (AllowApprove) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Branch','#= BID #')">
+								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+							</span>
+							# } #
+							# if (AllowReject) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Branch','#= BID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+							</span>
+							# } #
+							# if (AllowDecline) { #
+							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Branch','#= BID #')">
+								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
+							</span>
+							# } #
+						</div>
+					</text>
+													).Title("Options").Width(150);
+														columns.Bound(u => u.BDESC).Title("Name");
+														columns.Bound(u => u.Sunday).Title("Sun");
+														columns.Bound(u => u.Monday).Title("Mon");
+														columns.Bound(u => u.Tuesday).Title("Tue");
+														columns.Bound(u => u.Wednesday).Title("Wed");
+														columns.Bound(u => u.Thursday).Title("Thurs");
+														columns.Bound(u => u.Friday).Title("Fri");
+														columns.Bound(u => u.Saturday).Title("Sat");
+														columns.Bound(u => u.BCREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.CREATEDBY).Title("Created by");
+														columns.Bound(u => u.BUPDATEDDATE).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+														columns.Bound(u => u.UPDATEDBY).Title("Updated By");
+														columns.Bound(u => u.Status)
+														.Title("Status")
+														.ClientTemplate(
+														"<div style='font-size: 0.85em;'>" +
+														"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+														"#= Status #" +
+														"</span>" +
+														"</div>"
+														)
+														.Sortable(true);
+													})
+													.ToolBar(t => t.Search())
+													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+													.Scrollable(s => s.Height("calc(80vh - 200px)"))
+													.HtmlAttributes(new { style = "margin: 0 15px;" })
+													.Sortable()
+													.Search(s =>
+													{
+														s.Field(o => o.BDESC, "contains");
+													})
+													.Events(e => e.DataBound("onGridDataBound"))
+													)
+			}
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		function onRejectClick(tabCategory, entityId) {
+			document.getElementById('TargetTabToReject').value = tabCategory;
+			document.getElementById('EntityIdToReject').value = entityId;
+			$("#myRejectModal").modal('show');
+			return false;
+		}
+		function onApproveClick(tabCategory, entityId) {
+			document.getElementById('TargetTabToApprove').value = tabCategory;
+			document.getElementById('EntityIdToApprove').value = entityId;
+			$("#myApproveModal").modal('show');
+			return false;
+		}
+		function onDeclineClick(tabCategory, entityId) {
+			document.getElementById('TargetTabToDecline').value = tabCategory;
+			document.getElementById('EntityIdToDecline').value = entityId;
+			$("#myDeclineModal").modal('show');
+			return false;
+		}
+		function onViewClick(entityId) {
+			$.ajax({
+				url: "@Url.Page("/UserCheckerMaker")?handler=View",
+				method: "GET",
+				success: function (data) {
+					if(data.message == 'Success'){
+						const baseUrl = '@Url.Content("~/Compare")';
+						window.location.href = baseUrl + "?id=" + entityId;
+					}
+					else
+					{
+						alert(data.message);
+					}
+				}
+			})
+		}
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+			
+		});
+		
+		function onGridClick(name) {
+			$.ajax({
+					url: "@Url.Page("/iOS")?handler=ChangeGrid",
+					method: "POST",
+					data: { name: name },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+							window.location.reload();
+					}
+				})
+		}
+	</script>
+
+}

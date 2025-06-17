@@ -1,0 +1,166 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MDMAndroid.ConfigRestrictionsModel
+@{
+	ViewData["Title"] = "Android MDM - Configure Restrictions";
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@using Kendo.Mvc.UI
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/MDMAndroid/PushApplication" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content text-gray-600 small" style="padding: 50px; text-align: left; color: #5D5D5D;">
+		<form method="post" action="">
+			<div class="row justify-content-md-center">
+				<div class="panel" style="width: 850px; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Geofence Restriction Configuration </h3>
+						<div class="right">
+						</div>
+					</div>
+					
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Device Name</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="DEVICENAME" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" readonly/>
+								<br />
+								<span asp-validation-for="DEVICENAME" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Device MAC Id</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="deviceMACAdd" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" readonly/>
+								<br />
+								<span asp-validation-for="deviceMACAdd" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div id="map" style="height: 500px; width: 100%;"></div>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Restriction Latitude</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Latitude" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="Latitude" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Restriction Longitude</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Longitude" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="Longitude" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Restriction Radius</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Radius" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="Radius" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" style="text-align: center; border: 0px;">
+								<input type="hidden" asp-for="DID" />
+								<input type="button" value="Back" id="btn_cancel" class="mx-2 btn theme_outline_only_btn" onclick="onCancelClick()">
+								<input type="submit" value="Confirm" class="mx-2 btn theme_gradient_btn" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+@section Scripts {
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<script>
+		// Initialize the map
+		const map = L.map('map').setView([3.150684,101.694764], 11); // Default center: KL
+
+		// Add OpenStreetMap tiles
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; OpenStreetMap contributors'
+		}).addTo(map);
+
+		// Add marker on click
+		let marker;
+		map.on('click', function (e) {
+			const lat = e.latlng.lat.toFixed(6);
+			const lng = e.latlng.lng.toFixed(6);
+
+			if (marker) {
+				marker.setLatLng(e.latlng);
+			} else {
+				marker = L.marker(e.latlng).addTo(map);
+			}
+
+			// Set values to hidden form fields
+			document.getElementById('Latitude').value = lat;
+			document.getElementById('Longitude').value = lng;
+		});
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+
+		function onCancelClick() {
+			$.ajax({
+					url: "@Url.Page("/ConfigRestrictions")?handler=Cancel",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MDMAndroid/PushApplication")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+	</script>
+}

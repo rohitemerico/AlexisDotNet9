@@ -1,0 +1,16 @@
+{
+  "ExtendedData": {
+    "inputs": [
+      "http://192.168.1.5/MDMWebService/MDMWebService.asmx"
+    ],
+    "collectionTypes": [
+      "System.Array",
+      "System.Collections.Generic.Dictionary`2"
+    ],
+    "namespaceMappings": [
+      "*, MDMWebService"
+    ],
+    "targetFramework": "net9.0",
+    "typeReuseMode": "All"
+  }
+}

@@ -1,0 +1,42 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MDMWin.ProfileManagementModel
+@{
+	ViewData["Title"] = "Windows MDM > Profile Management";
+}
+@using Kendo.Mvc.UI
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+		</div>
+	</div>
+</nav>
+<div class="contentRoot navbar navbar-default">
+	
+	<!-- Grid -->
+	@(Html.Kendo().Grid(Model.Profiles)
+		.Name("ProfilesGrid")
+		.Columns(columns =>
+		{
+			columns.Bound(p => p.Name).Title("Profile Name");
+			columns.Bound(p => p.Description).Title("Description");
+			columns.Bound(p => p.Version).Title("Version");
+			columns.Bound(p => p.CreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+			columns.Bound(p => p.EditedDate).Title("Edited Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+		})
+		.ToolBar(t => t.Search())
+		.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
+		.Sortable()
+		.Search(s => { s.Field(o => o.Name, "contains"); })
+		.Events(e => e.DataBound("onGridDataBound"))
+		)
+</div>

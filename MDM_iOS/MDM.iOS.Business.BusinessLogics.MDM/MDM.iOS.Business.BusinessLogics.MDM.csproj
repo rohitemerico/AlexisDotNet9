@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Experimental.System.Messaging" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MDM.iOS.Business.BusinessLogics.MDM_Profile\MDM.iOS.Business.BusinessLogics.MDM_Profile.csproj" />
+    <ProjectReference Include="..\MDM.iOS.Entities.MDM\MDM.iOS.Entities.MDM.csproj" />
+    <ProjectReference Include="..\MDM.iOS.Entities\MDM.iOS.Entities.csproj" />
+  </ItemGroup>
+
+</Project>

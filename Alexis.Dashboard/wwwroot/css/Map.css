@@ -1,0 +1,336 @@
+﻿
+/*==========================
+    General
+==========================*/
+.theme_gradient {
+    background-image: linear-gradient(to right, #e83b68, #e83b63, #e83b5f, #e83b5a, #e83b55, #e83d52, #e93f4e, #e9414b, #e94548, #ea4944, #ea4c41, #ea503e);
+}
+
+/*==========================
+    From Master Page
+==========================*/
+/*.main-content .navbar-title {
+    display: none;
+}*/
+
+/*.main-content .contentRoot {
+    margin: 0;
+    padding: 0px;
+}*/
+
+/*==========================
+    Map
+==========================*/
+.k-map {
+    height: 500px !important;
+}
+
+    .k-map .k-marker.k-marker-ios-custom-shape:before, .k-map .k-marker.k-marker-android-custom-shape:before, .k-map .k-marker.k-marker-windows-custom-shape:before, .k-map .k-marker.k-marker-my-custom-shape:before {
+        content: none;
+        font-size: 0;
+        margin: 0;
+        padding: 0;
+        height: 0;
+        width: 0;
+    }
+
+.k-i-marker-ios-custom-shape, .k-i-marker-android-custom-shape, .k-i-marker-windows-custom-shape, .k-i-marker-my-custom-shape {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: white;
+    border-radius: 100px;
+    border: 1px solid black;
+    width: 58px;
+    height: 58px;
+}
+
+.k-i-marker-ios-custom-shape {
+    background-image: url('../img/_Temp/map_elements/img-vseries-ios-circle@2x.png');
+}
+
+.k-i-marker-android-custom-shape {
+    background-image: url('../img/_Temp/map_elements/img-vseries-android-circle@2x.png');
+}
+
+.k-i-marker-windows-custom-shape {
+    background-image: url('../img/_Temp/map_elements/img-vseries-windows-circle@2x.png');
+}
+
+.k-i-marker-my-custom-shape {
+    background-image: url('../img/_Temp/map_elements/img-vseries-ios@1x.png');
+}
+.machineName, .machineAddr {
+    text-align: center;
+}
+.k-tooltip {
+    border-color: #fff !important;
+    color: #000 !important;
+    background-color: #fff !important;
+}
+.k-tooltip .k-tooltip-content .headerCol .flag {
+    height: 30px;
+    width: 100%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid white;
+}
+
+.k-tooltip .k-tooltip-content .headerCol .flag-uniqueFlag #logo_alexis_v_series {
+    background-image: url('../img/Logo/logo_alexis_v_series.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+.k-tooltip .k-tooltip-content .bodyCol span.property {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.k-tooltip .k-tooltip-content .bodyCol span.object {
+    padding-left: 8px;
+}
+
+.k-tooltip .k-tooltip-content {
+    font-size: 14px;
+}
+/*==========================
+    Search Control
+==========================*/
+
+#search-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    width: 400px;
+    margin: 10px 10px 0px 10px;
+}
+
+    #search-container input,
+    #search-container .input-group-text {
+        border: 1px solid black;
+    }
+
+
+/*==========================
+    Marker Popup
+==========================*/
+.offcanvas {
+    width: 500px;
+    height: 510px !important;
+    padding-right: 20px;
+    padding-left: 20px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #ffffff;
+    z-index: 1045;
+    transition: left 0.3s ease-in-out;
+    overflow-y: auto;
+}
+
+    .offcanvas hr {
+        border: 1px solid lightgray;
+    }
+
+.offcanvas-header {
+    all: unset;
+}
+
+    .offcanvas-header .btn-close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: white;
+        border:none;
+    }
+
+.offcanvas .offcanvas-header .headerImg_div {
+    height: 270px;
+    background-color: whitesmoke;
+    text-align: center;
+}
+
+    .offcanvas .offcanvas-header .headerImg_div #img_ipad_header {
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+    }
+
+.offcanvas .offcanvas-body .bodyContent_div {
+    text-align: left;
+}
+
+    .offcanvas .offcanvas-body .bodyContent_div .title_div {
+        padding-bottom: 10px;
+    }
+
+        .offcanvas .offcanvas-body .bodyContent_div .title_div .section_header {
+            text-align: left;
+            padding-left: 10px;
+            color: black;
+        }
+
+    .offcanvas .offcanvas-body .bodyContent_div #desc_gen_div .fa-map-marker {
+        color: #E83B68;
+        font-size: large;
+    }
+
+    .offcanvas .offcanvas-body .bodyContent_div #desc_gen_div .row,
+    .offcanvas .offcanvas-body .bodyContent_div #desc_os_div .row {
+        margin-bottom: 8px;
+    }
+
+
+/*==========================
+    Search bar
+==========================*/
+
+* {
+    box-sizing: border-box;
+}
+
+/*the container must be positioned relative:*/
+.autocomplete {
+    position: relative;
+    display: inline-block;
+}
+
+input {
+    border: 1px solid transparent;
+    background-color: #f1f1f1;
+    padding: 10px;
+    font-size: 16px;
+}
+
+    input[type=text] {
+        background-color: #f1f1f1;
+        width: 100%;
+    }
+
+    input[type=submit] {
+        background-color: DodgerBlue;
+        color: #fff;
+        cursor: pointer;
+    }
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 999;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+    overflow-y: auto;
+    height: 300px;
+}
+
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+
+        /*when hovering an item:*/
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active, .btn-theme {
+    background-color: #E83B68 !important;
+    color: #ffffff;
+}
+
+.k-map .k-map-controls.k-pos-top.k-pos-left {
+    top: auto !important;
+    bottom: 10px !important;
+    right: 10px !important;
+    left: auto !important;
+}
+
+/* Optional: Adjust spacing between buttons if stacked */
+.k-map-controls > * {
+    margin-bottom: 5px;
+}
+/*Vertical line*/
+.vl {
+    border-left: 1px solid lightgray;
+    height: 80px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.v2 {
+    border-left: 1px solid lightgray;
+    height: 50px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+/*Card col*/
+#home_collage .nested_row .col,
+#home_map .nested_row .col {
+    /*box-shadow: 0px 0px 6px lightgray;*/
+    border-radius: 5px;
+    margin: 10px;
+    background-color: white;
+    /*position:relative;*/
+}
+
+/*========================
+id = home_collage
+========================*/
+
+#home_collage #bar_chart .nested_row .col {
+    height: 300px;
+}
+
+#home_collage #other_data_cards .nested_row .col {
+    height: 140px;
+    /*
+adjust
+1. (height) #home_collage #bar_chart .nested_row .col
+2. (margin) #home_map .nested_row .col
+*/
+}
+
+#home_collage #other_data_cards .nested_row #col_firmware,
+#home_collage #other_data_cards .nested_row #col_errors {
+    padding-top: 25px;
+}
+
+    #home_collage #other_data_cards .nested_row #col_firmware i {
+        font-size: x-large;
+    }
+
+/*Data figure*/
+#home_collage .data_value {
+    color: #E83B68;
+    text-align: center;
+    font-size: 18px;
+}
+/*Label under the data figure*/
+#home_collage .data_group {
+    font-size: 16px;
+    position: absolute;
+    left: 0px;
+    top: 15px;
+    padding-left: 25px;
+}
+
+#home_collage .data_group,
+#home_collage .data_label {
+    color: #5D5D5D;
+}
+
+/*========================
+																													id = home_map
+																												========================*/

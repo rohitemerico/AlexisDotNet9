@@ -1,0 +1,131 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.KioskMaintenanceModel
+@{
+	ViewData["Title"] = "Machine Management";
+}
+@using Kendo.Mvc.UI
+@Html.AntiForgeryToken()
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid row align-items-center flex-wrap">
+		<div class="col-12 col-lg-auto mb-2">
+			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+				<label id="LabelTitle">@ViewData["Title"]</label>
+			</div>
+		</div>
+		<!-- NavBar2: Right -->
+		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+			<!-- Refresh -->
+			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();"><i class="fa fa-refresh fa-sm"></i> Refresh </></button>
+			<!-- Add New -->
+			<button class="btn reportBtn theme_gradient_btn" type="button" onclick="onAddClick()"><i class="fa fa-plus"> </i> Add New</button>
+		</div>
+	</div>
+</nav>
+
+<div class="contentRoot navbar navbar-default">
+	<!-- Grid -->
+	<div id="radGrid_Role">
+		@(Html.Kendo().Grid(Model.KioskMaintenanceList)
+				.Name("KioskMaintenanceGrid")
+				.Columns(columns =>
+				{
+					columns.Template(@<text>
+			<div class="text-center">
+				# if (Visible) { #
+				<span class="button" data-toggle="tooltip" title="Edit" onclick="onEditClick('#= mid #')">
+					<img src="~/img/3_User%20Maintenance/icon_edit_grey.png" alt="Edit" />
+				</span>
+				# } #
+			</div>
+
+		</text>).Title("Options").Width(100);
+					columns.Bound(u => u.description).Title("Machine Name");
+					columns.Bound(p => p.mKioskID).Title("Machine ID");
+					columns.Bound(p => p.serial).Title("Machine Serial");
+					columns.Bound(p => p.createddate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+					columns.Bound(p => p.CreatedBy).Title("Created By");
+					columns.Bound(p => p.lastupdateddate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+					columns.Bound(p => p.UpdatedBy).Title("Updated By");
+					columns.Bound(p => p.mstatus)
+					.Title("Status")
+					.ClientTemplate(
+					"<div style='font-size: 0.85em;'>" +
+					"<span class='#= mstatus == \"Active\" ? \"status_active\" : (mstatus == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+					"#= mstatus #" +
+					"</span>" +
+					"</div>"
+					).Sortable(true);
+				})
+				.ToolBar(t => t.Search())
+				.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+				.Scrollable(s => s.Height("calc(80vh - 200px)"))
+				.HtmlAttributes(new { style = "margin: 0 15px;" })
+				.Sortable()
+				.ClientDetailTemplateId("template")
+				.Events(e => e.DetailExpand("onDetailExpand"))
+				.Search(s =>
+				{
+					s.Field(o => o.description, "contains");
+					s.Field(o => o.mKioskID, "contains");
+					s.Field(o => o.serial, "contains");
+				})
+				.Events(e => e.DataBound("onGridDataBound"))
+				)
+		<script id="template" type="text/kendo-tmpl">
+			@(Html.Kendo().TabStrip().Name("tabStrip_#=mid#")
+			.SelectedIndex(0)
+			.Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+			.Items(items =>
+			{
+							items.Add().Text("Machine Management Information").Content("<div class='details'><label>Address :</label><b>#= address #</b><br/><label>Location :</label><b>#= latitude # , #= longitude #</b><br/><label>Hopper Template:</label><b>#= hopper #</b><br/><label>Document Template:</label><b>#= document #</b><br/><label>Alert Template:</label><b>#= alert #</b><br/><label>Group Template:</label><b>#= groupdesc #</b><br/><label>Business Hour Template:</label><b>#= businesshour #</b></div>");
+			}).ToClientTemplate())
+		</script>
+	</div>
+</div>
+@section Scripts {
+	<script type="text/javascript">
+		
+		function onEditClick(id) {
+			$.ajax({
+					url: "@Url.Page("/KioskMaintenance")?handler=Edit",
+					method: "POST",
+					data: { id: id },
+					headers: {RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()},
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/KioskMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+		function onAddClick() {
+			$.ajax({
+					url: "@Url.Page("/KioskMaintenance")?handler=Add",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/KioskMaintenanceAdd")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+		function onDetailExpand(e) {
+				var grid = $("#KioskMaintenanceGrid").data("kendoGrid");
+
+			grid.tbody.find("tr.k-master-row").each(function () {
+				var row = $(this);
+				if (row[0] !== e.masterRow[0]) {
+					grid.collapseRow(row);
+				}
+			});
+		}
+	</script>
+}

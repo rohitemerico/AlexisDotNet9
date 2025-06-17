@@ -1,0 +1,307 @@
+﻿@page
+@model Alexis.Dashboard.Pages.MachineMaintenance.AlertMaintenanceAddModel
+@{
+	ViewData["Title"] = Model.PageTitleText;
+	var showModal = TempData["ShowModal"] as bool?;
+	var modalTitle = TempData["ModalTitle"]?.ToString();
+	var modalMessage = TempData["ModalMessage"]?.ToString();
+}
+@using Alexis.Dashboard.Models
+@using Kendo.Mvc.UI
+
+<nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
+	<div class="container-fluid">
+		<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<label id="LabelTitle">@ViewData["Title"]</label>
+		</div>
+	</div>
+</nav>
+
+<!--Main Content-->
+<div class="contentRoot navbar navbar-default">
+	<!-- Message Modal -->
+	<div class="modal" id="myModal">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<!-- Modal Header -->
+				<div class="modal-header"><h4 class="modal-title">@modalTitle</h4></div>
+				<!-- Modal body -->
+				<div class="modal-body">@modalMessage</div>
+				<!-- Modal footer -->
+				<div class="modal-footer">
+					<a href="~/MachineMaintenance/AlertMaintenance" class="btn theme_gradient_btn">OK</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="main-content text-gray-600 small" style="padding: 50px; text-align: left; color: #5D5D5D;">
+		<form method="post" action="">
+			<div class="row justify-content-md-center">
+				<div class="panel" style="width: 850px; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white; margin: 0 50px 30px 50px; padding-right: 30px;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Alert Maintenance </h3>
+						<div class="right">
+						</div>
+					</div>
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Alert Name</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="Name" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="Name" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Remarks</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<textarea asp-for="Remarks" rows="2" cols="20" Style="border-color:#E3E3E3;height:50px;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;"></textarea>
+							</td>
+						</tr>
+						@if (Model.ActiveVisible)
+						{
+							<tr id="active">
+								<td style="border: 0px; padding-left: 50px;">Status</td>
+								<td style="border: 0px;">:&nbsp;</td>
+								<td style="border: 0px;">
+									<label class="switch">
+										<input type="checkbox" asp-for="Status" />
+										<span class="slider round"></span>
+									</label>
+									Active
+								</td>
+							</tr>
+						}
+					</table>
+				</div>
+				<div class="panel" style="width: 850px; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white; margin: 0 50px 30px 50px; padding-right: 30px;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Low Stock Balance </h3>
+						<div class="right">
+						</div>
+					</div>
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Card Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MinCardBal" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MinCardBal" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Cheque Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MinChequeBal" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MinChequeBal" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Paper Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MinPaperBal" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MinPaperBal" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Reject Card Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MinRejCardBal" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MinRejCardBal" style="color: red;"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="panel" style="width: 850px; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white; margin: 0 50px 30px 50px; padding-right: 30px;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Low Catridge Balance </h3>
+						<div class="right">
+						</div>
+					</div>
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Ribbon Indent Front Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MINRIBFRONTBAL" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MINRIBFRONTBAL" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Ribbon Indent Rear Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MINRIBREARBAL" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MINRIBREARBAL" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Ribbon Tipping Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MINRIBTIPBAL" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MINRIBTIPBAL" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Cheque Printer Cartridge</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MINCHEQUEPRINTCATRIDGE" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MINCHEQUEPRINTCATRIDGE" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Low Printer Cartridge Balance</td>
+							<td style="border: 0px;">:&nbsp;</td>
+							<td style="border: 0px;">
+								<input type="text" asp-for="MINCATRIDGEBAL" style="border-color:#E3E3E3;border-width:1px;border-style:solid;width:550px;font-size: 14px; color: #5D5D5D; padding: 6px; border-radius: 5px;" />
+								<br />
+								<span asp-validation-for="MINCATRIDGEBAL" style="color: red;"></span>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="panel" style="width: 850px; border-radius: 8px; box-shadow: 0 0 10px #E3E3E3; background-color: white; margin: 0 50px 30px 50px; padding-right: 30px;">
+					<div class="panel-heading">
+						<h3 class="panel-title font_demi" style="font-size: 18px; color: #5D5D5D; padding: 35px 20px 20px 50px;">Person In Charge </h3>
+						<div class="right">
+						</div>
+					</div>
+					<table class="table" style="font-size: 14px; color: #5D5D5D;">
+						<tr style="text-align: left">
+							<td style="border: 0px; padding-left: 50px; width:150px;">Description</td>
+							<td style="border: 0px; text-align:center">Email </td>
+							<td style="border: 0px; text-align:center">SMS </td>
+							<td style="border: 0px; text-align:center">Time Interval (Hours)</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Card Alert <span class="spanAlertDesc" style="font-size: 10px;">(eg: out of card, card low quantity, reject card)</span></td>
+							<td>
+								<textarea asp-for="CardEmail" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="CardEmail" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="CardSms" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="CardSms" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="CardTInterval" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="CardTInterval" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Cheque Alert <span class="spanAlertDesc" style="font-size: 10px;">(eg: out of cheque, cheque low quantity)</span></td>
+							<td>
+								<textarea asp-for="ChequeEmail" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="ChequeEmail" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="ChequeSms" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="ChequeSms" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="ChequeTInterval" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="ChequeTInterval" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Maintenance Alert <span class="spanAlertDesc" style="font-size: 10px;">(eg: out of paper, out of cartridge)</span></td>
+							<td>
+								<textarea asp-for="MaintenanceEmail" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="MaintenanceEmail" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="MaintenanceSms" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="MaintenanceSms" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="MaintenanceTInterval" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="MaintenanceTInterval" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Security Alerts <span class="spanAlertDesc" style="font-size: 10px;">(eg: un-collect card, un-collect cheque, paper jam)</span></td>
+							<td>
+								<textarea asp-for="SecurityEmail" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="SecurityEmail" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="SecuritySms" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="SecuritySms" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="SecurityTInterval" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="SecurityTInterval" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="border: 0px; padding-left: 50px;">Troubleshooting Alerts <span class="spanAlertDesc" style="font-size: 10px;">(eg: module spoil, network down)</span></td>
+							<td>
+								<textarea asp-for="TroubleshootEmail" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="TroubleshootEmail" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="TroubleshootSms" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="TroubleshootEmail" style="color: red;"></span>
+							</td>
+							<td>
+								<textarea asp-for="TroubleshootTInterval" style="border-color:#E3E3E3;height:50px;width:200px;font-size: 14px; font-family: 'ITC Avant Garde Gothic Std Medium'; color: #5D5D5D; padding: 6px; resize: none"></textarea>
+								<span asp-validation-for="TroubleshootTInterval" style="color: red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4" class="justify-content-md-center" style="text-align: center; border: 0px;">
+								<input type="hidden" asp-for="aID" />
+								<input type="button" value="Back" id="btn_cancel" class="mx-2 btn theme_outline_only_btn" onclick="onCancelClick()">
+								<input type="submit" value="@Model.ConfirmText" class="mx-2 btn theme_gradient_btn" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		function onCancelClick() {
+			$.ajax({
+					url: "@Url.Page("/AlertMaintenanceAdd")?handler=Cancel",
+					method: "GET",
+					success: function (data) {
+						if(data.message == 'Success'){
+							window.location.href = "@Url.Content("~/MachineMaintenance/AlertMaintenance")";
+						}
+						else
+						{
+							alert(data.message);
+						}
+					}
+				})
+		}
+
+		$(document).ready(function () {
+			var showModal = '@(showModal?.ToString().ToLower() ?? "false")';
+			if (showModal === "true") {
+				$('#myModal').modal('show');
+			}
+		});
+	</script>
+}
+
