@@ -31,13 +31,14 @@
 
 <nav class="navbar-title navbar navbar-default" style="background-color: white; margin-bottom: 10px; padding: 15px 50px; box-shadow: 1px 2px 10px -2px rgba(0, 0, 0, 0.2);">
 	<div class="container-fluid row align-items-center flex-wrap">
+		<!-- Title -->
 		<div class="col-12 col-lg-auto mb-2">
-			<div class="nav-text  mr-2 d-lg-inline text-gray-600 small">
+			<div class="nav-text text-gray-600 small">
 				<label id="LabelTitle">@ViewData["Title"]</label>
 			</div>
 		</div>
 		<!-- NavBar2: Right -->
-		<div class="col-12 col-lg col-md d-flex flex-wrap align-items-center justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
+		<div class="col-lg col-md d-flex flex-wrap justify-content-lg-end justify-content-md-end" style="justify-content:flex-end">
 			<!-- Refresh -->
 			<button class="btn reportBtn theme_outline_only_btn" type="button" onclick="window.location.reload();">
 				<i class="fa fa-refresh fa-sm pr-1"></i>Refresh </>
@@ -168,213 +169,213 @@
 		<div class="tab-pane fade @(Enum.GetName(typeof(TabGroup), Model.CurrentTab) == Enum.GetName(typeof(TabGroup), 1) ? activateTabClass : "")" id="Role" role="tabpanel" aria-labelledby="tab_Role">
 			@if (Model.RoleVisible)
 			{
-				
-						@(
-													Html.Kendo().Grid(Model.Roles)
-													.Name("RoleGrid")
-													.Columns(columns =>
-													{
-														columns.Template(@<text>
-						<div class="text-center">
-							# if (AllowView) { #
-							<span class="button" data-toggle="tooltip" title="View">
-								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= rID #')" />
-							</span>
-							# } #
-							# if (AllowApprove) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Role','#= rID #')">
-								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
-							</span>
-							# } #
-							# if (AllowReject) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Role','#= rID #')">
-								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
-							</span>
-							# } #
-							# if (AllowDecline) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Role','#= rID #')">
-								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
-							</span>
-							# } #
-						</div>
-					</text>
-													).Title("Options").Width(150);
-														columns.Bound(u => u.RDESC).Title("Role Name").Filterable(true);
-														columns.Bound(u => u.RCREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
-														columns.Bound(u => u.CREATEDBY).Title("Created by");
-														columns.Bound(u => u.RUPDATEDDATE).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
-														columns.Bound(u => u.UPDATEDBY).Title("Updated By");
-														columns.Bound(p => p.Status)
-														.Title("Status")
-														.ClientTemplate(
-														"<div style='font-size: 0.85em;'>" +
-														"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
-														"#= Status #" +
-														"</span>" +
-														"</div>"
-														)
-														.Sortable(true);
-													})
-													.ToolBar(t => t.Search())
-													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
-													.Scrollable(s => s.Height("calc(80vh - 200px)"))
-													.HtmlAttributes(new { style = "margin: 0 15px;" })
-													.Sortable()
-													.Search(s =>
-													{
-														s.Field(o => o.RDESC, "contains");
-													})
-													.Events(e => e.DataBound("onGridDataBound"))
-													)
-					
+
+				@(
+							Html.Kendo().Grid(Model.Roles)
+							.Name("RoleGrid")
+							.Columns(columns =>
+							{
+								columns.Template(@<text>
+				<div class="text-center">
+					# if (AllowView) { #
+					<span class="button" data-toggle="tooltip" title="View">
+						<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= rID #')" />
+					</span>
+					# } #
+					# if (AllowApprove) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Role','#= rID #')">
+						<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+					</span>
+					# } #
+					# if (AllowReject) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Role','#= rID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+					# if (AllowDecline) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Role','#= rID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
+					</span>
+					# } #
+				</div>
+			</text>
+							).Title("Options").Width(150);
+								columns.Bound(u => u.RDESC).Title("Role Name").Filterable(true);
+								columns.Bound(u => u.RCREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(u => u.CREATEDBY).Title("Created by");
+								columns.Bound(u => u.RUPDATEDDATE).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(u => u.UPDATEDBY).Title("Updated By");
+								columns.Bound(p => p.Status)
+								.Title("Status")
+								.ClientTemplate(
+								"<div style='font-size: 0.85em;'>" +
+								"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+								"#= Status #" +
+								"</span>" +
+								"</div>"
+								)
+								.Sortable(true);
+							})
+							.ToolBar(t => t.Search())
+							.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+							.Scrollable(s => s.Height("calc(80vh - 200px)"))
+							.HtmlAttributes(new { style = "margin: 0 15px;" })
+							.Sortable()
+							.Search(s =>
+							{
+								s.Field(o => o.RDESC, "contains");
+							})
+							.Events(e => e.DataBound("onGridDataBound"))
+							)
+
 			}
 		</div>
 		<!-- Tab 2 Content -->
 		<div class="tab-pane fade @(Enum.GetName(typeof(TabGroup), Model.CurrentTab) == Enum.GetName(typeof(TabGroup), 2) ? activateTabClass : "")" id="User" role="tabpanel" aria-labelledby="tab_User">
 			@if (Model.UserVisible)
 			{
-				
-						@(
-													Html.Kendo().Grid(Model.Users)
-													.Name("UserGrid")
-													.Columns(columns =>
-													{
-														columns.Template(@<text>
-						<div class="text-center">
-							# if (AllowView) { #
-							<span class="button" data-toggle="tooltip" title="View">
-								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= aID #')" />
-							</span>
-							# } #
-							# if (AllowApprove) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('User','#= aID #')">
-								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
-							</span>
-							# } #
-							# if (AllowReject) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('User','#= aID #')">
-								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
-							</span>
-							# } #
-							# if (AllowDecline) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('User','#= aID #')">
-								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
-							</span>
-							# } #
-						</div>
-					</text>
-													).Title("Options").Width(150);
-														columns.Bound(u => u.uName).Title("User ID");
-														columns.Bound(u => u.uFullName).Title("Fullname");
-														columns.Bound(u => u.rDesc).Title("User Role");
-														columns.Bound(u => u.uCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
-														columns.Bound(u => u.CreatedByName).Title("Created by");
-														columns.Bound(u => u.uUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
-														columns.Bound(u => u.UpdatedByName).Title("Updated By");
-														columns.Bound(u => u.Status).Title("Status")
-														.ClientTemplate(
-														"<div style='font-size: 0.85em;'>" +
-														"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
-														"#= Status #" +
-														"</span>" +
-														"</div>"
-														)
-														.Sortable(true);
-													})
-													.ToolBar(t => t.Search())
-													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
-													.Scrollable(s => s.Height("calc(80vh - 200px)"))
-													.HtmlAttributes(new { style = "margin: 0 15px;" })
-													.Sortable()
-													.Search(s =>
-													{
-														s.Field(o => o.uName, "contains");
-														s.Field(o => o.uFullName, "contains");
-														s.Field(o => o.rDesc, "contains");
-													})
-													.Events(e => e.DataBound("onGridDataBound"))
-													)
-					
+
+				@(
+							Html.Kendo().Grid(Model.Users)
+							.Name("UserGrid")
+							.Columns(columns =>
+							{
+								columns.Template(@<text>
+				<div class="text-center">
+					# if (AllowView) { #
+					<span class="button" data-toggle="tooltip" title="View">
+						<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= aID #')" />
+					</span>
+					# } #
+					# if (AllowApprove) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('User','#= aID #')">
+						<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+					</span>
+					# } #
+					# if (AllowReject) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('User','#= aID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+					# if (AllowDecline) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('User','#= aID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
+					</span>
+					# } #
+				</div>
+			</text>
+							).Title("Options").Width(150);
+								columns.Bound(u => u.uName).Title("User ID");
+								columns.Bound(u => u.uFullName).Title("Fullname");
+								columns.Bound(u => u.rDesc).Title("User Role");
+								columns.Bound(u => u.uCreatedDate).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(u => u.CreatedByName).Title("Created by");
+								columns.Bound(u => u.uUpdatedDate).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(u => u.UpdatedByName).Title("Updated By");
+								columns.Bound(u => u.Status).Title("Status")
+								.ClientTemplate(
+								"<div style='font-size: 0.85em;'>" +
+								"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+								"#= Status #" +
+								"</span>" +
+								"</div>"
+								)
+								.Sortable(true);
+							})
+							.ToolBar(t => t.Search())
+							.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+							.Scrollable(s => s.Height("calc(80vh - 200px)"))
+							.HtmlAttributes(new { style = "margin: 0 15px;" })
+							.Sortable()
+							.Search(s =>
+							{
+								s.Field(o => o.uName, "contains");
+								s.Field(o => o.uFullName, "contains");
+								s.Field(o => o.rDesc, "contains");
+							})
+							.Events(e => e.DataBound("onGridDataBound"))
+							)
+
 			}
 		</div>
 		<!-- Tab 3 Content -->
 		<div class="tab-pane fade @(Enum.GetName(typeof(TabGroup), Model.CurrentTab) == Enum.GetName(typeof(TabGroup), 3) ? activateTabClass : "")" id="Branch" role="tabpanel" aria-labelledby="tab_Branch">
 			@if (Model.BranchVisible)
 			{
-				
-						@(
-													Html.Kendo().Grid(Model.Branches)
-													.Name("BranchGrid")
-													.Columns(columns =>
-													{
-														columns.Template(@<text>
-						<div class="text-center">
-							# if (AllowView) { #
-							<span class="button" data-toggle="tooltip" title="View">
-								<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= BID #')" />
-							</span>
-							# } #
-							# if (AllowApprove) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Branch','#= BID #')">
-								<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
-							</span>
-							# } #
-							# if (AllowReject) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Branch','#= BID #')">
-								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
-							</span>
-							# } #
-							# if (AllowDecline) { #
-							<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
-							<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Branch','#= BID #')">
-								<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
-							</span>
-							# } #
-						</div>
-					</text>
-													).Title("Options").Width(150);
-														columns.Bound(u => u.BDESC).Title("Name");
-														columns.Bound(u => u.Sunday).Title("Sun");
-														columns.Bound(u => u.Monday).Title("Mon");
-														columns.Bound(u => u.Tuesday).Title("Tue");
-														columns.Bound(u => u.Wednesday).Title("Wed");
-														columns.Bound(u => u.Thursday).Title("Thurs");
-														columns.Bound(u => u.Friday).Title("Fri");
-														columns.Bound(u => u.Saturday).Title("Sat");
-														columns.Bound(u => u.BCREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
-														columns.Bound(u => u.CREATEDBY).Title("Created by");
-														columns.Bound(u => u.BUPDATEDDATE).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
-														columns.Bound(u => u.UPDATEDBY).Title("Updated By");
-														columns.Bound(u => u.Status)
-														.Title("Status")
-														.ClientTemplate(
-														"<div style='font-size: 0.85em;'>" +
-														"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
-														"#= Status #" +
-														"</span>" +
-														"</div>"
-														)
-														.Sortable(true);
-													})
-													.ToolBar(t => t.Search())
-													.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
-													.Scrollable(s => s.Height("calc(80vh - 200px)"))
-													.HtmlAttributes(new { style = "margin: 0 15px;" })
-													.Sortable()
-													.Search(s =>
-													{
-														s.Field(o => o.BDESC, "contains");
-													})
-													.Events(e => e.DataBound("onGridDataBound"))
-													)
+
+				@(
+							Html.Kendo().Grid(Model.Branches)
+							.Name("BranchGrid")
+							.Columns(columns =>
+							{
+								columns.Template(@<text>
+				<div class="text-center">
+					# if (AllowView) { #
+					<span class="button" data-toggle="tooltip" title="View">
+						<img src="~/img/0_Authentication/btn_view_password.png" alt="View" onclick="onViewClick('#= BID #')" />
+					</span>
+					# } #
+					# if (AllowApprove) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Edit" onclick="onApproveClick('Branch','#= BID #')">
+						<img src="~/img/3_User%20Maintenance/btn_approve_green.png" alt="Edit" />
+					</span>
+					# } #
+					# if (AllowReject) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Reject" onclick="onRejectClick('Branch','#= BID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Reject" />
+					</span>
+					# } #
+					# if (AllowDecline) { #
+					<img src="~/img/3_User%20Maintenance/line.png" style="padding: 0 5px;">
+					<span class="button" data-toggle="tooltip" title="Decline" onclick="onDeclineClick('Branch','#= BID #')">
+						<img src="~/img/3_User%20Maintenance/btn_reject_red.png" alt="Decline" />
+					</span>
+					# } #
+				</div>
+			</text>
+							).Title("Options").Width(150);
+								columns.Bound(u => u.BDESC).Title("Name");
+								columns.Bound(u => u.Sunday).Title("Sun");
+								columns.Bound(u => u.Monday).Title("Mon");
+								columns.Bound(u => u.Tuesday).Title("Tue");
+								columns.Bound(u => u.Wednesday).Title("Wed");
+								columns.Bound(u => u.Thursday).Title("Thurs");
+								columns.Bound(u => u.Friday).Title("Fri");
+								columns.Bound(u => u.Saturday).Title("Sat");
+								columns.Bound(u => u.BCREATEDDATE).Title("Created Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(u => u.CREATEDBY).Title("Created by");
+								columns.Bound(u => u.BUPDATEDDATE).Title("Updated Date").Format("{0:MM/dd/yyyy hh:mm:ss tt}");
+								columns.Bound(u => u.UPDATEDBY).Title("Updated By");
+								columns.Bound(u => u.Status)
+								.Title("Status")
+								.ClientTemplate(
+								"<div style='font-size: 0.85em;'>" +
+								"<span class='#= Status == \"Active\" ? \"status_active\" : (Status == \"Pending\" ? \"status_pending\" : \"status_inactive\") #'>" +
+								"#= Status #" +
+								"</span>" +
+								"</div>"
+								)
+								.Sortable(true);
+							})
+							.ToolBar(t => t.Search())
+							.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+							.Scrollable(s => s.Height("calc(80vh - 200px)"))
+							.HtmlAttributes(new { style = "margin: 0 15px;" })
+							.Sortable()
+							.Search(s =>
+							{
+								s.Field(o => o.BDESC, "contains");
+							})
+							.Events(e => e.DataBound("onGridDataBound"))
+							)
 			}
 		</div>
 	</div>
@@ -421,9 +422,9 @@
 			if (showModal === "true") {
 				$('#myModal').modal('show');
 			}
-			
+
 		});
-		
+
 		function onGridClick(name) {
 			$.ajax({
 					url: "@Url.Page("/iOS")?handler=ChangeGrid",

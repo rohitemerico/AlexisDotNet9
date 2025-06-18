@@ -16,11 +16,13 @@
 			<div class="col-12 col-md-4 mb-2">
 				<div class="dropdown">
 					<button class="btn reportBtn theme_outline_only_btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fa fa-filter" aria-hidden="true"></i> Filter Status
+						<i class="fa fa-filter" aria-hidden="true"></i>
+						<span id="selectedFilterLabel">@Model.FilterStatus</span>
 					</button>
 					<div class="dropdown-menu theme_outline_only" aria-labelledby="dropdownMenuButton">
-						<button type="submit" id="FilterPassBtn" name="FilterPassBtn" class="dropdown-item" value="1">Action - Pass</button>
-						<button type="submit" id="FilterPassBtn" name="FilterPassBtn" class="dropdown-item" value="0">Action - Fail</button>
+						<button type="submit" id="FilterPassBtn" name="FilterPassBtn" class="dropdown-item" value="2">All</button>
+						<button type="submit" id="FilterPassBtn" name="FilterPassBtn" class="dropdown-item" value="1">Pass</button>
+						<button type="submit" id="FilterPassBtn" name="FilterPassBtn" class="dropdown-item" value="0">Fail</button>
 					</div>
 				</div>
 			</div>

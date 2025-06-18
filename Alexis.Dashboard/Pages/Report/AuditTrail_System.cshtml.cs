@@ -17,6 +17,13 @@ public class AuditTrail_SystemModel(IHttpContextAccessor httpContextAccessor) : 
     [BindProperty]
     public int FilterPassBtn { get; set; } = 2;
     public string SearchText { get; set; }
+    public string FilterStatus => FilterPassBtn switch
+    {
+        1 => "Pass",
+        0 => "Fail",
+        _ => "All"
+    };
+ 
 
     private DateTime minDate;
     [BindProperty]
@@ -84,10 +91,7 @@ public class AuditTrail_SystemModel(IHttpContextAccessor httpContextAccessor) : 
         }
         catch (Exception ex)
         {
-            Logger.LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
-                           System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name,
-                           System.Reflection.MethodBase.GetCurrentMethod().Name,
-                           ex);
+            Logger.LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
             HPLog.WriteLog(ex.Message, "ERROR");
         }
         return Page();

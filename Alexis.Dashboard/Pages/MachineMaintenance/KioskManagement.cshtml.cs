@@ -422,7 +422,6 @@ public class KioskManagementModel(IHttpContextAccessor httpContextAccessor) : Ba
         string id = EntityIdToReject;
         string tab = TargetTabToReject;
         string remark = RejectRemarks;
-        CheckerAction checkerAction = CheckerAction.Reject;
 
         bool deleted = false;
         try
@@ -497,8 +496,6 @@ public class KioskManagementModel(IHttpContextAccessor httpContextAccessor) : Ba
         string id = EntityIdToDecline;
         string tab = TargetTabToDecline;
         string remark = RejectRemarks;
-        CheckerAction checkerAction = CheckerAction.Reject;
-
         try
         {
             if (Guid.TryParse(id, out Guid guidOutput))

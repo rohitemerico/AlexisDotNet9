@@ -17,6 +17,12 @@ public class AuditTrail_iOSModel(IHttpContextAccessor httpContextAccessor) : Bas
     [BindProperty]
     public int FilterPassBtn { get; set; } = 2;
     public string SearchText { get; set; }
+    public string FilterStatus => FilterPassBtn switch
+    {
+        1 => "Pass",
+        0 => "Fail",
+        _ => "All"
+    };
 
     private DateTime minDate;
     [BindProperty]

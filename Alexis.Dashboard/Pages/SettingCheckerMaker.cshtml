@@ -42,6 +42,8 @@
 	</text>).Title("");
 		})
 		.Pageable(pager => pager.ButtonCount(5).Position(Kendo.Mvc.UI.GridPagerPosition.Top))
+		.Scrollable(s => s.Height("calc(80vh - 200px)"))
+		.HtmlAttributes(new { style = "margin: 0 15px;" })
 		.Sortable()
 		)
 </div>

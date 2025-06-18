@@ -80,7 +80,7 @@ namespace MDM.iOS.Business.BusinessLogics.MDM_Profile.Profile_UI
 
             }
 
-            catch (Exception ex)
+            catch (Exception )
             {
 
 

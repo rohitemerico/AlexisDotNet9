@@ -81,7 +81,7 @@ public class ProfileManagementModel(IHttpContextAccessor httpContextAccessor) : 
             DataTable data = My_FMDM_ProfileBase.GetBranchByProfileId(Guid.Parse(ProfileID));
             branches = data.AsEnumerable().Select(row => row["bdesc"]?.ToString()).Where(value => !string.IsNullOrEmpty(value)).ToList();
         }
-        catch (Exception ex)
+        catch (Exception )
         {
 
         }

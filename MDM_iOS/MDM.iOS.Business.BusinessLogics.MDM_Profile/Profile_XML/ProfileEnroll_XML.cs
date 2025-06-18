@@ -306,7 +306,7 @@ namespace MDM.iOS.Business.BusinessLogics.MDM_Profile.Profile_XML
                 ret = convert.Substring(convert.Length - Convert.ToInt32(ConfigurationManager.AppSettings.Get("ChallangeKeySize").ToString()));
                 Console.WriteLine("Successful Create the Challenge Key");
             }
-            catch (Exception ex)
+            catch (Exception )
             {
 
             }

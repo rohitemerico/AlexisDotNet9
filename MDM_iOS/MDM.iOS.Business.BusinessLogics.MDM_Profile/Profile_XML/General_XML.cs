@@ -192,7 +192,7 @@ namespace MDM.iOS.Business.BusinessLogics.MDM_Profile.Profile_XML
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 Logger.LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
                                          System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name,

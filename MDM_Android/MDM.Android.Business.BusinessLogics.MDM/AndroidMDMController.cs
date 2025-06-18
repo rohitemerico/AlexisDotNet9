@@ -212,7 +212,7 @@ public class AndroidMDMController
     }
     public static bool AppUpdate(int appSysID, string appName = null, string version = null, string appFilePath = null, string status = null)
     {
-        return false;
+        //return false;
         try
         {
             StringBuilder sql = new StringBuilder();

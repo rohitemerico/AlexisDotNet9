@@ -110,7 +110,6 @@ public class CheckerMakerModel(IHttpContextAccessor httpContextAccessor) : BaseP
             string profileId = aProfileId;
             string cProfileId = aCProfileId;
             string profileStatus = aStatus;
-            string remark = "";
             passExecution = ProfileDeclineOrApprove(profileId, cProfileId, profileStatus, "APPROVE");
         }
         catch (Exception ex)

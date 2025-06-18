@@ -482,7 +482,7 @@ namespace MDM.iOS.Business.BusinessLogic.Common
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
 
 
@@ -515,7 +515,7 @@ namespace MDM.iOS.Business.BusinessLogic.Common
 
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
             }
 

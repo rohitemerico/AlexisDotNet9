@@ -1389,28 +1389,28 @@ public class UserRoleController : GlobalController
     }
     public bool ResetPassword(Guid UID)
     {
-        bool ret = false;
+        //bool ret = false;
         throw new NotImplementedException("outdated method.");
-        try
-        {
-            sql.Clear();
-            MyParams.Clear();
-            sql.Append("update LocalUser set ");
-            sql.Append("lPassWord = :pass where LoginID = :loginid ");
+        //try
+        //{
+        //    sql.Clear();
+        //    MyParams.Clear();
+        //    sql.Append("update LocalUser set ");
+        //    sql.Append("lPassWord = :pass where LoginID = :loginid ");
 
-            MyParams.Add(new Params(":pass", "NVARCHAR", "LmpooT0l2ok=")); //123456
-            MyParams.Add(new Params(":loginid", "GUID", UID));
-            ret = dbController.Input(sql.ToString(), "connectionString", MyParams);
-        }
-        catch (Exception ex)
-        {
-            //Logger.LogToFile("UpdateUser.log", ex);
-            Logger.LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
-                        System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name,
-                        System.Reflection.MethodBase.GetCurrentMethod().Name,
-                        ex);
-        }
-        return ret;
+        //    MyParams.Add(new Params(":pass", "NVARCHAR", "LmpooT0l2ok=")); //123456
+        //    MyParams.Add(new Params(":loginid", "GUID", UID));
+        //    ret = dbController.Input(sql.ToString(), "connectionString", MyParams);
+        //}
+        //catch (Exception ex)
+        //{
+        //    //Logger.LogToFile("UpdateUser.log", ex);
+        //    Logger.LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
+        //                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name,
+        //                System.Reflection.MethodBase.GetCurrentMethod().Name,
+        //                ex);
+        //}
+        //return ret;
     }
     public bool ResetPassword(Guid UID, string newPassword)
     {

@@ -163,18 +163,22 @@
     font-family: 'ITC Avant Garde Gothic Std Demi';
     src: url('../font/ITCAvantGardeStd/ITCAvantGardeStd-Demi.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'ITC Avant Garde Gothic Std Medium';
     src: url('../font/ITCAvantGardeStd/ITCAvantGardeStd-Md.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'ITC Avant Garde Gothic Std Book';
     src: url('../font/ITCAvantGardeStd/ITCAvantGardeStd-Bk.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'ITCAvantGardeStd-Bold';
     src: url('../font/ITCAvantGardeStd/ITCAvantGardeStd-Bold.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'ITCAvantGardeStd-XLt';
     src: url('../font/ITCAvantGardeStd/ITCAvantGardeStd-XLt.ttf') format('truetype');
@@ -186,7 +190,7 @@
 }
 
 .font_medium {
-    font-family: 'ITC Avant Garde Gothic Std Medium'; 
+    font-family: 'ITC Avant Garde Gothic Std Medium';
     font-size: 14px;
 }
 
@@ -371,10 +375,10 @@ span.status_pending {
     width: 350px;
 }
 
-.searchInputGroup .searchButton {
-    color: white;
-    background-color: #E83B68;
-}
+    .searchInputGroup .searchButton {
+        color: white;
+        background-color: #E83B68;
+    }
 
 
 .k-button {
@@ -384,5 +388,9 @@ span.status_pending {
 }
 
 .k-grid {
-    text-align:center;
+    text-align: center;
+}
+
+.k-grid-table {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
 }

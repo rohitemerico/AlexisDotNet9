@@ -1,8 +1,5 @@
 ﻿using System.Configuration;
-using System.Text;
 using Alexis.Common;
-using Dashboard.Common.Business.Component.Cryptography;
-using Oracle.ManagedDataAccess.Client;
 
 namespace Dashboard.Common.Business.Component;
 
@@ -216,51 +213,51 @@ public class Logger
     #endregion
 
 
-    public static void WebServiceLog(string Description, WebServiceAction Action, string MachineSn, bool Status, string EncryptedData, string DecryptedData)
-    {
-        try
-        {
-            StringBuilder sql = new StringBuilder();
-            sql.AppendLine("INSERT INTO WEBSERVICE_LOG");
-            sql.AppendLine("(LOG_ID,LOG_DESC,LOG_RAW,LOG_DECRYPT,LOG_METHOD,LOG_STATUS,MACHINESN,LOG_DATE)");
-            sql.AppendLine("VALUES");
-            sql.AppendLine("(:LOGID,:LOGDESC,:LOGRAW,:LOGDECRYPT,:LOGMETHOD,:LOGSTATUS,:MACHINESN,:LOGDATE)");
+    //public static void WebServiceLog(string Description, WebServiceAction Action, string MachineSn, bool Status, string EncryptedData, string DecryptedData)
+    //{
+    //    try
+    //    {
+    //        StringBuilder sql = new StringBuilder();
+    //        sql.AppendLine("INSERT INTO WEBSERVICE_LOG");
+    //        sql.AppendLine("(LOG_ID,LOG_DESC,LOG_RAW,LOG_DECRYPT,LOG_METHOD,LOG_STATUS,MACHINESN,LOG_DATE)");
+    //        sql.AppendLine("VALUES");
+    //        sql.AppendLine("(:LOGID,:LOGDESC,:LOGRAW,:LOGDECRYPT,:LOGMETHOD,:LOGSTATUS,:MACHINESN,:LOGDATE)");
 
-            string connString = MsgSec.DecryptString(ConfigurationManager.AppSettings.Get("connectionString"));
+    //        string connString = MsgSec.DecryptString(ConfigurationManager.AppSettings.Get("connectionString"));
 
-            using (OracleConnection myconn = new OracleConnection(connString))
-            {
-                myconn.Open();
-                OracleTransaction trans = myconn.BeginTransaction();
-                using (OracleCommand cmd = new OracleCommand(sql.ToString(), myconn))
-                {
-                    cmd.BindByName = true;
-                    cmd.Parameters.Add(":LOGID", OracleDbType.NVarchar2).Value = Guid.NewGuid();
-                    cmd.Parameters.Add(":LOGDESC", OracleDbType.NVarchar2).Value = Description;
-                    cmd.Parameters.Add(":LOGRAW", OracleDbType.Varchar2).Value = EncryptedData;
-                    cmd.Parameters.Add(":LOGDECRYPT", OracleDbType.Varchar2).Value = DecryptedData;
-                    cmd.Parameters.Add(":LOGMETHOD", OracleDbType.Varchar2).Value = Action;
+    //        using (OracleConnection myconn = new OracleConnection(connString))
+    //        {
+    //            myconn.Open();
+    //            OracleTransaction trans = myconn.BeginTransaction();
+    //            using (OracleCommand cmd = new OracleCommand(sql.ToString(), myconn))
+    //            {
+    //                cmd.BindByName = true;
+    //                cmd.Parameters.Add(":LOGID", OracleDbType.NVarchar2).Value = Guid.NewGuid();
+    //                cmd.Parameters.Add(":LOGDESC", OracleDbType.NVarchar2).Value = Description;
+    //                cmd.Parameters.Add(":LOGRAW", OracleDbType.Varchar2).Value = EncryptedData;
+    //                cmd.Parameters.Add(":LOGDECRYPT", OracleDbType.Varchar2).Value = DecryptedData;
+    //                cmd.Parameters.Add(":LOGMETHOD", OracleDbType.Varchar2).Value = Action;
 
-                    cmd.Parameters.Add(":MACHINESN", OracleDbType.Varchar2).Value = MachineSn;
-                    cmd.Parameters.Add(":LOGDATE", OracleDbType.TimeStamp).Value = DateTime.Now;
-                    if (Status)
-                        cmd.Parameters.Add(":LOGSTATUS", OracleDbType.Int32).Value = 1;
-                    else
-                        cmd.Parameters.Add(":LOGSTATUS", OracleDbType.Int32).Value = 0;
-                    cmd.ExecuteNonQuery();
-                    trans.Commit();
-                }
-            }
+    //                cmd.Parameters.Add(":MACHINESN", OracleDbType.Varchar2).Value = MachineSn;
+    //                cmd.Parameters.Add(":LOGDATE", OracleDbType.TimeStamp).Value = DateTime.Now;
+    //                if (Status)
+    //                    cmd.Parameters.Add(":LOGSTATUS", OracleDbType.Int32).Value = 1;
+    //                else
+    //                    cmd.Parameters.Add(":LOGSTATUS", OracleDbType.Int32).Value = 0;
+    //                cmd.ExecuteNonQuery();
+    //                trans.Commit();
+    //            }
+    //        }
 
-        }
-        catch (Exception ex)
-        {
-            LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
-                        System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name,
-                        System.Reflection.MethodBase.GetCurrentMethod().Name,
-                        ex);
-        }
-    }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
+    //                    System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Name,
+    //                    System.Reflection.MethodBase.GetCurrentMethod().Name,
+    //                    ex);
+    //    }
+    //}
 
     public enum WebServiceAction
     {

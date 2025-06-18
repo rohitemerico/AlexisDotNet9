@@ -91,7 +91,7 @@ public static class HPLog
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

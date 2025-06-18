@@ -392,7 +392,6 @@ public class DeviceManagementModel(IHttpContextAccessor httpContextAccessor) : B
     public IActionResult OnPostDetails(string MachineUDID, string MachineSerial)
     {
         DeviceInfo info = new DeviceInfo();
-        string certs, apps, locations = "";
         try
         {
             List<Params> myParams = new List<Params>();
@@ -419,7 +418,7 @@ public class DeviceManagementModel(IHttpContextAccessor httpContextAccessor) : B
             DataTable LocationHistory_DT = My_FMonitoringBase.GetLocationHistory(lParams);
             info.Locations = Common.DataHelper.ConvertDataTableToList<LocationsInfo>(LocationHistory_DT);
         }
-        catch (Exception ex)
+        catch (Exception )
         {
             //return new JsonResult(new { message = "Error" });
         }
@@ -430,7 +429,6 @@ public class DeviceManagementModel(IHttpContextAccessor httpContextAccessor) : B
     public IActionResult OnPostCheckUpdates(string MachineUDID, string MachineSerial)
     {
         List<UpdatesInfo> info = new List<UpdatesInfo>();
-        string certs, apps, locations = "";
         try
         {
             OSUpdateEn update = new OSUpdateEn();
@@ -438,7 +436,7 @@ public class DeviceManagementModel(IHttpContextAccessor httpContextAccessor) : B
             DataTable updates_DT = My_FMonitoringBase.GetDeviceDetailOSUpdates(update);
             info = Common.DataHelper.ConvertDataTableToList<UpdatesInfo>(updates_DT);
         }
-        catch (Exception ex)
+        catch (Exception )
         {
             //return new JsonResult(new { message = "Error" });
         }

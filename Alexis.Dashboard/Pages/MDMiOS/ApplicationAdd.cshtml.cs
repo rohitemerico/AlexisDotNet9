@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.IO.Compression;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Alexis.Common;
 using Alexis.Dashboard.Helper;
 using Alexis.Dashboard.Models;
 using Dashboard.Common.Business.Component;
-using Ionic.Zip;
 using MDM.iOS.Business.BusinessLogic.Common;
 using MDM.iOS.Business.BusinessLogics.MDM.MDM_App;
 using MDM.iOS.Common.Data.Component;
@@ -107,7 +107,6 @@ public class ApplicationAddModel(IHttpContextAccessor httpContextAccessor) : Bas
         try
         {
             bool accessAudit = false;
-            bool boolError = false;
             if (ModelState.IsValid)
             {
 
@@ -141,57 +140,122 @@ public class ApplicationAddModel(IHttpContextAccessor httpContextAccessor) : Bas
 
                         string zipFilePath = Path.Combine(strFilePath_Temp, uploadedFileNameNoExt, uploadedFile);
 
-
-                        using (ZipFile zip = ZipFile.Read(zipFilePath))
+                        using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
                         {
-                            foreach (ZipEntry entry in zip)
+                            foreach (ZipArchiveEntry entry in archive.Entries)
                             {
                                 // Extract iTunesArtwork
-                                if (entry.FileName.Contains("iTunesArtwork"))
+                                if (entry.FullName.Contains("iTunesArtwork"))
                                 {
                                     Guid PK = Guid.NewGuid();
-                                    entry.Extract(strInfoPlistPath, ExtractExistingFileAction.OverwriteSilently);
-                                    strIconName = PK + ".png";
-                                    if (strIconName != null)
+                                    string outputFileName = PK + ".png";
+                                    string destinationPath = Path.Combine(strInfoPlistPath, entry.FullName);
+
+                                    // Ensure directory exists
+                                    Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+
+                                    // Extract file
+                                    entry.ExtractToFile(destinationPath, true);
+
+                                    // Rename file
+                                    if (!string.IsNullOrEmpty(outputFileName))
                                     {
-                                        string strIconPathFull_Temp = Path.Combine(strIconPath_Temp, strIconName);
-                                        System.IO.File.Move(Path.Combine(strInfoPlistPath, entry.FileName), strIconPathFull_Temp);
+                                        string strIconPathFull_Temp = Path.Combine(strIconPath_Temp, outputFileName);
+                                        Directory.CreateDirectory(strIconPath_Temp);
+                                        System.IO.File.Move(destinationPath, strIconPathFull_Temp);
+                                        ImageUrl = strIconPath_Temp;
                                     }
-                                    ImageUrl = strIconPath_Temp;
                                 }
 
-                                // Extract Info.plist
-                                else if (entry.FileName.Contains("Info.plist") && !entry.FileName.Contains("Base.lproj"))
+                                // Extract Info.plist (exclude Base.lproj)
+                                else if (entry.FullName.Contains("Info.plist") && !entry.FullName.Contains("Base.lproj"))
                                 {
-                                    entry.Extract(strInfoPlistPath, ExtractExistingFileAction.OverwriteSilently);
-                                    Dictionary<string, object> dict = (Dictionary<string, object>)PlistParseCS.readPlist(Path.Combine(strInfoPlistPath, entry.FileName));
+                                    string plistPath = Path.Combine(strInfoPlistPath, entry.FullName);
+                                    Directory.CreateDirectory(Path.GetDirectoryName(plistPath));
+                                    entry.ExtractToFile(plistPath, true);
+
+                                    Dictionary<string, object> dict = (Dictionary<string, object>)PlistParseCS.readPlist(plistPath);
                                     if (dict.ContainsKey("CFBundleIdentifier"))
                                     {
-                                        //inside static strIdentifier
                                         strIdentify = dict["CFBundleIdentifier"].ToString();
                                     }
                                     if (dict.ContainsKey("CFBundleShortVersionString"))
                                     {
-                                        //inside static strVersion
                                         strVersion = dict["CFBundleShortVersionString"].ToString();
-                                        Version = strVersion.ToString();
+                                        Version = strVersion;
                                     }
                                 }
 
                                 // Extract embedded.mobileprovision
-                                else if (entry.FileName.Contains("embedded.mobileprovision"))
+                                else if (entry.FullName.Contains("embedded.mobileprovision"))
                                 {
+                                    string provPath = Path.Combine(strInfoPlistPath, entry.FullName);
+                                    Directory.CreateDirectory(Path.GetDirectoryName(provPath));
+                                    entry.ExtractToFile(provPath, true);
 
-                                    entry.Extract(strInfoPlistPath, ExtractExistingFileAction.OverwriteSilently);
-                                    using (StreamReader sr = new StreamReader(strInfoPlistPath + entry.FileName))
+                                    using (StreamReader sr = new StreamReader(provPath))
                                     {
                                         string q = sr.ReadToEnd();
                                         string[] a = Regex.Split(q, "ExpirationDate");
-                                        expDate = Convert.ToDateTime(a[1].Substring(14, 20));
+                                        if (a.Length > 1)
+                                        {
+                                            expDate = Convert.ToDateTime(a[1].Substring(14, 20));
+                                        }
                                     }
                                 }
                             }
                         }
+
+                        //using (ZipFile zip = ZipFile.Read(zipFilePath))
+                        //{
+                        //    foreach (ZipEntry entry in zip)
+                        //    {
+                        //        // Extract iTunesArtwork
+                        //        if (entry.FileName.Contains("iTunesArtwork"))
+                        //        {
+                        //            Guid PK = Guid.NewGuid();
+                        //            entry.Extract(strInfoPlistPath, ExtractExistingFileAction.OverwriteSilently);
+                        //            strIconName = PK + ".png";
+                        //            if (strIconName != null)
+                        //            {
+                        //                string strIconPathFull_Temp = Path.Combine(strIconPath_Temp, strIconName);
+                        //                System.IO.File.Move(Path.Combine(strInfoPlistPath, entry.FileName), strIconPathFull_Temp);
+                        //            }
+                        //            ImageUrl = strIconPath_Temp;
+                        //        }
+
+                        //        // Extract Info.plist
+                        //        else if (entry.FileName.Contains("Info.plist") && !entry.FileName.Contains("Base.lproj"))
+                        //        {
+                        //            entry.Extract(strInfoPlistPath, ExtractExistingFileAction.OverwriteSilently);
+                        //            Dictionary<string, object> dict = (Dictionary<string, object>)PlistParseCS.readPlist(Path.Combine(strInfoPlistPath, entry.FileName));
+                        //            if (dict.ContainsKey("CFBundleIdentifier"))
+                        //            {
+                        //                //inside static strIdentifier
+                        //                strIdentify = dict["CFBundleIdentifier"].ToString();
+                        //            }
+                        //            if (dict.ContainsKey("CFBundleShortVersionString"))
+                        //            {
+                        //                //inside static strVersion
+                        //                strVersion = dict["CFBundleShortVersionString"].ToString();
+                        //                Version = strVersion.ToString();
+                        //            }
+                        //        }
+
+                        //        // Extract embedded.mobileprovision
+                        //        else if (entry.FileName.Contains("embedded.mobileprovision"))
+                        //        {
+
+                        //            entry.Extract(strInfoPlistPath, ExtractExistingFileAction.OverwriteSilently);
+                        //            using (StreamReader sr = new StreamReader(strInfoPlistPath + entry.FileName))
+                        //            {
+                        //                string q = sr.ReadToEnd();
+                        //                string[] a = Regex.Split(q, "ExpirationDate");
+                        //                expDate = Convert.ToDateTime(a[1].Substring(14, 20));
+                        //            }
+                        //        }
+                        //    }
+                        //}
 
                         using (XmlWriter writer = XmlWriter.Create(Path.Combine(strFilePath_Temp, uploadedFileNameNoExt, uploadedFile.Replace(".ipa", "") + ".plist")))
                         {

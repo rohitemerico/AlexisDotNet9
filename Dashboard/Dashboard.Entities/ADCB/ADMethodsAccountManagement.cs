@@ -9,7 +9,7 @@ namespace Dashboard.Entities.ADCB
 
         private string sDomain = "test.com";
         private string sDefaultOU = "OU=Test Users,OU=Test,DC=test,DC=com";
-        private string sDefaultRootOU = "DC=test,DC=com";
+        //private string sDefaultRootOU = "DC=test,DC=com";
         private string sServiceUser = @"ServiceUser";
         private string sServicePassword = "ServicePassword";
 

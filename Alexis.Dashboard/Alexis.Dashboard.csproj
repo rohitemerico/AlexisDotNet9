@@ -41,7 +41,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
 		<PackageReference Include="jQuery" Version="3.7.1" />
 		<PackageReference Include="jQuery.Validation" Version="1.21.0" />
 		<PackageReference Include="KendoUIProfessional" Version="2023.3.1114" />
@@ -61,10 +60,6 @@
 
 	<ItemGroup>
 		<EditorConfigFiles Remove="D:\Workspace\Alexis\trunk\AlexisDotNet9\trunk\Alexis\Alexis.Dashboard\.editorconfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="telerik-license_rht.txt" />
 	</ItemGroup>
 
 	<ItemGroup>

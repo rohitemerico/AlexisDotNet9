@@ -1,6 +1,8 @@
 using System.Globalization;
+using Alexis.Common;
 using Alexis.Dashboard.Controller;
 using Alexis.Dashboard.Helper;
+using Dashboard.Common.Business.Component.Cryptography;
 using Dashboard.Infra.EF.Data;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +61,7 @@ public class Program
         });
 
         builder.Services.AddDbContext<VSeriesContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("ModelContext"))
+        options.UseSqlServer(builder.Configuration.GetConnectionString(MsgSec.DecryptString(ConfigHelper.GetConnectionString("connectionString"))))
         .EnableSensitiveDataLogging()
        .LogTo(Console.WriteLine, LogLevel.Information));
         builder.Services.AddRazorPages();

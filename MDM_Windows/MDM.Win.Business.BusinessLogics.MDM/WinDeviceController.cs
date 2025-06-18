@@ -11,7 +11,11 @@ public class WinDeviceController
 
     public DataTable GetAllClientDevices()
     {
-        var query = @"select * from WinDevs , WinDevDetails, WinDevStatuses, WinDevLocations";
+        var query = @"SELECT d.*, dd.*, ds.*, dl.*
+                        FROM WinDevs d
+                        INNER JOIN WinDevDetails dd ON d.ID = dd.WinDevID
+                        INNER JOIN WinDevStatuses ds ON d.ID = ds.WinDevID
+                        INNER JOIN WinDevLocations dl ON d.ID = dl.WinDevID";
         MyParams.Clear();
         var dt = dbController.GetResult(query.ToString(), "connectionString", MyParams);
         return dt;

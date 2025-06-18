@@ -48,7 +48,7 @@ namespace MDM.iOS.Business.BusinessLogics.MDM_APNS
         private const string SandboxFeedbackHost = "feedback.sandbox.push.apple.com";
         private const int FeedbackPort = 2196;
 
-        private string _appDeviceToken;
+        //private string _appDeviceToken;
         private bool _conected = false;
 
         private readonly string _host;
@@ -289,7 +289,7 @@ namespace MDM.iOS.Business.BusinessLogics.MDM_APNS
         {
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
 
-            int i = 1000;
+            //int i = 1000;
             foreach (var item in queue)
             {
                 Logger.LogToFile(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,

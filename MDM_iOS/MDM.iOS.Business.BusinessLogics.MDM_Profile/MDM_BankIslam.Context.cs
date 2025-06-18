@@ -11,6 +11,7 @@ namespace MDM.iOS.Business.BusinessLogics.MDM_Profile;
 
 using System.Data.Entity.Infrastructure;
 using Alexis.Common;
+using Dashboard.Common.Business.Component.Cryptography;
 using MDM.iOS.Business.BusinessLogics.MDM_Profile.BankIslamEn;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,7 +29,7 @@ public class BankIslamEntities : DbContext
     private static DbContextOptions<BankIslamEntities> GetOptions()
     {
         var optionsBuilder = new DbContextOptionsBuilder<BankIslamEntities>();
-        optionsBuilder.UseSqlServer(ConfigHelper.GetConnectionString("ModelContext"));
+        optionsBuilder.UseSqlServer(MsgSec.DecryptString(ConfigHelper.GetConnectionString("connectionString")));
         return optionsBuilder.Options;
     }
 

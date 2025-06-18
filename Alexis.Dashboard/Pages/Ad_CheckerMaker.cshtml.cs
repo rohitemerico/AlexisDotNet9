@@ -201,7 +201,6 @@ public class Ad_CheckerMakerModel(IHttpContextAccessor httpContextAccessor) : Ba
         string id = EntityIdToDecline;
         string tab = TargetTabToDecline;
         string remark = RejectRemarks;
-        CheckerAction checkerAction = CheckerAction.Reject;
 
         try
         {

@@ -44,6 +44,10 @@
 		.Search(s =>
 		{
 			s.Field(o => o.Name, "contains");
+			s.Field(o => o.OEM, "contains");
+			s.Field(o => o.FwV, "contains");
+			s.Field(o => o.SwV, "contains");
+			s.Field(o => o.HwV, "contains");
 			s.Field(o => o.OSPlatform, "contains");
 			s.Field(o => o.Resolution, "contains");
 			s.Field(o => o.TotalStorage, "contains");

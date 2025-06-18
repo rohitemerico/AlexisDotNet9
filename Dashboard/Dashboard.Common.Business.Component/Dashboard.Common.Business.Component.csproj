@@ -20,7 +20,6 @@
     <PackageReference Include="EPPlus" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
-    <PackageReference Include="Oracle.ManagedDataAccess" Version="23.8.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="System.DirectoryServices" Version="9.0.4" />
