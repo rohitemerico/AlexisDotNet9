@@ -1,0 +1,24 @@
+name: Sync to Repo B
+
+on:
+  push:
+    branches:
+      - master  # or your default branch
+
+jobs:
+  sync:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout source repo
+      uses: actions/checkout@v3
+
+    - name: Mirror dev repo to UAT Repo
+      run: |
+        git config --global user.name "rohitemerico"
+        git config --global user.email "rohit@emerico.com"
+
+        git remote add target https://<TOKEN>@github.com/rohitemerico/AlexisDotNet9UAT.git
+        git push --force target HEAD:main
+      env:
+        TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
