@@ -15,7 +15,7 @@ jobs:
 
     - name: Mirror dev repo to UAT Repo
       run: |
-        git config --global user.name "rohit@emerico.com"
+        git config --global user.name "rohit"
         git config --global user.email "rohit@emerico.com"
 
         git remote add target https://<TOKEN>@github.com/rohitemerico/AlexisDotNet9UAT.git
