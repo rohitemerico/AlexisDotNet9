@@ -7,7 +7,7 @@ on:
 
 jobs:
   sync:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout source repo
@@ -18,7 +18,5 @@ jobs:
         git config --global user.name "rohit"
         git config --global user.email "rohit@emerico.com"
 
-        git remote add target https://<TOKEN>@github.com/rohitemerico/AlexisDotNet9UAT.git
-        git push --force target HEAD:main
-      env:
-        TOKEN: ${{ secrets.TARGET_REPO_TOKEN }}
+        git remote add target https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/rohitemerico/AlexisDotNet9UAT.git
+        git push --force target HEAD:master
