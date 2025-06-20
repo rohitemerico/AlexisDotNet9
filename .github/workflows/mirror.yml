@@ -16,3 +16,4 @@ jobs:
           cd AlexisDotNet9.git
           git remote add mirror https://x-access-token:${{ secrets.DESTINATION_TOKEN }}@github.com/rohitemerico/AlexisDotNet9UAT.git
           git push --mirror mirror
+
