@@ -28,4 +28,4 @@ jobs:
         run: |
           git remote add destination https://${{ secrets.DESTINATION_USERNAME }}:${{ secrets.DESTINATION_TOKEN }}@github.com/${{ secrets.DESTINATION_REPO }}.git
           git push destination --all  # Push all branches
-          git push destination --tags # Push all tags
+          git push destination --tags # Push all tags 
