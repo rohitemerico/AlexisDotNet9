@@ -23,6 +23,12 @@ jobs:
           git config --global user.name "rohitemerico"
           git config --global user.email "rohit@emerico.com"
           
+      # Step : Configure git with proper credentials
+      - name: Debug Remote
+      run: |
+        git remote -v
+        echo "Destination: https://${{ secrets.DESTINATION_USERNAME }}:***@github.com/${{ secrets.DESTINATION_REPO }}.git"
+            
       # Step 3: Push to destination repository
       - name: Push to destination
         run: |
