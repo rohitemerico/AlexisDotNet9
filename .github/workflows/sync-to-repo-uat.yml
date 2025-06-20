@@ -3,7 +3,7 @@ name: Sync to Repo B
 on:
   push:
     branches:
-      - master  # or your default branch
+      - main  # or your default branch
 
 jobs:
   sync:
@@ -19,4 +19,4 @@ jobs:
         git config --global user.email "rohit@emerico.com"
 
         git remote add target https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/rohitemerico/AlexisDotNet9UAT.git
-        git push --force target HEAD:master
+        git push --force target HEAD:main
